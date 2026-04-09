@@ -1,0 +1,22 @@
+{
+  "name": "PetPanic - Alerta de Mascotas Perdidas",
+  "short_name": "PetPanic",
+  "description": "Alerta inmediata para mascotas perdidas y red social de zonas de paseo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#ea580c",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["social", "lifestyle"],
+  "lang": "es",
+  "dir": "ltr"
+}

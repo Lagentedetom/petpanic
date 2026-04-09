@@ -1,0 +1,5 @@
+{
+  "name": "PetPanic",
+  "description": "Alerta inmediata para mascotas perdidas y red social de zonas de paseo. Guarda tus zonas favoritas y recibe notificaciones cuando tus amigos entren en ellas.",
+  "requestFramePermissions": ["geolocation"]
+}
