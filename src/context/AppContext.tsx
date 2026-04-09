@@ -107,8 +107,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }).eq('id', user.id).then();
     };
 
-    navigator.geolocation.getCurrentPosition(updateLoc, console.error, { enableHighAccuracy: true, timeout: 10000 });
-    const watchId = navigator.geolocation.watchPosition(updateLoc, console.error, { enableHighAccuracy: true, timeout: 10000 });
+    const handleLocationError = (error: GeolocationPositionError) => {
+      console.warn('Geolocation error:', error.code, error.message);
+      // On mobile, high accuracy (GPS) can fail or timeout — retry with network-based location
+      if (error.code === error.TIMEOUT || error.code === error.POSITION_UNAVAILABLE) {
+        navigator.geolocation.getCurrentPosition(updateLoc, () => {}, {
+          enableHighAccuracy: false,
+          timeout: 15000,
+          maximumAge: 60000,
+        });
+      }
+    };
+
+    navigator.geolocation.getCurrentPosition(updateLoc, handleLocationError, { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
+    const watchId = navigator.geolocation.watchPosition(updateLoc, handleLocationError, { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 });
     return () => navigator.geolocation.clearWatch(watchId);
   }, [user]);
 

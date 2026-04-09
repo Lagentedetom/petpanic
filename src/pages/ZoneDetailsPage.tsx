@@ -57,7 +57,9 @@ export default function ZoneDetailsPage() {
         <p className="text-stone-400 text-xs font-bold uppercase tracking-widest">Estado Actual</p>
         <h3 className="text-3xl font-black">{zonePresence.length} PERROS PASEANDO</h3>
         <p className="text-stone-400 text-sm">
-          {selectedZone.is_member ? "Como miembro, puedes ver quién está presente." : "Únete a la zona para ver los nombres de los perros y sus dueños."}
+          {selectedZone.is_member
+            ? "Puedes ver cuántos perros pasean en esta zona. Por privacidad, solo verás los nombres de tus amigos."
+            : "Únete a la zona para ver cuántos perros están paseando."}
         </p>
       </div>
 
@@ -90,7 +92,7 @@ export default function ZoneDetailsPage() {
             {zonePresence.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length > 0 && (
               <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 text-center">
                 <p className="text-xs text-stone-400 font-medium">
-                  Hay {zonePresence.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).reduce((acc, p) => acc + p.pet_names.length, 0)} perros más paseando (privado)
+                  + {zonePresence.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length} paseantes más en la zona. Conéctate como amigo para ver sus nombres.
                 </p>
               </div>
             )}
