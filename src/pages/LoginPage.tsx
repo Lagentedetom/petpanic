@@ -59,7 +59,7 @@ export default function LoginPage() {
         <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <img src="/petpanic-logo.svg" alt="PetPanic" className="w-20 h-20" />
         </div>
-        <h1 className="text-4xl font-bold text-stone-900 mb-2 tracking-tight">PetPanic</h1>
+        <h1 className="text-4xl font-extrabold mb-2 tracking-tight"><span className="text-stone-900">Pet</span><span className="text-orange-600">Panic</span></h1>
         <p className="text-stone-500 mb-8 leading-relaxed text-sm">
           {isRegistering ? 'Crea tu cuenta para proteger a tus mascotas.' : 'Las primeras 2 horas son vitales. Únete a la red de protección.'}
         </p>
