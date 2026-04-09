@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Dog, User as UserIcon, Mail, Lock } from 'lucide-react';
+import { User as UserIcon, Mail, Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 export default function LoginPage() {
@@ -56,8 +56,8 @@ export default function LoginPage() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full bg-white rounded-3xl shadow-xl p-10 text-center"
       >
-        <div className="w-20 h-20 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <Dog className="w-12 h-12 text-orange-600" />
+        <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <img src="/petpanic-logo.svg" alt="PetPanic" className="w-20 h-20" />
         </div>
         <h1 className="text-4xl font-bold text-stone-900 mb-2 tracking-tight">PetPanic</h1>
         <p className="text-stone-500 mb-8 leading-relaxed text-sm">
