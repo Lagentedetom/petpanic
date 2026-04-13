@@ -55,7 +55,7 @@ export default function WalkingZonesPage() {
     <motion.div key="walking-zones" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-black tracking-tighter">ZONAS DE PASEO</h2>
-        <button onClick={() => setIsCreatingZone(true)} className="bg-orange-600 text-white p-3 rounded-2xl shadow-lg shadow-orange-100"><Plus className="w-6 h-6" /></button>
+        <button onClick={() => setIsCreatingZone(true)} aria-label="Crear zona" className="bg-orange-600 text-white p-3 rounded-2xl shadow-lg shadow-orange-100"><Plus className="w-6 h-6" /></button>
       </div>
 
       <div className="flex gap-2">
@@ -63,7 +63,7 @@ export default function WalkingZonesPage() {
           <input type="text" placeholder="Buscar ciudad o zona (ej: Logroño)" value={mapSearch} onChange={e => setMapSearch(e.target.value)}
             className="w-full bg-white border border-stone-200 rounded-2xl px-12 py-4 outline-none shadow-sm focus:ring-2 focus:ring-orange-500/20 transition-all" />
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
-          <button type="submit" disabled={isSearching} className="absolute right-3 top-1/2 -translate-y-1/2 bg-stone-900 text-white p-2 rounded-xl disabled:opacity-50">
+          <button type="submit" disabled={isSearching} aria-label="Buscar" className="absolute right-3 top-1/2 -translate-y-1/2 bg-stone-900 text-white p-2.5 rounded-xl disabled:opacity-50">
             {isSearching ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Navigation className="w-5 h-5" />}
           </button>
         </form>
@@ -119,7 +119,8 @@ export default function WalkingZonesPage() {
                 <div><h3 className="text-xl font-bold">{zone.name}</h3><p className="text-stone-400 text-sm">{zone.radius}m de radio</p></div>
                 {isActive && <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest animate-pulse">¡Estás aquí!</span>}
                 <button onClick={(e) => { e.stopPropagation(); togglePrimaryZone(zone.id); }}
-                  className={cn("p-2 rounded-xl transition-all", userProfile?.primary_zone_id === zone.id ? "bg-emerald-100 text-emerald-600" : "bg-stone-100 text-stone-400")}>
+                  aria-label="Zona principal"
+                  className={cn("p-3 rounded-xl transition-all", userProfile?.primary_zone_id === zone.id ? "bg-emerald-100 text-emerald-600" : "bg-stone-100 text-stone-400")}>
                   <CheckCircle2 className="w-5 h-5" />
                 </button>
               </div>

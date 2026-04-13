@@ -17,13 +17,14 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-200 px-6 py-3 flex justify-around items-center z-40">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-200 px-6 flex justify-around items-center z-40" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' , paddingTop: '0.75rem' }}>
       {items.map(item => (
         <button
           key={item.path}
+          aria-label={item.label}
           onClick={() => navigate(item.path)}
           className={cn(
-            "p-2 rounded-xl transition-colors",
+            "p-3 rounded-xl transition-colors",
             path === item.path ? "text-orange-600 bg-orange-50" : "text-stone-400"
           )}
         >
@@ -31,7 +32,8 @@ export default function BottomNav() {
         </button>
       ))}
       <button
-        className="p-2 text-stone-400 relative"
+        aria-label="Notificaciones"
+        className="p-3 text-stone-400 relative"
         onClick={() => {
           if (nearbyAlerts.length > 0) {
             navigate(`/alerts/${nearbyAlerts[0].id}`);

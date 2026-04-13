@@ -1,8 +1,14 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { calculateDistance } from '../utils';
 import type { Pet, Alert, WalkingZone, ZonePresence, UserProfile, Friendship } from '../types';
+
+export interface Toast {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'info';
+}
 
 interface AppContextType {
   user: User | null;
@@ -18,6 +24,7 @@ interface AppContextType {
   friendProfiles: Record<string, UserProfile>;
   primaryZonePresence: ZonePresence[];
   notification: Alert | null;
+  toasts: Toast[];
   setNotification: React.Dispatch<React.SetStateAction<Alert | null>>;
   triggerPanic: (pet: Pet) => Promise<void>;
   resolveAlert: (alert: Alert) => Promise<void>;
@@ -55,6 +62,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [friendProfiles, setFriendProfiles] = useState<Record<string, UserProfile>>({});
   const [primaryZonePresence, setPrimaryZonePresence] = useState<ZonePresence[]>([]);
   const [notification, setNotification] = useState<Alert | null>(null);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const locationRef = useRef(location);
+  useEffect(() => { locationRef.current = location; }, [location]);
+
+  const showToast = useCallback((message: string, type: Toast['type'] = 'info') => {
+    const id = crypto.randomUUID();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+  }, []);
 
   // ── Auth ──
   useEffect(() => {
@@ -98,11 +114,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!user) return;
 
+    let lastDbLat = 0;
+    let lastDbLng = 0;
+    let lastDbTime = 0;
+
     const updateLoc = (pos: GeolocationPosition) => {
       const newLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       setLocation(newLoc);
+
+      // Debounce DB updates: only if moved >50m or >60s elapsed
+      const now = Date.now();
+      const dist = lastDbLat ? calculateDistance(newLoc.lat, newLoc.lng, lastDbLat, lastDbLng) * 1000 : Infinity;
+      if (dist < 50 && now - lastDbTime < 60000) return;
+
+      lastDbLat = newLoc.lat;
+      lastDbLng = newLoc.lng;
+      lastDbTime = now;
+
+      // Round to ~100m precision for privacy before storing in DB
+      const blurredLat = Math.round(newLoc.lat * 1000) / 1000;
+      const blurredLng = Math.round(newLoc.lng * 1000) / 1000;
       supabase.from('profiles').update({
-        last_location: `POINT(${newLoc.lng} ${newLoc.lat})`,
+        last_location: `POINT(${blurredLng} ${blurredLat})`,
         last_location_at: new Date().toISOString(),
       }).eq('id', user.id).then();
     };
@@ -179,7 +212,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         member_count: members?.filter(m => m.zone_id === z.id).length ?? 0,
         is_member: members?.some(m => m.zone_id === z.id && m.user_id === user.id) ?? false,
       }));
-      setWalkingZones(enriched as WalkingZone[]);
+
+      // Filter: show only zones within 2.5km of user, or zones where user is a member
+      const loc = locationRef.current;
+      const filtered = enriched.filter(z => {
+        if (z.is_member) return true;
+        if (!loc) return false;
+        return calculateDistance(loc.lat, loc.lng, z.lat, z.lng) <= 2.5;
+      });
+      setWalkingZones(filtered as WalkingZone[]);
     };
     fetchZones();
 
@@ -324,38 +365,49 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         setLocation(currentLocation);
       } catch {
-        alert("Necesitamos tu ubicación para activar la alerta.");
+        showToast("Necesitamos tu ubicación para activar la alerta.", "error");
         return;
       }
     }
 
     if (!pet.contact_info) {
-      alert("Por favor, edita el perfil de tu mascota para añadir datos de contacto antes de activar la alerta.");
+      showToast("Añade datos de contacto a tu mascota antes de activar la alerta.", "error");
       return;
     }
 
-    await supabase.from('alerts').insert({
-      pet_id: pet.id,
-      owner_id: user.id,
-      pet_name: pet.name,
-      pet_photo: pet.photo_url || '',
-      pet_breed: pet.breed || '',
-      pet_color: pet.color || '',
-      pet_traits: pet.traits || '',
-      owner_contact: pet.contact_info,
-      location: `POINT(${currentLocation.lng} ${currentLocation.lat})`,
-      lat: currentLocation.lat,
-      lng: currentLocation.lng,
-      status: 'active',
-    });
-
-    await supabase.from('pets').update({ is_lost: true }).eq('id', pet.id);
-    alert("¡Alerta activada! Los usuarios cercanos han sido notificados.");
+    try {
+      const { error } = await supabase.from('alerts').insert({
+        pet_id: pet.id,
+        owner_id: user.id,
+        pet_name: pet.name,
+        pet_photo: pet.photo_url || '',
+        pet_breed: pet.breed || '',
+        pet_color: pet.color || '',
+        pet_traits: pet.traits || '',
+        owner_contact: pet.contact_info,
+        location: `POINT(${currentLocation.lng} ${currentLocation.lat})`,
+        lat: currentLocation.lat,
+        lng: currentLocation.lng,
+        status: 'active',
+      });
+      if (error) throw error;
+      await supabase.from('pets').update({ is_lost: true }).eq('id', pet.id);
+      showToast("¡Alerta activada! Los usuarios cercanos han sido notificados.", "success");
+    } catch (err) {
+      console.error("Panic error:", err);
+      showToast("Error al activar la alerta. Inténtalo de nuevo.", "error");
+    }
   };
 
   const resolveAlert = async (a: Alert) => {
-    await supabase.from('alerts').update({ status: 'resolved', resolved_at: new Date().toISOString() }).eq('id', a.id);
-    await supabase.from('pets').update({ is_lost: false }).eq('id', a.pet_id);
+    try {
+      await supabase.from('alerts').update({ status: 'resolved', resolved_at: new Date().toISOString() }).eq('id', a.id);
+      await supabase.from('pets').update({ is_lost: false }).eq('id', a.pet_id);
+      showToast("¡Mascota encontrada! Alerta resuelta.", "success");
+    } catch (err) {
+      console.error("Resolve error:", err);
+      showToast("Error al resolver la alerta.", "error");
+    }
   };
 
   const createWalkingZoneFn = async (name: string, radius: number) => {
@@ -371,6 +423,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     if (data) {
       await supabase.from('zone_members').insert({ zone_id: data.id, user_id: user.id });
+      await fetchZones();
     }
   };
 
@@ -443,7 +496,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     <AppContext.Provider value={{
       user, userProfile, loading, location, pets, activeAlerts, nearbyAlerts,
       walkingZones, currentZoneId, friendships, friendProfiles,
-      primaryZonePresence, notification, setNotification,
+      primaryZonePresence, notification, toasts, setNotification,
       triggerPanic, resolveAlert,
       joinZone: joinZoneFn,
       createWalkingZone: createWalkingZoneFn,

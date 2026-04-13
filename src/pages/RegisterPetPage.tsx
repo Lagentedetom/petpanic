@@ -16,6 +16,10 @@ export default function RegisterPetPage() {
   const [petForm, setPetForm] = useState<Partial<Pet>>({ species: 'perro', is_lost: false, contact_info: '' });
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
   useEffect(() => {
     if (editingPet) {
@@ -28,17 +32,48 @@ export default function RegisterPetPage() {
     }
   }, [editingPet]);
 
+  const compressImage = (file: File, maxSize = 800, quality = 0.8): Promise<Blob> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width, height } = img;
+        if (width > maxSize || height > maxSize) {
+          if (width > height) { height = (height / width) * maxSize; width = maxSize; }
+          else { width = (width / height) * maxSize; height = maxSize; }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', quality);
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
+    setPhotoError(null);
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setPhotoError('Solo se permiten imágenes JPG, PNG o WebP.');
+      e.target.value = '';
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      setPhotoError('La imagen no puede superar los 5MB.');
+      e.target.value = '';
+      return;
+    }
 
     setPhotoPreview(URL.createObjectURL(file));
     setUploading(true);
 
-    const fileExt = file.name.split('.').pop();
-    const filePath = `${user.id}/${petId || crypto.randomUUID()}.${fileExt}`;
+    const compressed = await compressImage(file);
+    const filePath = `${user.id}/${petId || crypto.randomUUID()}.jpg`;
 
-    const { error } = await supabase.storage.from('pet-photos').upload(filePath, file, { upsert: true, contentType: file.type });
+    const { error } = await supabase.storage.from('pet-photos').upload(filePath, compressed, { upsert: true, contentType: 'image/jpeg' });
 
     if (!error) {
       const { data: { publicUrl } } = supabase.storage.from('pet-photos').getPublicUrl(filePath);
@@ -63,7 +98,7 @@ export default function RegisterPetPage() {
   return (
     <motion.div key="register" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/pets')} className="p-2 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
+        <button onClick={() => navigate('/pets')} aria-label="Volver" className="p-3 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
         <h2 className="text-2xl font-bold">{editingPet ? 'Editar Mascota' : 'Registrar Mascota'}</h2>
       </div>
 
@@ -71,11 +106,12 @@ export default function RegisterPetPage() {
         <div className="flex flex-col items-center gap-4 mb-8">
           <div className="relative w-32 h-32 rounded-3xl bg-stone-100 overflow-hidden border-2 border-dashed border-stone-300 flex items-center justify-center">
             {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <Camera className="w-10 h-10 text-stone-300" />}
-            <input type="file" accept="image/*" onChange={handlePhotoChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoChange} className="absolute inset-0 opacity-0 cursor-pointer" />
           </div>
           <span className="text-sm font-medium text-stone-500">
             {uploading ? 'Subiendo...' : photoPreview ? 'Cambiar foto' : 'Subir foto'}
           </span>
+          {photoError && <p className="text-red-500 text-xs font-medium">{photoError}</p>}
         </div>
 
         <div className="grid gap-6">

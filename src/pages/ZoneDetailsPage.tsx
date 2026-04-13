@@ -15,7 +15,10 @@ export default function ZoneDetailsPage() {
   const [zonePresence, setZonePresence] = useState<ZonePresence[]>([]);
 
   useEffect(() => {
-    if (!user || !zoneId) return;
+    if (!user || !zoneId || !selectedZone?.is_member) {
+      setZonePresence([]);
+      return;
+    }
 
     const fetchPresence = async () => {
       const { data } = await supabase.from('zone_presence').select('*')
@@ -32,7 +35,7 @@ export default function ZoneDetailsPage() {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [user, zoneId]);
+  }, [user, zoneId, selectedZone?.is_member]);
 
   if (!selectedZone) {
     return (
@@ -49,7 +52,7 @@ export default function ZoneDetailsPage() {
   return (
     <motion.div key="zone-details" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="space-y-8">
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/zones')} className="p-2 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
+        <button onClick={() => navigate('/zones')} aria-label="Volver" className="p-3 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
         <h2 className="text-2xl font-bold">{selectedZone.name}</h2>
       </div>
 
@@ -58,47 +61,53 @@ export default function ZoneDetailsPage() {
         <h3 className="text-3xl font-black">{zonePresence.length} PERROS PASEANDO</h3>
         <p className="text-stone-400 text-sm">
           {selectedZone.is_member
-            ? "Puedes ver cuántos perros pasean en esta zona. Por privacidad, solo verás los nombres de tus amigos."
-            : "Únete a la zona para ver cuántos perros están paseando."}
+            ? "Por privacidad, solo verás los nombres de tus amigos."
+            : "Únete a la zona para ver quién está paseando."}
         </p>
       </div>
 
-      <div className="space-y-4">
-        <h4 className="text-xs font-bold uppercase tracking-widest text-stone-400 px-2">Presentes ahora</h4>
-        {zonePresence.length === 0 ? (
-          <div className="bg-white p-12 rounded-3xl border border-stone-100 text-center italic text-stone-400">No hay nadie en la zona en este momento.</div>
-        ) : (
-          <div className="grid gap-4">
-            {zonePresence.map(presence => {
-              const isSelf = presence.user_id === user?.id;
-              if (!isSelf && !isFriendOf(presence.user_id)) return null;
-              return (
-                <div key={presence.user_id} className="bg-white p-5 rounded-3xl border border-stone-200 flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-stone-100 overflow-hidden flex-shrink-0">
-                    {presence.user_photo ? (
-                      <img src={presence.user_photo} alt={presence.user_name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center"><UserIcon className="w-6 h-6 text-stone-300" /></div>
-                    )}
+      {selectedZone.is_member ? (
+        <div className="space-y-4">
+          <h4 className="text-xs font-bold uppercase tracking-widest text-stone-400 px-2">Presentes ahora</h4>
+          {zonePresence.length === 0 ? (
+            <div className="bg-white p-12 rounded-3xl border border-stone-100 text-center italic text-stone-400">No hay nadie en la zona en este momento.</div>
+          ) : (
+            <div className="grid gap-4">
+              {zonePresence.map(presence => {
+                const isSelf = presence.user_id === user?.id;
+                if (!isSelf && !isFriendOf(presence.user_id)) return null;
+                return (
+                  <div key={presence.user_id} className="bg-white p-5 rounded-3xl border border-stone-200 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-stone-100 overflow-hidden flex-shrink-0">
+                      {presence.user_photo ? (
+                        <img src={presence.user_photo} alt={presence.user_name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center"><UserIcon className="w-6 h-6 text-stone-300" /></div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="font-bold">{isSelf ? "Tú" : presence.user_name}</h5>
+                      <p className="text-xs text-stone-400">Con: {presence.pet_names.join(', ') || 'Sin mascota'}</p>
+                    </div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
                   </div>
-                  <div className="flex-1">
-                    <h5 className="font-bold">{isSelf ? "Tú" : presence.user_name}</h5>
-                    <p className="text-xs text-stone-400">Con: {presence.pet_names.join(', ') || 'Sin mascota'}</p>
-                  </div>
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+                );
+              })}
+              {zonePresence.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length > 0 && (
+                <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 text-center">
+                  <p className="text-xs text-stone-400 font-medium">
+                    + {zonePresence.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length} paseantes más en la zona. Conéctate como amigo para ver sus nombres.
+                  </p>
                 </div>
-              );
-            })}
-            {zonePresence.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length > 0 && (
-              <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 text-center">
-                <p className="text-xs text-stone-400 font-medium">
-                  + {zonePresence.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length} paseantes más en la zona. Conéctate como amigo para ver sus nombres.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="bg-white p-12 rounded-3xl border border-stone-100 text-center space-y-2">
+          <p className="text-stone-400 italic">Debes ser miembro de esta zona para ver quién está paseando.</p>
+        </div>
+      )}
     </motion.div>
   );
 }

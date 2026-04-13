@@ -1,12 +1,17 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { Dog, Cat, Plus, Bell, AlertCircle, MapPin, ChevronLeft, Edit2, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Dog, Cat, Plus, Bell, AlertCircle, MapPin, ChevronLeft, Edit2, CheckCircle2, X, QrCode } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { useApp } from '../context/AppContext';
 import { calculateDistance, formatDistance } from '../utils';
+import type { Pet } from '../types';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { pets, nearbyAlerts, activeAlerts, location, triggerPanic, resolveAlert } = useApp();
+  const [confirmPanicPet, setConfirmPanicPet] = useState<Pet | null>(null);
+  const [qrPet, setQrPet] = useState<Pet | null>(null);
 
   return (
     <motion.div key="dashboard" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-8">
@@ -37,7 +42,7 @@ export default function DashboardPage() {
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold tracking-tight">Mis Mascotas</h2>
-          <button onClick={() => navigate('/pets/register')} className="bg-stone-900 text-white p-2 rounded-full hover:bg-stone-800 transition-colors"><Plus className="w-6 h-6" /></button>
+          <button onClick={() => navigate('/pets/register')} aria-label="Registrar mascota" className="bg-stone-900 text-white p-3 rounded-full hover:bg-stone-800 transition-colors"><Plus className="w-6 h-6" /></button>
         </div>
 
         {pets.length === 0 ? (
@@ -59,7 +64,10 @@ export default function DashboardPage() {
                         <h3 className="text-xl font-bold">{pet.name}</h3>
                         <span className="px-2 py-0.5 bg-stone-100 text-stone-500 text-xs font-bold rounded-full uppercase tracking-wider">{pet.species}</span>
                       </div>
-                      <button onClick={() => navigate(`/pets/edit/${pet.id}`)} className="p-2 text-stone-400 hover:text-orange-600 transition-colors"><Edit2 className="w-5 h-5" /></button>
+                      <div className="flex gap-1">
+                        <button onClick={() => setQrPet(pet)} aria-label="Ver código QR" className="p-3 text-stone-400 hover:text-orange-600 transition-colors"><QrCode className="w-5 h-5" /></button>
+                        <button onClick={() => navigate(`/pets/edit/${pet.id}`)} aria-label="Editar mascota" className="p-3 text-stone-400 hover:text-orange-600 transition-colors"><Edit2 className="w-5 h-5" /></button>
+                      </div>
                     </div>
                     <p className="text-stone-500 text-sm mb-4">{pet.breed} • {pet.color}</p>
                     {pet.is_lost ? (
@@ -68,7 +76,7 @@ export default function DashboardPage() {
                         <CheckCircle2 className="w-5 h-5" /> ¡Lo encontré!
                       </button>
                     ) : (
-                      <button onClick={() => triggerPanic(pet)}
+                      <button onClick={() => setConfirmPanicPet(pet)}
                         className="w-full bg-red-600 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-red-700 transition-all shadow-lg shadow-red-100">
                         <AlertCircle className="w-5 h-5" /> BOTÓN DEL PÁNICO
                       </button>
@@ -80,6 +88,66 @@ export default function DashboardPage() {
           </div>
         )}
       </section>
+      <AnimatePresence>
+        {confirmPanicPet && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6"
+            onClick={() => setConfirmPanicPet(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                <AlertCircle className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold">¿{confirmPanicPet.name} se ha perdido?</h3>
+              <p className="text-stone-500 text-sm">Se enviará una alerta a todos los usuarios cercanos. Esta acción no se puede deshacer fácilmente.</p>
+              <div className="flex gap-3">
+                <button onClick={() => setConfirmPanicPet(null)}
+                  className="flex-1 py-3 border border-stone-200 rounded-2xl font-bold text-stone-600 hover:bg-stone-50 transition-colors">
+                  Cancelar
+                </button>
+                <button onClick={() => { triggerPanic(confirmPanicPet); setConfirmPanicPet(null); }}
+                  className="flex-1 py-3 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 transition-colors">
+                  Sí, activar alerta
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+        {qrPet && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6"
+            onClick={() => setQrPet(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4"
+              onClick={e => e.stopPropagation()}
+            >
+              <h3 className="text-xl font-bold">QR de {qrPet.name}</h3>
+              <p className="text-stone-500 text-xs">Escanea este código para ver el perfil público de tu mascota. Imprímelo y ponlo en su collar.</p>
+              <div className="flex justify-center py-4">
+                <QRCodeSVG
+                  value={`${window.location.origin}/pet/${qrPet.id}`}
+                  size={200}
+                  level="M"
+                  includeMargin
+                />
+              </div>
+              <p className="text-[10px] text-stone-400 break-all">{window.location.origin}/pet/{qrPet.id}</p>
+              <button onClick={() => setQrPet(null)}
+                className="w-full py-3 border border-stone-200 rounded-2xl font-bold text-stone-600 hover:bg-stone-50 transition-colors">
+                Cerrar
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

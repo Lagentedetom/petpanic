@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
-import { Dog, MapPin, MessageSquare, ChevronLeft, Send } from 'lucide-react';
+import { Dog, MapPin, MessageSquare, ChevronLeft, Send, ImagePlus } from 'lucide-react';
 import { cn } from '../lib/cn';
 import { useApp } from '../context/AppContext';
 import type { Message } from '../types';
@@ -15,6 +15,10 @@ export default function AlertDetailsPage() {
   const selectedAlert = activeAlerts.find(a => a.id === alertId);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const lastSentRef = useRef(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!alertId) return;
@@ -41,14 +45,76 @@ export default function AlertDetailsPage() {
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !alertId || !newMessage.trim()) return;
+    const text = newMessage.trim().slice(0, 500);
+    if (!user || !alertId || !text || isSending) return;
+
+    const now = Date.now();
+    if (now - lastSentRef.current < 3000) return;
+
+    setIsSending(true);
+    lastSentRef.current = now;
     await supabase.from('alert_messages').insert({
       alert_id: alertId,
       sender_id: user.id,
       sender_name: user.user_metadata?.display_name || 'Usuario',
-      text: newMessage,
+      text,
     });
     setNewMessage('');
+    setIsSending(false);
+  };
+
+  const handlePhotoMessage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !alertId || isSending) return;
+
+    const now = Date.now();
+    if (now - lastSentRef.current < 3000) return;
+
+    if (file.size > 5 * 1024 * 1024) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) return;
+
+    setIsUploadingPhoto(true);
+    lastSentRef.current = now;
+
+    try {
+      // Compress
+      const img = new Image();
+      const blob = await new Promise<Blob>((resolve) => {
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let { width, height } = img;
+          const max = 800;
+          if (width > max || height > max) {
+            if (width > height) { height = (height / width) * max; width = max; }
+            else { width = (width / height) * max; height = max; }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((b) => resolve(b!), 'image/jpeg', 0.8);
+        };
+        img.src = URL.createObjectURL(file);
+      });
+
+      const filePath = `alerts/${alertId}/${crypto.randomUUID()}.jpg`;
+      const { error: uploadError } = await supabase.storage.from('pet-photos').upload(filePath, blob, { contentType: 'image/jpeg' });
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage.from('pet-photos').getPublicUrl(filePath);
+
+      await supabase.from('alert_messages').insert({
+        alert_id: alertId,
+        sender_id: user.id,
+        sender_name: user.user_metadata?.display_name || 'Usuario',
+        text: newMessage.trim() || '📷 Foto',
+        image_url: publicUrl,
+      });
+      setNewMessage('');
+    } catch (err) {
+      console.error('Photo upload error:', err);
+    }
+    setIsUploadingPhoto(false);
+    e.target.value = '';
   };
 
   if (!selectedAlert) {
@@ -69,7 +135,7 @@ export default function AlertDetailsPage() {
       className="space-y-6"
     >
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/pets')} className="p-2 bg-white rounded-full shadow-sm border border-stone-200">
+        <button onClick={() => navigate('/pets')} aria-label="Volver" className="p-3 bg-white rounded-full shadow-sm border border-stone-200">
           <ChevronLeft className="w-6 h-6" />
         </button>
         <h2 className="text-2xl font-bold">Detalles de Alerta</h2>
@@ -131,16 +197,25 @@ export default function AlertDetailsPage() {
                 className={cn("max-w-[80%] p-4 rounded-2xl",
                   msg.sender_id === user?.id ? "bg-orange-600 text-white ml-auto rounded-tr-none" : "bg-stone-100 text-stone-800 rounded-tl-none")}>
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-1 opacity-70">{msg.sender_name}</p>
+                {msg.image_url && (
+                  <img src={msg.image_url} alt="Foto adjunta" className="rounded-xl mb-2 max-w-full cursor-pointer" onClick={() => window.open(msg.image_url, '_blank')} referrerPolicy="no-referrer" />
+                )}
                 <p className="text-sm leading-relaxed">{msg.text}</p>
               </div>
             ))}
           </div>
 
           <form onSubmit={sendMessage} className="flex gap-2 pt-4">
-            <input type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)}
+            <input type="text" value={newMessage} onChange={e => setNewMessage(e.target.value.slice(0, 500))}
               placeholder="Escribe algo..."
+              maxLength={500}
               className="flex-1 bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500" />
-            <button type="submit" className="bg-orange-600 text-white p-4 rounded-2xl hover:bg-orange-700 transition-colors">
+            <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoMessage} className="hidden" />
+            <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploadingPhoto}
+              aria-label="Adjuntar foto" className="bg-stone-100 text-stone-500 p-4 rounded-2xl hover:bg-stone-200 transition-colors disabled:opacity-50">
+              <ImagePlus className="w-5 h-5" />
+            </button>
+            <button type="submit" disabled={isSending || !newMessage.trim()} aria-label="Enviar mensaje" className="bg-orange-600 text-white p-4 rounded-2xl hover:bg-orange-700 transition-colors disabled:opacity-50">
               <Send className="w-5 h-5" />
             </button>
           </form>

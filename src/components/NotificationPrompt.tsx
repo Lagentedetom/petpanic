@@ -26,7 +26,7 @@ export default function NotificationPrompt() {
   const handleEnable = async () => {
     if (!user) return;
     setRequesting(true);
-    await requestNotificationPermission(user.uid);
+    await requestNotificationPermission(user.id);
     setRequesting(false);
     setShow(false);
   };
@@ -70,7 +70,7 @@ export default function NotificationPrompt() {
                 </button>
               </div>
             </div>
-            <button onClick={handleDismiss} className="text-stone-500 hover:text-white p-1">
+            <button onClick={handleDismiss} aria-label="Cerrar" className="text-stone-500 hover:text-white p-2">
               <X className="w-4 h-4" />
             </button>
           </div>

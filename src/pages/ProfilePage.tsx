@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { ChevronLeft, Edit2, User as UserIcon, LogOut } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ChevronLeft, Edit2, User as UserIcon, LogOut, Trash2, AlertTriangle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { supabase } from '../lib/supabase';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -11,6 +12,9 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [profileForm, setProfileForm] = useState({ first_name: '', last_name: '', display_name: '' });
   const [isSaving, setIsSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleEdit = () => {
     setProfileForm({ first_name: userProfile?.first_name || '', last_name: userProfile?.last_name || '', display_name: userProfile?.display_name || '' });
@@ -35,10 +39,10 @@ export default function ProfilePage() {
     <motion.div key="profile" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 pb-20">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button onClick={() => { if (isEditing) setIsEditing(false); else navigate('/'); }} className="p-2 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
+          <button onClick={() => { if (isEditing) setIsEditing(false); else navigate('/'); }} aria-label="Volver" className="p-3 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
           <h2 className="text-2xl font-bold">{isEditing ? 'Editar Perfil' : 'Mi Perfil'}</h2>
         </div>
-        {!isEditing && <button onClick={handleEdit} className="p-2 bg-stone-900 text-white rounded-xl shadow-lg shadow-stone-200"><Edit2 className="w-5 h-5" /></button>}
+        {!isEditing && <button onClick={handleEdit} aria-label="Editar perfil" className="p-3 bg-stone-900 text-white rounded-xl shadow-lg shadow-stone-200"><Edit2 className="w-5 h-5" /></button>}
       </div>
 
       <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm space-y-6">
@@ -77,6 +81,59 @@ export default function ProfilePage() {
           </>
         )}
       </div>
+
+      {!isEditing && (
+        <button onClick={() => setShowDeleteConfirm(true)}
+          className="w-full flex items-center justify-center gap-2 text-stone-400 text-xs font-medium hover:text-red-600 transition-colors py-4">
+          <Trash2 className="w-4 h-4" /> Eliminar mi cuenta
+        </button>
+      )}
+
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6"
+            onClick={() => !isDeleting && setShowDeleteConfirm(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                <AlertTriangle className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold">¿Eliminar tu cuenta?</h3>
+              <p className="text-stone-500 text-sm">Esta acción es permanente. Se eliminarán todos tus datos: mascotas, alertas, amigos y zonas de paseo. No se puede deshacer.</p>
+              {deleteError && <p className="text-red-500 text-xs font-medium">{deleteError}</p>}
+              <div className="flex gap-3">
+                <button onClick={() => setShowDeleteConfirm(false)} disabled={isDeleting}
+                  className="flex-1 py-3 border border-stone-200 rounded-2xl font-bold text-stone-600 hover:bg-stone-50 transition-colors disabled:opacity-50">
+                  Cancelar
+                </button>
+                <button disabled={isDeleting} onClick={async () => {
+                  setIsDeleting(true);
+                  setDeleteError(null);
+                  try {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) throw new Error("No hay sesión activa");
+                    const res = await supabase.functions.invoke('delete-account');
+                    if (res.error) throw res.error;
+                    await supabase.auth.signOut();
+                  } catch (err: any) {
+                    setDeleteError(err.message || "Error al eliminar la cuenta");
+                    setIsDeleting(false);
+                  }
+                }}
+                  className="flex-1 py-3 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 transition-colors disabled:opacity-50">
+                  {isDeleting ? 'Eliminando...' : 'Sí, eliminar'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

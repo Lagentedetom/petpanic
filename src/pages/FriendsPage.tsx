@@ -52,7 +52,7 @@ export default function FriendsPage() {
                     <div><p className="font-bold text-sm">{u.display_name}</p><p className="text-xs text-stone-400">{u.email}</p></div>
                   </div>
                   {!friendship ? (
-                    <button onClick={() => sendFriendRequest(u)} className="bg-orange-600 text-white p-2 rounded-xl"><UserPlus className="w-5 h-5" /></button>
+                    <button onClick={() => sendFriendRequest(u)} aria-label="Enviar solicitud" className="bg-orange-600 text-white p-3 rounded-xl"><UserPlus className="w-5 h-5" /></button>
                   ) : <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">{friendship.status === 'pending' ? 'Pendiente' : 'Amigos'}</span>}
                 </div>
               );
@@ -74,8 +74,8 @@ export default function FriendsPage() {
                     <div><p className="font-bold text-sm text-orange-900">{rp?.display_name || 'Nueva solicitud'}</p><p className="text-[10px] text-orange-400">{rp?.email}</p></div>
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => acceptFriendRequest(f)} className="bg-green-600 text-white p-2 rounded-xl"><UserCheck className="w-5 h-5" /></button>
-                    <button onClick={() => declineFriendRequest(f)} className="bg-red-600 text-white p-2 rounded-xl"><UserX className="w-5 h-5" /></button>
+                    <button onClick={() => acceptFriendRequest(f)} aria-label="Aceptar solicitud" className="bg-green-600 text-white p-3 rounded-xl"><UserCheck className="w-5 h-5" /></button>
+                    <button onClick={() => declineFriendRequest(f)} aria-label="Rechazar solicitud" className="bg-red-600 text-white p-3 rounded-xl"><UserX className="w-5 h-5" /></button>
                   </div>
                 </div>
               );
@@ -99,7 +99,7 @@ export default function FriendsPage() {
                     <div className="w-10 h-10 rounded-xl bg-stone-100 overflow-hidden flex items-center justify-center">{fp?.photo_url ? <img src={fp.photo_url} alt={fp.display_name} className="w-full h-full object-cover" /> : <UserIcon className="w-5 h-5 text-stone-400" />}</div>
                     <div><p className="font-bold text-sm">{fp?.display_name || 'Usuario Conectado'}</p><p className="text-xs text-stone-400">{fp?.email}</p></div>
                   </div>
-                  <button onClick={() => declineFriendRequest(f)} className="text-stone-400 p-2"><UserX className="w-5 h-5" /></button>
+                  <button onClick={() => declineFriendRequest(f)} aria-label="Eliminar amigo" className="text-stone-400 hover:text-red-600 hover:bg-red-50 p-3 rounded-xl transition-colors"><UserX className="w-5 h-5" /></button>
                 </div>
               );
             })}

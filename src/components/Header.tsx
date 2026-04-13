@@ -10,7 +10,7 @@ export default function Header() {
         <img src="/petpanic-logo.svg" alt="PetPanic" className="w-8 h-8" />
         <span className="text-xl font-extrabold tracking-tight"><span className="text-stone-900">Pet</span><span className="text-orange-600">Panic</span></span>
       </div>
-      <button onClick={logOut} className="p-2 text-stone-400 hover:text-stone-600">
+      <button onClick={logOut} aria-label="Cerrar sesión" className="p-3 text-stone-400 hover:text-stone-600">
         <LogOut className="w-6 h-6" />
       </button>
     </header>
