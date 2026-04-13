@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Dog, Cat, MapPin, Users, User as UserIcon, AlertCircle, ChevronRight, Settings } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import Onboarding from '../components/Onboarding';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -28,6 +29,9 @@ export default function HomePage() {
             : <UserIcon className="w-full h-full p-2 text-stone-300" />}
         </button>
       </header>
+
+      {/* Onboarding */}
+      <Onboarding />
 
       {/* Alertas cercanas (prioridad máxima) */}
       {nearbyAlerts.length > 0 && (

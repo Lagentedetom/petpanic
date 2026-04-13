@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
-import { Dog, MapPin, MessageSquare, ChevronLeft, Send, ImagePlus } from 'lucide-react';
+import { Dog, MapPin, MessageSquare, ChevronLeft, Send, ImagePlus, Share2 } from 'lucide-react';
 import { cn } from '../lib/cn';
 import { useApp } from '../context/AppContext';
 import type { Message } from '../types';
@@ -138,7 +138,26 @@ export default function AlertDetailsPage() {
         <button onClick={() => navigate('/pets')} aria-label="Volver" className="p-3 bg-white rounded-full shadow-sm border border-stone-200">
           <ChevronLeft className="w-6 h-6" />
         </button>
-        <h2 className="text-2xl font-bold">Detalles de Alerta</h2>
+        <h2 className="text-2xl font-bold flex-1">Detalles de Alerta</h2>
+        <button
+          aria-label="Compartir alerta"
+          onClick={async () => {
+            const shareData = {
+              title: `¡${selectedAlert.pet_name} se ha perdido!`,
+              text: `Ayuda a encontrar a ${selectedAlert.pet_name} (${selectedAlert.pet_breed || selectedAlert.pet_color || 'mascota'}). Contacto: ${selectedAlert.owner_contact}`,
+              url: window.location.href,
+            };
+            if (navigator.share) {
+              await navigator.share(shareData).catch(() => {});
+            } else {
+              await navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
+              alert('Enlace copiado al portapapeles');
+            }
+          }}
+          className="p-3 bg-orange-600 text-white rounded-full shadow-sm hover:bg-orange-700 transition-colors"
+        >
+          <Share2 className="w-5 h-5" />
+        </button>
       </div>
 
       <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">

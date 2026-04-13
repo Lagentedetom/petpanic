@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Dog, Cat, Plus, Bell, AlertCircle, MapPin, ChevronLeft, Edit2, CheckCircle2, X, QrCode } from 'lucide-react';
+import { Dog, Cat, Plus, Bell, AlertCircle, MapPin, ChevronLeft, Edit2, CheckCircle2, X, QrCode, Clock, History } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useApp } from '../context/AppContext';
 import { calculateDistance, formatDistance } from '../utils';
@@ -9,7 +9,7 @@ import type { Pet } from '../types';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const { pets, nearbyAlerts, activeAlerts, location, triggerPanic, resolveAlert } = useApp();
+  const { pets, nearbyAlerts, activeAlerts, resolvedAlerts, location, triggerPanic, resolveAlert } = useApp();
   const [confirmPanicPet, setConfirmPanicPet] = useState<Pet | null>(null);
   const [qrPet, setQrPet] = useState<Pet | null>(null);
 
@@ -88,6 +88,45 @@ export default function DashboardPage() {
           </div>
         )}
       </section>
+
+      {resolvedAlerts.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <History className="w-5 h-5 text-stone-400" />
+            <h2 className="text-lg font-bold tracking-tight">Historial</h2>
+          </div>
+          <div className="grid gap-3">
+            {resolvedAlerts.map(alert => {
+              const createdAt = new Date(alert.created_at);
+              const resolvedAt = alert.resolved_at ? new Date(alert.resolved_at) : null;
+              const durationMin = resolvedAt ? Math.round((resolvedAt.getTime() - createdAt.getTime()) / 60000) : null;
+              const durationText = durationMin !== null
+                ? durationMin < 60 ? `${durationMin} min` : `${Math.round(durationMin / 60)}h ${durationMin % 60}min`
+                : '';
+              return (
+                <div key={alert.id} className="bg-green-50 p-4 rounded-2xl border border-green-100 flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-white overflow-hidden flex-shrink-0 border border-green-200">
+                    {alert.pet_photo
+                      ? <img src={alert.pet_photo} alt={alert.pet_name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      : <Dog className="w-full h-full p-2.5 text-green-300" />}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-sm text-green-900">{alert.pet_name} encontrado/a</p>
+                    <div className="flex items-center gap-2 text-xs text-green-600">
+                      <Clock className="w-3 h-3" />
+                      <span>Encontrado en {durationText}</span>
+                      <span className="text-green-400">·</span>
+                      <span>{createdAt.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}</span>
+                    </div>
+                  </div>
+                  <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       <AnimatePresence>
         {confirmPanicPet && (
           <motion.div

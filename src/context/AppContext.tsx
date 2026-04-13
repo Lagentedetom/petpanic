@@ -17,6 +17,7 @@ interface AppContextType {
   location: { lat: number; lng: number } | null;
   pets: Pet[];
   activeAlerts: Alert[];
+  resolvedAlerts: Alert[];
   nearbyAlerts: Alert[];
   walkingZones: WalkingZone[];
   currentZoneId: string | null;
@@ -56,6 +57,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
   const [activeAlerts, setActiveAlerts] = useState<Alert[]>([]);
+  const [resolvedAlerts, setResolvedAlerts] = useState<Alert[]>([]);
   const [walkingZones, setWalkingZones] = useState<WalkingZone[]>([]);
   const [currentZoneId, setCurrentZoneId] = useState<string | null>(null);
   const [friendships, setFriendships] = useState<Friendship[]>([]);
@@ -184,6 +186,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const fetchAlerts = async () => {
       const { data } = await supabase.from('alerts').select('*').eq('status', 'active').order('created_at', { ascending: false });
       setActiveAlerts((data ?? []) as Alert[]);
+      const { data: resolved } = await supabase.from('alerts').select('*').eq('status', 'resolved').eq('owner_id', user.id).order('resolved_at', { ascending: false }).limit(20);
+      setResolvedAlerts((resolved ?? []) as Alert[]);
     };
     fetchAlerts();
 
@@ -494,7 +498,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{
-      user, userProfile, loading, location, pets, activeAlerts, nearbyAlerts,
+      user, userProfile, loading, location, pets, activeAlerts, resolvedAlerts, nearbyAlerts,
       walkingZones, currentZoneId, friendships, friendProfiles,
       primaryZonePresence, notification, toasts, setNotification,
       triggerPanic, resolveAlert,

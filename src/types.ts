@@ -36,6 +36,7 @@ export interface Alert {
   lng: number;
   status: 'active' | 'resolved';
   created_at: string;
+  resolved_at?: string;
 }
 
 export interface Message {
