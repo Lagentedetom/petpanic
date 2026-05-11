@@ -1,12 +1,26 @@
+export type SubscriptionTier = 'free' | 'social';
+export type SubscriptionStatus = 'trialing' | 'active' | 'canceled' | 'expired';
+export type SubscriptionInterval = 'month' | 'year';
+
 export interface UserProfile {
   id: string;
-  email: string;
+  // email + first_name + last_name are only present when reading own row
+  // (RLS allows full self-read). For OTHER users we read via public_profiles
+  // which exposes only the four fields below — so these are optional.
+  email?: string;
   display_name: string;
   first_name?: string;
   last_name?: string;
   photo_url: string;
   friend_code?: string;
   primary_zone_id?: string;
+  subscription_tier?: SubscriptionTier;
+  subscription_status?: SubscriptionStatus;
+  subscription_interval?: SubscriptionInterval | null;
+  trial_ends_at?: string | null;
+  current_period_end?: string | null;
+  stripe_customer_id?: string | null;
+  stripe_subscription_id?: string | null;
 }
 
 export interface Pet {
