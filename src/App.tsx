@@ -26,6 +26,9 @@ const PlanPage = lazy(() => import('./pages/PlanPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const PublicPetPage = lazy(() => import('./pages/PublicPetPage'));
+const ProtectorasAltaPage = lazy(() => import('./pages/ProtectorasAltaPage'));
+const ProtectorasConfirmarPage = lazy(() => import('./pages/ProtectorasConfirmarPage'));
+const ProtectorasBajaPage = lazy(() => import('./pages/ProtectorasBajaPage'));
 
 function PageLoader() {
   return (
@@ -55,6 +58,9 @@ function AppRoutes() {
   if (location.pathname === '/terminos') return <Suspense fallback={<PageLoader />}><TermsPage /></Suspense>;
   if (location.pathname === '/privacidad') return <Suspense fallback={<PageLoader />}><PrivacyPage /></Suspense>;
   if (location.pathname.startsWith('/pet/')) return <Suspense fallback={<PageLoader />}><Routes><Route path="/pet/:petId" element={<PublicPetPage />} /></Routes></Suspense>;
+  if (location.pathname === '/protectoras' || location.pathname === '/protectoras/alta') return <Suspense fallback={<PageLoader />}><ProtectorasAltaPage /></Suspense>;
+  if (location.pathname === '/protectoras/confirmar') return <Suspense fallback={<PageLoader />}><ProtectorasConfirmarPage /></Suspense>;
+  if (location.pathname === '/protectoras/baja') return <Suspense fallback={<PageLoader />}><ProtectorasBajaPage /></Suspense>;
 
   if (loading) {
     return (
