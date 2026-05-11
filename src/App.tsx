@@ -1,11 +1,13 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'motion/react';
+import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { AnimatePresence, MotionConfig } from 'motion/react';
 import { AppProvider, useApp } from './context/AppContext';
+import { onDeepLink } from './lib/native';
 import Header from './components/Header';
 import BottomNav from './components/BottomNav';
 import NotificationToast from './components/NotificationToast';
 import NotificationPrompt from './components/NotificationPrompt';
+import TrialBanner from './components/TrialBanner';
 import CookieBanner from './components/CookieBanner';
 import ErrorBoundary from './components/ErrorBoundary';
 import ToastContainer from './components/ToastContainer';
@@ -20,6 +22,7 @@ const WalkingZonesPage = lazy(() => import('./pages/WalkingZonesPage'));
 const ZoneDetailsPage = lazy(() => import('./pages/ZoneDetailsPage'));
 const FriendsPage = lazy(() => import('./pages/FriendsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const PlanPage = lazy(() => import('./pages/PlanPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const PublicPetPage = lazy(() => import('./pages/PublicPetPage'));
@@ -35,6 +38,18 @@ function PageLoader() {
 function AppRoutes() {
   const { user, loading } = useApp();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Capacitor deep-link bridge. When a Universal Link / App Link fires
+  // app.petpanic.es/pet/<id>, this listener forwards the path to React Router
+  // so we end up on the right page inside the native shell. No-op on web
+  // (regular routing handles it).
+  useEffect(() => {
+    const unsubscribe = onDeepLink((path) => {
+      navigate(path, { replace: false });
+    });
+    return unsubscribe;
+  }, [navigate]);
 
   // Public pages (accessible without login)
   if (location.pathname === '/terminos') return <Suspense fallback={<PageLoader />}><TermsPage /></Suspense>;
@@ -55,9 +70,17 @@ function AppRoutes() {
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 pb-20">
+      {/* Skip-to-content for keyboard / screen-reader users (a11y) */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-orange-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-xl focus:font-bold focus:shadow-lg"
+      >
+        Saltar al contenido
+      </a>
       <NotificationToast />
+      <TrialBanner />
       <Header />
-      <main className="max-w-2xl mx-auto p-6">
+      <main id="main" className="max-w-2xl mx-auto p-6">
         <Suspense fallback={<PageLoader />}>
           <AnimatePresence mode="wait">
             <Routes>
@@ -70,6 +93,7 @@ function AppRoutes() {
               <Route path="/zones/:zoneId" element={<ZoneDetailsPage />} />
               <Route path="/friends" element={<FriendsPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/plan" element={<PlanPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </AnimatePresence>
@@ -84,13 +108,16 @@ function AppRoutes() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
-        <AppProvider>
-          <AppRoutes />
-          <ToastContainer />
-          <CookieBanner />
-        </AppProvider>
-      </BrowserRouter>
+      {/* MotionConfig: respect users' OS-level reduced-motion preference (a11y) */}
+      <MotionConfig reducedMotion="user">
+        <BrowserRouter>
+          <AppProvider>
+            <AppRoutes />
+            <ToastContainer />
+            <CookieBanner />
+          </AppProvider>
+        </BrowserRouter>
+      </MotionConfig>
     </ErrorBoundary>
   );
 }
