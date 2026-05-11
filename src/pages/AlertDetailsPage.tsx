@@ -5,14 +5,38 @@ import { supabase } from '../lib/supabase';
 import { Dog, MapPin, MessageSquare, ChevronLeft, Send, ImagePlus, Share2 } from 'lucide-react';
 import { cn } from '../lib/cn';
 import { useApp } from '../context/AppContext';
-import type { Message } from '../types';
+import { safeUuid } from '../utils';
+import type { Message, Alert } from '../types';
 
 export default function AlertDetailsPage() {
   const navigate = useNavigate();
   const { alertId } = useParams();
-  const { activeAlerts, user } = useApp();
+  const { activeAlerts, user, showToast } = useApp();
 
-  const selectedAlert = activeAlerts.find(a => a.id === alertId);
+  // ME-04 fix: deep links from push notifications can point to alerts that
+  // have been resolved by the time the user taps. activeAlerts only holds
+  // current ones, so we'd 404 the user. Fall back to a direct fetch by id
+  // (RLS allows owner-of-resolved + active-for-anyone via `alerts_select`).
+  const [fallbackAlert, setFallbackAlert] = useState<Alert | null>(null);
+  const [isLoadingAlert, setIsLoadingAlert] = useState(true);
+
+  const inActive = activeAlerts.find(a => a.id === alertId);
+  const selectedAlert: Alert | undefined = inActive ?? fallbackAlert ?? undefined;
+
+  useEffect(() => {
+    if (!alertId) { setIsLoadingAlert(false); return; }
+    if (inActive) { setIsLoadingAlert(false); return; }
+
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase.from('alerts').select('*').eq('id', alertId).maybeSingle();
+      if (cancelled) return;
+      setFallbackAlert((data ?? null) as Alert | null);
+      setIsLoadingAlert(false);
+    })();
+    return () => { cancelled = true; };
+  }, [alertId, inActive?.id]);
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -96,7 +120,7 @@ export default function AlertDetailsPage() {
         img.src = URL.createObjectURL(file);
       });
 
-      const filePath = `alerts/${alertId}/${crypto.randomUUID()}.jpg`;
+      const filePath = `alerts/${alertId}/${safeUuid()}.jpg`;
       const { error: uploadError } = await supabase.storage.from('pet-photos').upload(filePath, blob, { contentType: 'image/jpeg' });
       if (uploadError) throw uploadError;
 
@@ -117,14 +141,24 @@ export default function AlertDetailsPage() {
     e.target.value = '';
   };
 
+  if (isLoadingAlert) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500" />
+      </div>
+    );
+  }
+
   if (!selectedAlert) {
     return (
       <div className="text-center py-20 text-stone-400">
-        <p>Alerta no encontrada o ya resuelta.</p>
+        <p>Alerta no encontrada.</p>
         <button onClick={() => navigate('/pets')} className="text-orange-600 font-bold mt-4">Volver</button>
       </div>
     );
   }
+
+  const isResolved = selectedAlert.status === 'resolved';
 
   return (
     <motion.div
@@ -151,7 +185,7 @@ export default function AlertDetailsPage() {
               await navigator.share(shareData).catch(() => {});
             } else {
               await navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
-              alert('Enlace copiado al portapapeles');
+              showToast('Enlace copiado al portapapeles', 'success');
             }
           }}
           className="p-3 bg-orange-600 text-white rounded-full shadow-sm hover:bg-orange-700 transition-colors"
@@ -160,11 +194,17 @@ export default function AlertDetailsPage() {
         </button>
       </div>
 
+      {isResolved && (
+        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-emerald-800 text-sm">
+          <strong className="font-bold">Alerta resuelta.</strong> Esta mascota ha sido encontrada. La página se mantiene como referencia, pero el chat ya no acepta nuevos mensajes.
+        </div>
+      )}
+
       <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-stone-100 flex items-center gap-4">
           <div className="w-20 h-20 rounded-2xl bg-stone-100 overflow-hidden border border-stone-100">
             {selectedAlert.pet_photo ? (
-              <img src={selectedAlert.pet_photo} alt={selectedAlert.pet_name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <img src={selectedAlert.pet_photo} alt={selectedAlert.pet_name} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center"><Dog className="w-10 h-10 text-stone-300" /></div>
             )}
@@ -213,31 +253,38 @@ export default function AlertDetailsPage() {
               <p className="text-center text-stone-400 py-10 italic">No hay mensajes aún. ¡Ayuda a encontrarlo!</p>
             ) : messages.map(msg => (
               <div key={msg.id}
-                className={cn("max-w-[80%] p-4 rounded-2xl",
+                className={cn("max-w-[80%] p-4 rounded-2xl break-words",
                   msg.sender_id === user?.id ? "bg-orange-600 text-white ml-auto rounded-tr-none" : "bg-stone-100 text-stone-800 rounded-tl-none")}>
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-1 opacity-70">{msg.sender_name}</p>
                 {msg.image_url && (
-                  <img src={msg.image_url} alt="Foto adjunta" className="rounded-xl mb-2 max-w-full cursor-pointer" onClick={() => window.open(msg.image_url, '_blank')} referrerPolicy="no-referrer" />
+                  <img src={msg.image_url} alt="Foto adjunta" className="rounded-xl mb-2 max-w-full cursor-pointer" onClick={() => window.open(msg.image_url, '_blank')} />
                 )}
                 <p className="text-sm leading-relaxed">{msg.text}</p>
               </div>
             ))}
           </div>
 
-          <form onSubmit={sendMessage} className="flex gap-2 pt-4">
-            <input type="text" value={newMessage} onChange={e => setNewMessage(e.target.value.slice(0, 500))}
-              placeholder="Escribe algo..."
-              maxLength={500}
-              className="flex-1 bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500" />
-            <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoMessage} className="hidden" />
-            <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploadingPhoto}
-              aria-label="Adjuntar foto" className="bg-stone-100 text-stone-500 p-4 rounded-2xl hover:bg-stone-200 transition-colors disabled:opacity-50">
-              <ImagePlus className="w-5 h-5" />
-            </button>
-            <button type="submit" disabled={isSending || !newMessage.trim()} aria-label="Enviar mensaje" className="bg-orange-600 text-white p-4 rounded-2xl hover:bg-orange-700 transition-colors disabled:opacity-50">
-              <Send className="w-5 h-5" />
-            </button>
-          </form>
+          {!isResolved ? (
+            <form onSubmit={sendMessage} className="flex gap-2 pt-4">
+              <label htmlFor="alert-message" className="sr-only">Mensaje</label>
+              <input id="alert-message" type="text" value={newMessage} onChange={e => setNewMessage(e.target.value.slice(0, 500))}
+                placeholder="Escribe algo..."
+                maxLength={500}
+                className="flex-1 bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500" />
+              <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoMessage} className="hidden" />
+              <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploadingPhoto}
+                aria-label="Adjuntar foto" className="bg-stone-100 text-stone-500 p-4 rounded-2xl hover:bg-stone-200 transition-colors disabled:opacity-50">
+                <ImagePlus className="w-5 h-5" />
+              </button>
+              <button type="submit" disabled={isSending || !newMessage.trim()} aria-label="Enviar mensaje" className="bg-orange-600 text-white p-4 rounded-2xl hover:bg-orange-700 transition-colors disabled:opacity-50">
+                <Send className="w-5 h-5" />
+              </button>
+            </form>
+          ) : (
+            <div className="pt-4 text-center text-xs text-stone-400 italic">
+              El chat se cerró cuando se resolvió la alerta.
+            </div>
+          )}
         </div>
       </div>
     </motion.div>

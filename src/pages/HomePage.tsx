@@ -69,7 +69,7 @@ export default function HomePage() {
         <div className="flex-1">
           <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400">Mis Mascotas</p>
           {pets.length > 0 ? (
-            <p className="font-bold text-stone-900">{pets.map(p => p.name).join(', ')}</p>
+            <p className="font-bold text-stone-900 truncate">{pets.map(p => p.name).join(', ')}</p>
           ) : (
             <p className="text-stone-400 text-sm">Registra tu primera mascota</p>
           )}

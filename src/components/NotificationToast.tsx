@@ -15,7 +15,7 @@ export default function NotificationToast() {
           <div className="bg-red-600 text-white p-4 rounded-3xl shadow-2xl flex items-center gap-4 pointer-events-auto cursor-pointer border-2 border-red-500/50 backdrop-blur-sm"
             onClick={() => { navigate(`/alerts/${notification.id}`); setNotification(null); }}>
             <div className="w-12 h-12 rounded-2xl bg-white/20 flex-shrink-0 flex items-center justify-center overflow-hidden">
-              {notification.pet_photo ? <img src={notification.pet_photo} alt={notification.pet_name} className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <Dog className="w-6 h-6 text-white" />}
+              {notification.pet_photo ? <img src={notification.pet_photo} alt={notification.pet_name} className="w-full h-full object-cover" /> : <Dog className="w-6 h-6 text-white" />}
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-0.5">

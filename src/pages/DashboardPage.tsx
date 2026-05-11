@@ -23,7 +23,7 @@ export default function DashboardPage() {
               <motion.div key={alert.id} whileHover={{ scale: 1.02 }} onClick={() => navigate(`/alerts/${alert.id}`)}
                 className="bg-red-50 border-2 border-red-100 rounded-3xl p-5 flex items-center gap-4 cursor-pointer">
                 <div className="w-16 h-16 rounded-2xl bg-white overflow-hidden flex-shrink-0 border border-red-200">
-                  {alert.pet_photo ? <img src={alert.pet_photo} alt={alert.pet_name} className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <div className="w-full h-full flex items-center justify-center bg-stone-100"><Dog className="w-8 h-8 text-stone-300" /></div>}
+                  {alert.pet_photo ? <img src={alert.pet_photo} alt={alert.pet_name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center bg-stone-100"><Dog className="w-8 h-8 text-stone-300" /></div>}
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-red-900 text-lg">¡{alert.pet_name} se ha perdido!</h3>
@@ -56,13 +56,13 @@ export default function DashboardPage() {
               <div key={pet.id} className="bg-white rounded-3xl shadow-sm border border-stone-200 overflow-hidden">
                 <div className="p-6 flex items-start gap-6">
                   <div className="w-24 h-24 rounded-2xl bg-stone-100 overflow-hidden flex-shrink-0 border border-stone-100">
-                    {pet.photo_url ? <img src={pet.photo_url} alt={pet.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <div className="w-full h-full flex items-center justify-center">{pet.species === 'perro' ? <Dog className="w-12 h-12 text-stone-300" /> : <Cat className="w-12 h-12 text-stone-300" />}</div>}
+                    {pet.photo_url ? <img src={pet.photo_url} alt={pet.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center">{pet.species === 'perro' ? <Dog className="w-12 h-12 text-stone-300" /> : <Cat className="w-12 h-12 text-stone-300" />}</div>}
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-xl font-bold">{pet.name}</h3>
-                        <span className="px-2 py-0.5 bg-stone-100 text-stone-500 text-xs font-bold rounded-full uppercase tracking-wider">{pet.species}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1 gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <h3 className="text-xl font-bold truncate">{pet.name}</h3>
+                        <span className="px-2 py-0.5 bg-stone-100 text-stone-500 text-xs font-bold rounded-full uppercase tracking-wider flex-shrink-0">{pet.species}</span>
                       </div>
                       <div className="flex gap-1">
                         <button onClick={() => setQrPet(pet)} aria-label="Ver código QR" className="p-3 text-stone-400 hover:text-orange-600 transition-colors"><QrCode className="w-5 h-5" /></button>
@@ -107,7 +107,7 @@ export default function DashboardPage() {
                 <div key={alert.id} className="bg-green-50 p-4 rounded-2xl border border-green-100 flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-white overflow-hidden flex-shrink-0 border border-green-200">
                     {alert.pet_photo
-                      ? <img src={alert.pet_photo} alt={alert.pet_name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      ? <img src={alert.pet_photo} alt={alert.pet_name} className="w-full h-full object-cover" />
                       : <Dog className="w-full h-full p-2.5 text-green-300" />}
                   </div>
                   <div className="flex-1">
@@ -131,19 +131,23 @@ export default function DashboardPage() {
         {confirmPanicPet && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6"
+            className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-6"
             onClick={() => setConfirmPanicPet(null)}
           >
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="panic-confirm-title"
+              aria-describedby="panic-confirm-desc"
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
               className="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4"
               onClick={e => e.stopPropagation()}
             >
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-                <AlertCircle className="w-8 h-8 text-red-600" />
+                <AlertCircle aria-hidden="true" className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-xl font-bold">¿{confirmPanicPet.name} se ha perdido?</h3>
-              <p className="text-stone-500 text-sm">Se enviará una alerta a todos los usuarios cercanos. Esta acción no se puede deshacer fácilmente.</p>
+              <h3 id="panic-confirm-title" className="text-xl font-bold">¿{confirmPanicPet.name} se ha perdido?</h3>
+              <p id="panic-confirm-desc" className="text-stone-500 text-sm">Se enviará una alerta a todos los usuarios cercanos. Esta acción no se puede deshacer fácilmente.</p>
               <div className="flex gap-3">
                 <button onClick={() => setConfirmPanicPet(null)}
                   className="flex-1 py-3 border border-stone-200 rounded-2xl font-bold text-stone-600 hover:bg-stone-50 transition-colors">
@@ -160,15 +164,18 @@ export default function DashboardPage() {
         {qrPet && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6"
+            className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-6"
             onClick={() => setQrPet(null)}
           >
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="qr-pet-title"
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
               className="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4"
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="text-xl font-bold">QR de {qrPet.name}</h3>
+              <h3 id="qr-pet-title" className="text-xl font-bold">QR de {qrPet.name}</h3>
               <p className="text-stone-500 text-xs">Escanea este código para ver el perfil público de tu mascota. Imprímelo y ponlo en su collar.</p>
               <div className="flex justify-center py-4">
                 <QRCodeSVG

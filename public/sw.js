@@ -69,8 +69,17 @@ self.addEventListener('notificationclick', (event) => {
   const url = event.notification.data?.url || '/';
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(wins => {
+      // HI-09 fix: use parsed URL.origin equality, not String.includes.
+      // String.includes would match a hostile window at e.g.
+      // "https://attacker.com/?u=https://app.petpanic.es/" and call w.navigate
+      // on it. Origin comparison is the only correct same-origin check.
       for (const w of wins) {
-        if (w.url.includes(self.location.origin)) { w.navigate(url); return w.focus(); }
+        try {
+          if (new URL(w.url).origin === self.location.origin) {
+            w.navigate(url);
+            return w.focus();
+          }
+        } catch (_) { /* invalid URL, skip */ }
       }
       return clients.openWindow(url);
     })

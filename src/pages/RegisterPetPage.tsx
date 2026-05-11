@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { ChevronLeft, Camera } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { supabase } from '../lib/supabase';
+import { safeUuid } from '../utils';
 import type { Pet } from '../types';
 
 export default function RegisterPetPage() {
@@ -71,7 +72,7 @@ export default function RegisterPetPage() {
     setUploading(true);
 
     const compressed = await compressImage(file);
-    const filePath = `${user.id}/${petId || crypto.randomUUID()}.jpg`;
+    const filePath = `${user.id}/${petId || safeUuid()}.jpg`;
 
     const { error } = await supabase.storage.from('pet-photos').upload(filePath, compressed, { upsert: true, contentType: 'image/jpeg' });
 
@@ -105,7 +106,7 @@ export default function RegisterPetPage() {
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-3xl border border-stone-200 shadow-sm">
         <div className="flex flex-col items-center gap-4 mb-8">
           <div className="relative w-32 h-32 rounded-3xl bg-stone-100 overflow-hidden border-2 border-dashed border-stone-300 flex items-center justify-center">
-            {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <Camera className="w-10 h-10 text-stone-300" />}
+            {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" /> : <Camera className="w-10 h-10 text-stone-300" />}
             <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoChange} className="absolute inset-0 opacity-0 cursor-pointer" />
           </div>
           <span className="text-sm font-medium text-stone-500">
@@ -116,38 +117,38 @@ export default function RegisterPetPage() {
 
         <div className="grid gap-6">
           <div className="space-y-2">
-            <label className="text-sm font-bold uppercase tracking-wider text-stone-500">Nombre</label>
-            <input required type="text" value={petForm.name || ''} onChange={e => setPetForm(prev => ({ ...prev, name: e.target.value }))}
+            <label htmlFor="pet-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">Nombre</label>
+            <input id="pet-name" required type="text" value={petForm.name || ''} onChange={e => setPetForm(prev => ({ ...prev, name: e.target.value }))}
               className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Ej: Max" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-bold uppercase tracking-wider text-stone-500">Especie</label>
-              <select value={petForm.species} onChange={e => setPetForm(prev => ({ ...prev, species: e.target.value as any }))}
-                className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none">
+              <label htmlFor="pet-species" className="text-sm font-bold uppercase tracking-wider text-stone-500">Especie</label>
+              <select id="pet-species" value={petForm.species} onChange={e => setPetForm(prev => ({ ...prev, species: e.target.value as Pet['species'] }))}
+                className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500">
                 <option value="perro">Perro</option><option value="gato">Gato</option><option value="otro">Otro</option>
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-bold uppercase tracking-wider text-stone-500">Raza</label>
-              <input type="text" value={petForm.breed || ''} onChange={e => setPetForm(prev => ({ ...prev, breed: e.target.value }))}
-                className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none" placeholder="Ej: Labrador" />
+              <label htmlFor="pet-breed" className="text-sm font-bold uppercase tracking-wider text-stone-500">Raza</label>
+              <input id="pet-breed" type="text" value={petForm.breed || ''} onChange={e => setPetForm(prev => ({ ...prev, breed: e.target.value }))}
+                className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500" placeholder="Ej: Labrador" />
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-bold uppercase tracking-wider text-stone-500">Color</label>
-            <input type="text" value={petForm.color || ''} onChange={e => setPetForm(prev => ({ ...prev, color: e.target.value }))}
-              className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none" placeholder="Ej: Marrón y blanco" />
+            <label htmlFor="pet-color" className="text-sm font-bold uppercase tracking-wider text-stone-500">Color</label>
+            <input id="pet-color" type="text" value={petForm.color || ''} onChange={e => setPetForm(prev => ({ ...prev, color: e.target.value }))}
+              className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500" placeholder="Ej: Marrón y blanco" />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-bold uppercase tracking-wider text-stone-500">Características / Carácter</label>
-            <textarea value={petForm.traits || ''} onChange={e => setPetForm(prev => ({ ...prev, traits: e.target.value }))}
-              className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none min-h-[100px]" placeholder="Ej: Se asusta fácilmente, es muy cariñoso..." />
+            <label htmlFor="pet-traits" className="text-sm font-bold uppercase tracking-wider text-stone-500">Características / Carácter</label>
+            <textarea id="pet-traits" value={petForm.traits || ''} onChange={e => setPetForm(prev => ({ ...prev, traits: e.target.value }))}
+              className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500 min-h-[100px]" placeholder="Ej: Se asusta fácilmente, es muy cariñoso..." />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-bold uppercase tracking-wider text-stone-500">Datos de Contacto (Privados)</label>
-            <input required type="text" value={petForm.contact_info || ''} onChange={e => setPetForm(prev => ({ ...prev, contact_info: e.target.value }))}
-              className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none" placeholder="Ej: Teléfono 600 000 000" />
+            <label htmlFor="pet-contact" className="text-sm font-bold uppercase tracking-wider text-stone-500">Datos de Contacto (Privados)</label>
+            <input id="pet-contact" required type="text" value={petForm.contact_info || ''} onChange={e => setPetForm(prev => ({ ...prev, contact_info: e.target.value }))}
+              className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500" placeholder="Ej: Teléfono 600 000 000" />
             <p className="text-[10px] text-stone-400">Estos datos solo se compartirán con usuarios cercanos si activas el botón del pánico.</p>
           </div>
         </div>

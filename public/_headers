@@ -1,0 +1,8 @@
+# Universal Links files MUST be served as application/json with no
+# Content-Disposition. Netlify serves them as text/plain by default,
+# which makes iOS reject the AASA file.
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+
+/.well-known/assetlinks.json
+  Content-Type: application/json

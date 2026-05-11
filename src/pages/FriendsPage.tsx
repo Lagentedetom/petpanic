@@ -46,14 +46,14 @@ export default function FriendsPage() {
             {foundUsers.map(u => {
               const friendship = friendships.find(f => f.requester_id === u.id || f.addressee_id === u.id);
               return (
-                <div key={u.id} className="bg-white p-4 rounded-2xl border border-stone-200 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-stone-100 overflow-hidden">{u.photo_url ? <img src={u.photo_url} alt={u.display_name} className="w-full h-full object-cover" /> : <UserIcon className="w-full h-full p-2 text-stone-300" />}</div>
-                    <div><p className="font-bold text-sm">{u.display_name}</p><p className="text-xs text-stone-400">{u.email}</p></div>
+                <div key={u.id} className="bg-white p-4 rounded-2xl border border-stone-200 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-10 h-10 rounded-xl bg-stone-100 overflow-hidden flex-shrink-0">{u.photo_url ? <img src={u.photo_url} alt={u.display_name} className="w-full h-full object-cover" /> : <UserIcon className="w-full h-full p-2 text-stone-300" />}</div>
+                    <div className="min-w-0 flex-1"><p className="font-bold text-sm truncate">{u.display_name}</p>{u.friend_code && <p className="text-xs text-stone-400 truncate">Código: {u.friend_code}</p>}</div>
                   </div>
                   {!friendship ? (
-                    <button onClick={() => sendFriendRequest(u)} aria-label="Enviar solicitud" className="bg-orange-600 text-white p-3 rounded-xl"><UserPlus className="w-5 h-5" /></button>
-                  ) : <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">{friendship.status === 'pending' ? 'Pendiente' : 'Amigos'}</span>}
+                    <button onClick={() => sendFriendRequest(u)} aria-label={`Enviar solicitud a ${u.display_name}`} className="bg-orange-600 text-white p-3 rounded-xl flex-shrink-0"><UserPlus className="w-5 h-5" /></button>
+                  ) : <span className="text-xs font-bold text-stone-400 uppercase tracking-widest flex-shrink-0">{friendship.status === 'pending' ? 'Pendiente' : 'Amigos'}</span>}
                 </div>
               );
             })}
@@ -68,14 +68,14 @@ export default function FriendsPage() {
             {friendships.filter(f => f.status === 'pending' && f.requester_id !== user?.id).map(f => {
               const rp = friendProfiles[f.requester_id];
               return (
-                <div key={f.id} className="bg-orange-50 p-4 rounded-2xl border border-orange-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-white overflow-hidden flex items-center justify-center">{rp?.photo_url ? <img src={rp.photo_url} alt={rp.display_name} className="w-full h-full object-cover" /> : <Clock className="w-5 h-5 text-orange-400" />}</div>
-                    <div><p className="font-bold text-sm text-orange-900">{rp?.display_name || 'Nueva solicitud'}</p><p className="text-[10px] text-orange-400">{rp?.email}</p></div>
+                <div key={f.id} className="bg-orange-50 p-4 rounded-2xl border border-orange-100 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-10 h-10 rounded-xl bg-white overflow-hidden flex items-center justify-center flex-shrink-0">{rp?.photo_url ? <img src={rp.photo_url} alt={rp.display_name} className="w-full h-full object-cover" /> : <Clock className="w-5 h-5 text-orange-400" />}</div>
+                    <div className="min-w-0 flex-1"><p className="font-bold text-sm text-orange-900 truncate">{rp?.display_name || 'Nueva solicitud'}</p>{rp?.friend_code && <p className="text-[10px] text-orange-400 truncate">Código: {rp.friend_code}</p>}</div>
                   </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => acceptFriendRequest(f)} aria-label="Aceptar solicitud" className="bg-green-600 text-white p-3 rounded-xl"><UserCheck className="w-5 h-5" /></button>
-                    <button onClick={() => declineFriendRequest(f)} aria-label="Rechazar solicitud" className="bg-red-600 text-white p-3 rounded-xl"><UserX className="w-5 h-5" /></button>
+                  <div className="flex gap-2 flex-shrink-0">
+                    <button onClick={() => acceptFriendRequest(f)} aria-label={`Aceptar solicitud de ${rp?.display_name || 'usuario'}`} className="bg-emerald-600 text-white p-3 rounded-xl"><UserCheck className="w-5 h-5" /></button>
+                    <button onClick={() => declineFriendRequest(f)} aria-label={`Rechazar solicitud de ${rp?.display_name || 'usuario'}`} className="bg-red-600 text-white p-3 rounded-xl"><UserX className="w-5 h-5" /></button>
                   </div>
                 </div>
               );
@@ -94,12 +94,12 @@ export default function FriendsPage() {
               const fid = getFriendId(f);
               const fp = friendProfiles[fid];
               return (
-                <div key={f.id} className="bg-white p-4 rounded-2xl border border-stone-200 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-stone-100 overflow-hidden flex items-center justify-center">{fp?.photo_url ? <img src={fp.photo_url} alt={fp.display_name} className="w-full h-full object-cover" /> : <UserIcon className="w-5 h-5 text-stone-400" />}</div>
-                    <div><p className="font-bold text-sm">{fp?.display_name || 'Usuario Conectado'}</p><p className="text-xs text-stone-400">{fp?.email}</p></div>
+                <div key={f.id} className="bg-white p-4 rounded-2xl border border-stone-200 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-10 h-10 rounded-xl bg-stone-100 overflow-hidden flex items-center justify-center flex-shrink-0">{fp?.photo_url ? <img src={fp.photo_url} alt={fp.display_name} className="w-full h-full object-cover" /> : <UserIcon className="w-5 h-5 text-stone-400" />}</div>
+                    <div className="min-w-0 flex-1"><p className="font-bold text-sm truncate">{fp?.display_name || 'Usuario Conectado'}</p>{fp?.friend_code && <p className="text-xs text-stone-400 truncate">Código: {fp.friend_code}</p>}</div>
                   </div>
-                  <button onClick={() => declineFriendRequest(f)} aria-label="Eliminar amigo" className="text-stone-400 hover:text-red-600 hover:bg-red-50 p-3 rounded-xl transition-colors"><UserX className="w-5 h-5" /></button>
+                  <button onClick={() => declineFriendRequest(f)} aria-label={`Eliminar a ${fp?.display_name || 'amigo'}`} className="text-stone-400 hover:text-red-600 hover:bg-red-50 p-3 rounded-xl transition-colors flex-shrink-0"><UserX className="w-5 h-5" /></button>
                 </div>
               );
             })}
