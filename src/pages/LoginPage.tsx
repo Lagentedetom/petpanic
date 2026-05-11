@@ -243,9 +243,10 @@ export default function LoginPage() {
           </button>
         )}
 
-        <div className="flex justify-center gap-4 mt-6 pt-4 border-t border-stone-100">
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-6 pt-4 border-t border-stone-100">
           <Link to="/terminos" className="text-[10px] text-stone-400 hover:text-stone-600 transition-colors">Términos de Servicio</Link>
           <Link to="/privacidad" className="text-[10px] text-stone-400 hover:text-stone-600 transition-colors">Política de Privacidad</Link>
+          <Link to="/protectoras" className="text-[10px] text-stone-400 hover:text-stone-600 transition-colors">Para protectoras</Link>
         </div>
       </motion.div>
     </div>
