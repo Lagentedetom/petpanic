@@ -33,12 +33,14 @@ const steps = [
 export default function Onboarding() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
-  const [dismissed, setDismissed] = useState(false);
+  // LO-06 fix: read localStorage once via useState initializer instead of
+  // on every render. Prevents the onboarding card from briefly flashing
+  // on every navigation that re-mounts HomePage.
+  const [dismissed, setDismissed] = useState(() =>
+    typeof localStorage !== 'undefined' && localStorage.getItem('onboarding-complete') !== null
+  );
 
   if (dismissed) return null;
-
-  const isComplete = localStorage.getItem('onboarding-complete');
-  if (isComplete) return null;
 
   const step = steps[currentStep];
   const isLast = currentStep === steps.length - 1;
@@ -74,8 +76,8 @@ export default function Onboarding() {
               <span className="text-[10px] font-bold uppercase tracking-widest text-orange-600">Primeros pasos</span>
               <span className="text-[10px] text-stone-400">{currentStep + 1}/{steps.length}</span>
             </div>
-            <button onClick={handleSkip} aria-label="Saltar" className="p-1 text-stone-400 hover:text-stone-600">
-              <X className="w-4 h-4" />
+            <button onClick={handleSkip} aria-label="Saltar onboarding" className="p-3 -m-3 text-stone-400 hover:text-stone-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-xl">
+              <X aria-hidden="true" className="w-4 h-4" />
             </button>
           </div>
 

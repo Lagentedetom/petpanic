@@ -22,18 +22,23 @@ export default function BottomNav() {
         <button
           key={item.path}
           aria-label={item.label}
+          aria-current={path === item.path ? 'page' : undefined}
           onClick={() => navigate(item.path)}
           className={cn(
-            "p-3 rounded-xl transition-colors",
-            path === item.path ? "text-orange-600 bg-orange-50" : "text-stone-400"
+            "p-3 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500",
+            path === item.path ? "text-orange-600 bg-orange-50" : "text-stone-500"
           )}
         >
           <item.icon className="w-7 h-7" />
         </button>
       ))}
       <button
-        aria-label="Notificaciones"
-        className="p-3 text-stone-400 relative"
+        aria-label={
+          nearbyAlerts.length > 0
+            ? `Notificaciones, ${nearbyAlerts.length} ${nearbyAlerts.length === 1 ? 'alerta cercana' : 'alertas cercanas'}`
+            : 'Notificaciones, sin alertas'
+        }
+        className="p-3 text-stone-500 relative rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
         onClick={() => {
           if (nearbyAlerts.length > 0) {
             navigate(`/alerts/${nearbyAlerts[0].id}`);
@@ -42,7 +47,7 @@ export default function BottomNav() {
       >
         <Bell className="w-7 h-7" />
         {nearbyAlerts.length > 0 && (
-          <span className="absolute top-1 right-1 w-3 h-3 bg-red-600 rounded-full border-2 border-white" />
+          <span aria-hidden="true" className="absolute top-1 right-1 w-3 h-3 bg-red-600 rounded-full border-2 border-white" />
         )}
       </button>
     </nav>

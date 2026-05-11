@@ -11,3 +11,6 @@ supabase/.temp/
 ios/
 android/
 .claude/
+
+# Local Netlify folder
+.netlify

@@ -75,7 +75,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-stone-100 flex flex-col items-center justify-center p-6"
+      style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))', paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -116,11 +117,12 @@ export default function LoginPage() {
           ) : (
             <form onSubmit={handleResetPassword} className="space-y-4 mb-8 text-left">
               <div className="space-y-1">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Email</label>
+                <label htmlFor="reset-email" className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Email</label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
-                  <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                  <Mail aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                  <input id="reset-email" type="email" required value={email} onChange={e => setEmail(e.target.value)}
                     placeholder="tu@email.com"
+                    autoComplete="email"
                     className="w-full bg-stone-50 border border-stone-200 rounded-2xl pl-12 pr-5 py-3 outline-none focus:ring-2 focus:ring-orange-500 transition-all" />
                 </div>
               </div>
@@ -136,45 +138,50 @@ export default function LoginPage() {
             {mode === 'register' && (
               <>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Nombre de Usuario</label>
+                  <label htmlFor="auth-display-name" className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Nombre de Usuario</label>
                   <div className="relative">
-                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
-                    <input type="text" required value={displayName} onChange={e => setDisplayName(e.target.value)}
+                    <UserIcon aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                    <input id="auth-display-name" type="text" required value={displayName} onChange={e => setDisplayName(e.target.value)}
                       placeholder="Tu nombre de usuario"
+                      autoComplete="username"
                       className="w-full bg-stone-50 border border-stone-200 rounded-2xl pl-12 pr-5 py-3 outline-none focus:ring-2 focus:ring-orange-500 transition-all" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Nombre</label>
-                    <input type="text" required value={firstName} onChange={e => setFirstName(e.target.value)}
+                    <label htmlFor="auth-first-name" className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Nombre</label>
+                    <input id="auth-first-name" type="text" required value={firstName} onChange={e => setFirstName(e.target.value)}
                       placeholder="Nombre"
+                      autoComplete="given-name"
                       className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500 transition-all" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Apellidos</label>
-                    <input type="text" required value={lastName} onChange={e => setLastName(e.target.value)}
+                    <label htmlFor="auth-last-name" className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Apellidos</label>
+                    <input id="auth-last-name" type="text" required value={lastName} onChange={e => setLastName(e.target.value)}
                       placeholder="Apellidos"
+                      autoComplete="family-name"
                       className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500 transition-all" />
                   </div>
                 </div>
               </>
             )}
             <div className="space-y-1">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Email</label>
+              <label htmlFor="auth-email" className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Email</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
-                <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                <Mail aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                <input id="auth-email" type="email" required value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="tu@email.com"
+                  autoComplete="email"
                   className="w-full bg-stone-50 border border-stone-200 rounded-2xl pl-12 pr-5 py-3 outline-none focus:ring-2 focus:ring-orange-500 transition-all" />
               </div>
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Contraseña</label>
+              <label htmlFor="auth-password" className="text-[10px] font-bold uppercase tracking-widest text-stone-400 ml-2">Contraseña</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
-                <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
+                <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                <input id="auth-password" type="password" required value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
+                  autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
                   className="w-full bg-stone-50 border border-stone-200 rounded-2xl pl-12 pr-5 py-3 outline-none focus:ring-2 focus:ring-orange-500 transition-all" />
               </div>
             </div>

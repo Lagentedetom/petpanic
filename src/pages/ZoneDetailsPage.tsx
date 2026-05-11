@@ -9,10 +9,30 @@ import type { ZonePresence } from '../types';
 export default function ZoneDetailsPage() {
   const navigate = useNavigate();
   const { zoneId } = useParams();
-  const { user, walkingZones, friendships } = useApp();
+  const { user, userProfile, pets, walkingZones, friendships, currentZoneId, zonesLoaded } = useApp();
 
   const selectedZone = walkingZones.find(z => z.id === zoneId);
   const [zonePresence, setZonePresence] = useState<ZonePresence[]>([]);
+
+  // Optimistic self-presence: if the device says we ARE in this zone right now,
+  // always include ourselves, even if the DB hasn't caught up.
+  const presenceWithSelf: ZonePresence[] = (() => {
+    const inThisZone = currentZoneId === zoneId;
+    if (!inThisZone || !user) return zonePresence;
+    const alreadyIncluded = zonePresence.some(p => p.user_id === user.id);
+    if (alreadyIncluded) return zonePresence;
+    return [
+      {
+        zone_id: zoneId!,
+        user_id: user.id,
+        user_name: userProfile?.display_name || 'Tú',
+        user_photo: userProfile?.photo_url || '',
+        pet_names: pets.map(p => p.name),
+        updated_at: new Date().toISOString(),
+      },
+      ...zonePresence,
+    ];
+  })();
 
   useEffect(() => {
     if (!user || !zoneId || !selectedZone?.is_member) {
@@ -37,6 +57,17 @@ export default function ZoneDetailsPage() {
     return () => { supabase.removeChannel(channel); };
   }, [user, zoneId, selectedZone?.is_member]);
 
+  // ME-05 fix: differentiate "still loading" from "really not found".
+  // Without this, users hitting /zones/:id directly briefly saw "Zona no
+  // encontrada" before fetchZones populated walkingZones.
+  if (!zonesLoaded) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500" />
+      </div>
+    );
+  }
+
   if (!selectedZone) {
     return (
       <div className="text-center py-20 text-stone-400">
@@ -58,10 +89,12 @@ export default function ZoneDetailsPage() {
 
       <div className="bg-stone-900 text-white p-8 rounded-3xl space-y-2">
         <p className="text-stone-400 text-xs font-bold uppercase tracking-widest">Estado Actual</p>
-        <h3 className="text-3xl font-black">{zonePresence.length} PERROS PASEANDO</h3>
+        <h3 className="text-3xl font-black">
+          {presenceWithSelf.length} {presenceWithSelf.length === 1 ? 'PERSONA' : 'PERSONAS'} PASEANDO
+        </h3>
         <p className="text-stone-400 text-sm">
           {selectedZone.is_member
-            ? "Por privacidad, solo verás los nombres de tus amigos."
+            ? "Por privacidad, solo verás los nombres de tus amigos. El resto aparece como recuento anónimo."
             : "Únete a la zona para ver quién está paseando."}
         </p>
       </div>
@@ -69,18 +102,18 @@ export default function ZoneDetailsPage() {
       {selectedZone.is_member ? (
         <div className="space-y-4">
           <h4 className="text-xs font-bold uppercase tracking-widest text-stone-400 px-2">Presentes ahora</h4>
-          {zonePresence.length === 0 ? (
+          {presenceWithSelf.length === 0 ? (
             <div className="bg-white p-12 rounded-3xl border border-stone-100 text-center italic text-stone-400">No hay nadie en la zona en este momento.</div>
           ) : (
             <div className="grid gap-4">
-              {zonePresence.map(presence => {
+              {presenceWithSelf.map(presence => {
                 const isSelf = presence.user_id === user?.id;
                 if (!isSelf && !isFriendOf(presence.user_id)) return null;
                 return (
                   <div key={presence.user_id} className="bg-white p-5 rounded-3xl border border-stone-200 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-stone-100 overflow-hidden flex-shrink-0">
                       {presence.user_photo ? (
-                        <img src={presence.user_photo} alt={presence.user_name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                        <img src={presence.user_photo} alt={presence.user_name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center"><UserIcon className="w-6 h-6 text-stone-300" /></div>
                       )}
@@ -93,10 +126,10 @@ export default function ZoneDetailsPage() {
                   </div>
                 );
               })}
-              {zonePresence.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length > 0 && (
+              {presenceWithSelf.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length > 0 && (
                 <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 text-center">
                   <p className="text-xs text-stone-400 font-medium">
-                    + {zonePresence.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length} paseantes más en la zona. Conéctate como amigo para ver sus nombres.
+                    + {presenceWithSelf.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length} paseantes más en la zona. Conéctate como amigo para ver sus nombres.
                   </p>
                 </div>
               )}

@@ -5,11 +5,11 @@ export default function PrivacyPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-stone-100 p-6">
+    <div className="min-h-screen bg-stone-100 p-6" style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}>
       <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl p-10 space-y-6">
         <div className="flex items-center gap-4 mb-4">
-          <button onClick={() => navigate(-1)} className="p-2 bg-stone-100 rounded-full hover:bg-stone-200 transition-colors">
-            <ChevronLeft className="w-6 h-6" />
+          <button onClick={() => navigate(-1)} aria-label="Volver" className="p-3 bg-stone-100 rounded-full hover:bg-stone-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500">
+            <ChevronLeft aria-hidden="true" className="w-6 h-6" />
           </button>
           <h1 className="text-2xl font-bold">Política de Privacidad</h1>
         </div>

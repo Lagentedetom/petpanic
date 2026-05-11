@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- Don't leak the user's current URL when fetching avatars, pet photos,
+         alert images or any third-party resource. Applied globally so individual
+         <img> tags don't need their own referrerPolicy. -->
+    <meta name="referrer" content="no-referrer" />
     <title>PetPanic - Alerta de Mascotas Perdidas</title>
 
     <!-- PWA -->
@@ -16,11 +20,13 @@
 
     <!-- SEO -->
     <meta name="description" content="Alerta inmediata para mascotas perdidas y red social de zonas de paseo. Las primeras 2 horas son vitales." />
+    <link rel="canonical" href="https://app.petpanic.es/" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="PetPanic - Alerta de Mascotas Perdidas" />
     <meta property="og:description" content="Las primeras 2 horas son vitales. Únete a la red de protección para mascotas perdidas." />
-    <meta property="og:image" content="/icons/icon-512.png" />
+    <meta property="og:image" content="https://app.petpanic.es/icons/icon-512.png" />
+    <meta property="og:url" content="https://app.petpanic.es/" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_ES" />
 
@@ -28,7 +34,7 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="PetPanic - Alerta de Mascotas Perdidas" />
     <meta name="twitter:description" content="Las primeras 2 horas son vitales. Únete a la red de protección para mascotas perdidas." />
-    <meta name="twitter:image" content="/icons/icon-512.png" />
+    <meta name="twitter:image" content="https://app.petpanic.es/icons/icon-512.png" />
   </head>
   <body>
     <div id="root"></div>

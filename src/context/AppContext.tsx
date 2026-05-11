@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import { calculateDistance } from '../utils';
+import { calculateDistance, safeUuid, isUuid } from '../utils';
+import { getCurrentNativeLocation, hapticImpact, hapticSuccess, isNative, requestGeolocationPermission } from '../lib/native';
 import type { Pet, Alert, WalkingZone, ZonePresence, UserProfile, Friendship } from '../types';
 
 export interface Toast {
@@ -14,6 +15,8 @@ interface AppContextType {
   user: User | null;
   userProfile: UserProfile | null;
   loading: boolean;
+  /** True once the initial fetchZones has completed (used by ZoneDetailsPage to differentiate "loading" from "not found"). */
+  zonesLoaded: boolean;
   location: { lat: number; lng: number } | null;
   pets: Pet[];
   activeAlerts: Alert[];
@@ -26,11 +29,13 @@ interface AppContextType {
   primaryZonePresence: ZonePresence[];
   notification: Alert | null;
   toasts: Toast[];
+  showToast: (message: string, type?: Toast['type']) => void;
   setNotification: React.Dispatch<React.SetStateAction<Alert | null>>;
   triggerPanic: (pet: Pet) => Promise<void>;
   resolveAlert: (alert: Alert) => Promise<void>;
   joinZone: (zone: WalkingZone) => Promise<void>;
   createWalkingZone: (name: string, radius: number) => Promise<void>;
+  refreshZones: () => Promise<void>;
   searchUsers: (code: string) => Promise<UserProfile[]>;
   sendFriendRequest: (targetUser: UserProfile) => Promise<void>;
   acceptFriendRequest: (friendship: Friendship) => Promise<void>;
@@ -53,7 +58,15 @@ export function useApp() {
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  // ME-07 fix: `loading` is now derived from two underlying flags so that we
+  // keep the spinner up until the user profile has actually loaded (or a
+  // 1.5 s grace period elapses). Previously `loading` flipped to false the
+  // moment the auth session resolved, so for ~200 ms a paid user could see
+  // "Necesitas PetPanic Social..." locks because useSubscription returned
+  // DEFAULT_STATE while userProfile was still null.
+  const [authResolved, setAuthResolved] = useState(false);
+  const [profileGraceOver, setProfileGraceOver] = useState(false);
+  const [zonesLoaded, setZonesLoaded] = useState(false);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
   const [activeAlerts, setActiveAlerts] = useState<Alert[]>([]);
@@ -69,7 +82,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => { locationRef.current = location; }, [location]);
 
   const showToast = useCallback((message: string, type: Toast['type'] = 'info') => {
-    const id = crypto.randomUUID();
+    const id = safeUuid();
     setToasts(prev => [...prev, { id, message, type }]);
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
   }, []);
@@ -78,19 +91,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      setLoading(false);
+      setAuthResolved(true);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (!session?.user) {
         setUserProfile(null);
+        setProfileGraceOver(false);
+        setZonesLoaded(false);
       }
-      setLoading(false);
+      setAuthResolved(true);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Profile grace period: if the user is set but their profile hasn't loaded
+  // yet, give it 1.5 s before flipping `loading` to false. This window is
+  // long enough for a typical Supabase profile fetch but short enough that
+  // a network failure doesn't block the app forever.
+  useEffect(() => {
+    if (!user) { setProfileGraceOver(false); return; }
+    if (userProfile) { setProfileGraceOver(true); return; }
+    const timeout = setTimeout(() => setProfileGraceOver(true), 1500);
+    return () => clearTimeout(timeout);
+  }, [user?.id, userProfile?.id]);
+
+  const loading = !authResolved || (!!user && !userProfile && !profileGraceOver);
 
   // ── Profile listener ──
   useEffect(() => {
@@ -113,14 +141,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   // ── Location tracking ──
+  // HI-05 fix: tracks an `aborted` flag so any in-flight retry (the
+  // network-based getCurrentPosition fallback inside handleLocationError)
+  // cannot call setLocation after unmount. Without this, logging out while
+  // a retry is pending caused setState-after-unmount + closure leak holding
+  // the user profile (and crash under StrictMode dev double-mount).
   useEffect(() => {
     if (!user) return;
 
+    let aborted = false;
     let lastDbLat = 0;
     let lastDbLng = 0;
     let lastDbTime = 0;
 
+    // On native, kick off the OS-level location permission request before
+    // we try watchPosition. The web fallback below will still work either
+    // way — on iOS/Android, if the user denies the native prompt, the
+    // WebView's navigator.geolocation will also fail (same permission).
+    if (isNative()) {
+      void requestGeolocationPermission();
+    }
+
     const updateLoc = (pos: GeolocationPosition) => {
+      if (aborted) return;
       const newLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       setLocation(newLoc);
 
@@ -143,6 +186,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
 
     const handleLocationError = (error: GeolocationPositionError) => {
+      if (aborted) return;
       console.warn('Geolocation error:', error.code, error.message);
       // On mobile, high accuracy (GPS) can fail or timeout — retry with network-based location
       if (error.code === error.TIMEOUT || error.code === error.POSITION_UNAVAILABLE) {
@@ -156,7 +200,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     navigator.geolocation.getCurrentPosition(updateLoc, handleLocationError, { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
     const watchId = navigator.geolocation.watchPosition(updateLoc, handleLocationError, { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 });
-    return () => navigator.geolocation.clearWatch(watchId);
+    return () => {
+      aborted = true;
+      navigator.geolocation.clearWatch(watchId);
+    };
   }, [user]);
 
   // ── Pets listener ──
@@ -180,15 +227,37 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   // ── Active alerts listener ──
+  // Active alerts are fetched via the `nearby_alerts(lat, lng, radius_km)`
+  // PostGIS RPC instead of `from('alerts').select('*')`. This:
+  //   - sends only alerts within 5 km of the user (was: every active alert in the DB)
+  //   - keeps server-side responsibility for proximity filtering (privacy + perf)
+  //   - matches what the `alerts_select` RLS policy is designed to allow
+  // Resolved alerts (history) stay as a direct table query because they're
+  // already scoped to `owner_id = me` by RLS.
+  const fetchAlerts = useCallback(async () => {
+    if (!user) return;
+    const loc = locationRef.current;
+    if (loc) {
+      const { data, error } = await supabase.rpc('nearby_alerts', {
+        user_lat: loc.lat,
+        user_lng: loc.lng,
+        radius_km: 5,
+      });
+      if (!error) setActiveAlerts((data ?? []) as Alert[]);
+    } else {
+      // No GPS yet — empty list rather than downloading every alert.
+      setActiveAlerts([]);
+    }
+    const { data: resolved } = await supabase.from('alerts').select('*')
+      .eq('status', 'resolved')
+      .eq('owner_id', user.id)
+      .order('resolved_at', { ascending: false })
+      .limit(20);
+    setResolvedAlerts((resolved ?? []) as Alert[]);
+  }, [user]);
+
   useEffect(() => {
     if (!user) return;
-
-    const fetchAlerts = async () => {
-      const { data } = await supabase.from('alerts').select('*').eq('status', 'active').order('created_at', { ascending: false });
-      setActiveAlerts((data ?? []) as Alert[]);
-      const { data: resolved } = await supabase.from('alerts').select('*').eq('status', 'resolved').eq('owner_id', user.id).order('resolved_at', { ascending: false }).limit(20);
-      setResolvedAlerts((resolved ?? []) as Alert[]);
-    };
     fetchAlerts();
 
     const channel = supabase
@@ -199,33 +268,49 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
+  }, [user, fetchAlerts]);
+
+  // Refetch when location becomes available or moves significantly (~1 km
+  // granularity via the rounding trick). Without this, the initial fetch on
+  // mount has no location and would never get refreshed when GPS arrives.
+  const locKey = location ? `${Math.round(location.lat * 100)},${Math.round(location.lng * 100)}` : null;
+  useEffect(() => {
+    if (!user || !locKey) return;
+    fetchAlerts();
+  }, [user, locKey, fetchAlerts]);
+
+  // ── Walking zones ──
+  // Hoisted so create/join actions can force an immediate refresh instead of
+  // waiting for the Realtime subscription round-trip (which can be lossy on
+  // flaky networks and creates a race with optimistic UI like setCurrentZoneId).
+  const fetchZones = useCallback(async () => {
+    if (!user) return;
+    const { data: zones } = await supabase.from('walking_zones').select('*');
+    if (!zones) { setWalkingZones([]); setZonesLoaded(true); return; }
+
+    // Get member counts and membership status
+    const { data: members } = await supabase.from('zone_members').select('zone_id, user_id');
+    const enriched = zones.map(z => ({
+      ...z,
+      member_count: members?.filter(m => m.zone_id === z.id).length ?? 0,
+      is_member: members?.some(m => m.zone_id === z.id && m.user_id === user.id) ?? false,
+    }));
+
+    // Filter: show only zones within 2.5km of user, or zones where user is a member
+    const loc = locationRef.current;
+    const filtered = enriched.filter(z => {
+      if (z.is_member) return true;
+      if (!loc) return false;
+      return calculateDistance(loc.lat, loc.lng, z.lat, z.lng) <= 2.5;
+    });
+    setWalkingZones(filtered as WalkingZone[]);
+    // ME-05 fix: signal that the initial enrichment completed so UI can
+    // distinguish "still loading" from "really not a member of this zone".
+    setZonesLoaded(true);
   }, [user]);
 
-  // ── Walking zones listener ──
   useEffect(() => {
     if (!user) return;
-
-    const fetchZones = async () => {
-      const { data: zones } = await supabase.from('walking_zones').select('*');
-      if (!zones) { setWalkingZones([]); return; }
-
-      // Get member counts and membership status
-      const { data: members } = await supabase.from('zone_members').select('zone_id, user_id');
-      const enriched = zones.map(z => ({
-        ...z,
-        member_count: members?.filter(m => m.zone_id === z.id).length ?? 0,
-        is_member: members?.some(m => m.zone_id === z.id && m.user_id === user.id) ?? false,
-      }));
-
-      // Filter: show only zones within 2.5km of user, or zones where user is a member
-      const loc = locationRef.current;
-      const filtered = enriched.filter(z => {
-        if (z.is_member) return true;
-        if (!loc) return false;
-        return calculateDistance(loc.lat, loc.lng, z.lat, z.lng) <= 2.5;
-      });
-      setWalkingZones(filtered as WalkingZone[]);
-    };
     fetchZones();
 
     const channel = supabase
@@ -235,23 +320,42 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [user]);
+  }, [user, fetchZones]);
 
   // ── Friendships listener ──
   useEffect(() => {
     if (!user) return;
 
     const fetchFriendships = async () => {
+      // ME-08 fix: defensive check that user.id is a valid UUID before
+      // interpolating into the PostgREST .or(...) filter. user.id comes
+      // from a Supabase JWT (always trusted) so this guard is never
+      // triggered in practice — but the pattern of building filter strings
+      // from variables would be a real injection risk if anyone ever wires
+      // a free-form input here. Fail closed if the format is wrong.
+      if (!isUuid(user.id)) {
+        console.error('fetchFriendships: user.id is not a valid UUID');
+        setFriendships([]);
+        return;
+      }
       const { data } = await supabase.from('friendships').select('*')
         .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`);
       const fs = (data ?? []) as Friendship[];
       setFriendships(fs);
 
-      // Fetch friend profiles
+      // Fetch friend profiles via public_profiles view.
+      // The `profiles` table is now self+friends-only, but for PENDING
+      // requesters there's no friendship row yet, so a direct read would
+      // fail RLS. The public_profiles view exposes the minimal identity
+      // fields (id, display_name, photo_url, friend_code) we need to render
+      // the friend list / pending-request UI without leaking PII.
       const friendIds = fs.map(f => f.requester_id === user.id ? f.addressee_id : f.requester_id);
       const newIds = friendIds.filter(id => !friendProfiles[id]);
       if (newIds.length > 0) {
-        const { data: profiles } = await supabase.from('profiles').select('*').in('id', newIds);
+        const { data: profiles } = await supabase
+          .from('public_profiles')
+          .select('id, display_name, photo_url, friend_code')
+          .in('id', newIds);
         if (profiles) {
           const map: Record<string, UserProfile> = {};
           profiles.forEach(p => { map[p.id] = p as UserProfile; });
@@ -292,47 +396,83 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return () => { supabase.removeChannel(channel); };
   }, [user, userProfile?.primary_zone_id]);
 
-  // ── Geofencing / presence update ──
+  // ── Geofencing: detect which zone the user is currently inside ──
+  // HI-04 fix: previously a single effect mixed (1) zone detection,
+  // (2) presence upsert, (3) heartbeat update, AND ran on every GPS ping
+  // because `location` was in deps. Each ping triggered cleanup → DELETE
+  // on `zone_presence` → flicker for friends watching, plus a real race
+  // window if the immediate UPSERT failed. Split into 3 effects, each
+  // with one job; the DELETE only fires on actual zone change/unmount.
+
+  // Effect 1: cheap detection. Runs on every GPS ping but only sets state
+  // when the detected zone identity actually changes.
   useEffect(() => {
-    if (!user || !location || walkingZones.length === 0) return;
-
-    const findCurrentZone = () => {
-      for (const zone of walkingZones) {
-        const dist = calculateDistance(location.lat, location.lng, zone.lat, zone.lng) * 1000;
-        if (dist <= zone.radius) return zone.id;
-      }
-      return null;
-    };
-
-    const newZoneId = findCurrentZone();
-    if (newZoneId !== currentZoneId) {
-      if (currentZoneId) {
-        supabase.from('zone_presence').delete()
-          .eq('zone_id', currentZoneId).eq('user_id', user.id).then();
-      }
-      if (newZoneId) {
-        supabase.from('zone_presence').upsert({
-          zone_id: newZoneId,
-          user_id: user.id,
-          user_name: userProfile?.display_name || 'Usuario',
-          user_photo: userProfile?.photo_url || '',
-          pet_names: pets.map(p => p.name),
-          updated_at: new Date().toISOString(),
-        }).then();
-      }
-      setCurrentZoneId(newZoneId);
-    } else if (newZoneId) {
-      supabase.from('zone_presence').update({ updated_at: new Date().toISOString() })
-        .eq('zone_id', newZoneId).eq('user_id', user.id).then();
+    if (!user || !location || walkingZones.length === 0) {
+      return;
     }
+    let detected: string | null = null;
+    for (const zone of walkingZones) {
+      const dist = calculateDistance(location.lat, location.lng, zone.lat, zone.lng) * 1000;
+      if (dist <= zone.radius) { detected = zone.id; break; }
+    }
+    setCurrentZoneId(prev => (prev === detected ? prev : detected));
+  }, [location, walkingZones, user]);
+
+  // Effect 2: write presence on zone-entry, delete on zone-exit/unmount.
+  // Deps are ONLY [user, currentZoneId] — not location, not pets, not profile.
+  // Initial values (display_name/photo/pet_names) are captured at upsert
+  // time; subsequent profile/pet changes are synced by Effect 3 below.
+  useEffect(() => {
+    if (!user || !currentZoneId) return;
+
+    supabase.from('zone_presence').upsert(
+      {
+        zone_id: currentZoneId,
+        user_id: user.id,
+        user_name: userProfile?.display_name || 'Usuario',
+        user_photo: userProfile?.photo_url || '',
+        pet_names: pets.map(p => p.name),
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'zone_id,user_id' }
+    ).then();
 
     return () => {
-      if (currentZoneId && user) {
-        supabase.from('zone_presence').delete()
-          .eq('zone_id', currentZoneId).eq('user_id', user.id).then();
-      }
+      supabase.from('zone_presence').delete()
+        .eq('zone_id', currentZoneId)
+        .eq('user_id', user.id)
+        .then();
     };
-  }, [location, walkingZones, user, pets, currentZoneId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, currentZoneId]);
+
+  // Effect 3: keep presence row in sync when profile/pets change without
+  // touching the zone identity. Pure UPDATE, no delete in cleanup.
+  // petNamesKey is a stable string so we don't re-fire on every pets array
+  // reference change from Supabase realtime/refetch.
+  const petNamesKey = pets.map(p => p.name).sort().join('|');
+  useEffect(() => {
+    if (!user || !currentZoneId) return;
+    supabase.from('zone_presence').update({
+      user_name: userProfile?.display_name || 'Usuario',
+      user_photo: userProfile?.photo_url || '',
+      pet_names: pets.map(p => p.name),
+    }).eq('zone_id', currentZoneId).eq('user_id', user.id).then();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, currentZoneId, userProfile?.display_name, userProfile?.photo_url, petNamesKey]);
+
+  // Effect 4: heartbeat updated_at every 30 s while in a zone, so other
+  // members see "still here" without depending on GPS event frequency.
+  useEffect(() => {
+    if (!user || !currentZoneId) return;
+    const interval = setInterval(() => {
+      supabase.from('zone_presence').update({ updated_at: new Date().toISOString() })
+        .eq('zone_id', currentZoneId)
+        .eq('user_id', user.id)
+        .then();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [user, currentZoneId]);
 
   // ── Notification for new nearby alerts ──
   useEffect(() => {
@@ -362,15 +502,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     let currentLocation = location;
 
     if (!currentLocation) {
-      try {
-        const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 5000 });
-        });
-        currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      // Capacitor native first if available — much more reliable on mobile
+      // than the WebView's navigator.geolocation, especially with the app
+      // backgrounded recently.
+      const native = await getCurrentNativeLocation();
+      if (native) {
+        currentLocation = { lat: native.lat, lng: native.lng };
         setLocation(currentLocation);
-      } catch {
-        showToast("Necesitamos tu ubicación para activar la alerta.", "error");
-        return;
+      } else {
+        try {
+          const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 5000 });
+          });
+          currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          setLocation(currentLocation);
+        } catch {
+          showToast("Necesitamos tu ubicación para activar la alerta.", "error");
+          return;
+        }
       }
     }
 
@@ -378,6 +527,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       showToast("Añade datos de contacto a tu mascota antes de activar la alerta.", "error");
       return;
     }
+
+    // Heavy haptic — gives the user a "panic activated" tactile signal so
+    // they're confident the system fired even before the network round-trip.
+    void hapticImpact('heavy');
+
+    // HI-06 fix: blur the panic-trigger location to ~100 m precision before
+    // writing it to the public `alerts` row. Matches the privacy policy
+    // statement on PrivacyPage (locations are never stored at sub-100m
+    // precision). Rescuers still get a useful neighborhood-level pin.
+    const blurredLat = Math.round(currentLocation.lat * 1000) / 1000;
+    const blurredLng = Math.round(currentLocation.lng * 1000) / 1000;
 
     try {
       const { error } = await supabase.from('alerts').insert({
@@ -389,9 +549,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         pet_color: pet.color || '',
         pet_traits: pet.traits || '',
         owner_contact: pet.contact_info,
-        location: `POINT(${currentLocation.lng} ${currentLocation.lat})`,
-        lat: currentLocation.lat,
-        lng: currentLocation.lng,
+        location: `POINT(${blurredLng} ${blurredLat})`,
+        lat: blurredLat,
+        lng: blurredLng,
         status: 'active',
       });
       if (error) throw error;
@@ -416,7 +576,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const createWalkingZoneFn = async (name: string, radius: number) => {
     if (!user || !location) return;
-    const { data } = await supabase.from('walking_zones').insert({
+    const { data, error } = await supabase.from('walking_zones').insert({
       name,
       creator_id: user.id,
       location: `POINT(${location.lng} ${location.lat})`,
@@ -425,34 +585,109 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       radius,
     }).select().single();
 
+    if (error) {
+      const msg = error.message || '';
+      if (msg.includes('zone_overlap')) {
+        showToast('Ya existe una zona de paseo a menos de 200 m. Únete a ella en lugar de crear una nueva.', 'error');
+      } else if (msg.includes('zone_limit_reached')) {
+        showToast('Has alcanzado el límite de zonas que puedes crear con tu plan.', 'error');
+      } else if (error.code === '42501' || msg.toLowerCase().includes('row-level security')) {
+        showToast('Necesitas PetPanic Social para crear zonas de paseo.', 'error');
+      } else {
+        showToast('No se pudo crear la zona. Inténtalo de nuevo.', 'error');
+        console.error('createWalkingZone error:', error);
+      }
+      return;
+    }
+
     if (data) {
       await supabase.from('zone_members').insert({ zone_id: data.id, user_id: user.id });
+      // Immediately register the creator's presence in the new zone so they see
+      // themselves without waiting for the geofencing effect to fire.
+      // onConflict needed because zone_presence has a composite PK (zone_id, user_id).
+      await supabase
+        .from('zone_presence')
+        .upsert(
+          {
+            zone_id: data.id,
+            user_id: user.id,
+            user_name: userProfile?.display_name || 'Usuario',
+            user_photo: userProfile?.photo_url || '',
+            pet_names: pets.map(p => p.name),
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'zone_id,user_id' }
+        );
+      setCurrentZoneId(data.id);
+      // Force immediate local refresh so the new zone shows up without waiting
+      // for the Realtime broadcast (which could be delayed or dropped).
       await fetchZones();
+      showToast(`Zona "${name}" creada. Ya eres fundador/a.`, 'success');
     }
   };
 
   const joinZoneFn = async (zone: WalkingZone) => {
     if (!user) return;
-    await supabase.from('zone_members').insert({ zone_id: zone.id, user_id: user.id });
+    const { error } = await supabase.from('zone_members').insert({ zone_id: zone.id, user_id: user.id });
+    if (error) {
+      const msg = error.message || '';
+      if (error.code === '42501' || msg.toLowerCase().includes('row-level security')) {
+        showToast('Necesitas PetPanic Social para unirte a una zona de paseo.', 'error');
+      } else {
+        showToast('No se pudo unirte a la zona. Inténtalo de nuevo.', 'error');
+        console.error('joinZone error:', error);
+      }
+      return;
+    }
+    // Immediate local refresh so "Unirse" → "Miembro" badge flips without
+    // depending on the Realtime round-trip.
+    await fetchZones();
   };
 
   const searchUsersFn = async (code: string): Promise<UserProfile[]> => {
-    const { data } = await supabase.from('profiles').select('*')
-      .eq('friend_code', code.trim().toUpperCase()).limit(1);
+    // Reads from `public_profiles` view (id, display_name, photo_url, friend_code)
+    // because the underlying `profiles` table is now self+friends-only RLS.
+    // The view exposes exactly the four fields the friend-search UI needs.
+    const { data } = await supabase
+      .from('public_profiles')
+      .select('id, display_name, photo_url, friend_code')
+      .eq('friend_code', code.trim().toUpperCase())
+      .limit(1);
     return ((data ?? []) as UserProfile[]).filter(u => u.id !== user?.id);
   };
 
   const sendFriendRequestFn = async (targetUser: UserProfile) => {
     if (!user) return;
-    await supabase.from('friendships').insert({
-      requester_id: user.id,
-      addressee_id: targetUser.id,
-      status: 'pending',
+    if (!targetUser.friend_code) {
+      showToast('No se puede enviar la solicitud: falta el código de amigo.', 'error');
+      return;
+    }
+    // Direct INSERT on `friendships` is REVOKEd from authenticated.
+    // All friend-request creation now flows through the SECURITY DEFINER RPC,
+    // which validates the friend code, gates on is_social_active(), blocks
+    // duplicates in either direction, and writes the row server-side.
+    const { error } = await supabase.rpc('send_friend_request', {
+      p_friend_code: targetUser.friend_code,
     });
+    if (error) {
+      const msg = error.message || '';
+      if (msg.includes('invalid_friend_code')) {
+        showToast('Código de amigo no válido.', 'error');
+      } else if (msg.includes('friendship_exists')) {
+        showToast('Ya hay una solicitud entre vosotros.', 'error');
+      } else if (msg.includes('social_required')) {
+        showToast('Necesitas PetPanic Social para enviar solicitudes.', 'error');
+      } else {
+        showToast('No se pudo enviar la solicitud. Inténtalo de nuevo.', 'error');
+        console.error('sendFriendRequest error:', error);
+      }
+    }
   };
 
   const acceptFriendRequestFn = async (f: Friendship) => {
+    void hapticImpact('light'); // small confirmation tap on native
     await supabase.from('friendships').update({ status: 'accepted' }).eq('id', f.id);
+    void hapticSuccess(); // success notification haptic after the action lands
   };
 
   const declineFriendRequestFn = async (f: Friendship) => {
@@ -498,12 +733,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{
-      user, userProfile, loading, location, pets, activeAlerts, resolvedAlerts, nearbyAlerts,
+      user, userProfile, loading, zonesLoaded, location, pets, activeAlerts, resolvedAlerts, nearbyAlerts,
       walkingZones, currentZoneId, friendships, friendProfiles,
-      primaryZonePresence, notification, toasts, setNotification,
+      primaryZonePresence, notification, toasts, showToast, setNotification,
       triggerPanic, resolveAlert,
       joinZone: joinZoneFn,
       createWalkingZone: createWalkingZoneFn,
+      refreshZones: fetchZones,
       searchUsers: searchUsersFn,
       sendFriendRequest: sendFriendRequestFn,
       acceptFriendRequest: acceptFriendRequestFn,

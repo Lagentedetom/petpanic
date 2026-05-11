@@ -13,10 +13,16 @@ export default function PublicPetPage() {
   useEffect(() => {
     if (!petId) return;
     const fetch = async () => {
-      const { data } = await supabase.from('pets').select('*').eq('id', petId).single();
+      // The QR-public-pet page is reachable without login. The `pets` and
+      // `profiles` tables are RLS-locked (owner-only / self+friends), so
+      // anon reads must go through the public views, which:
+      //   - public_pets: returns same fields, but `contact_info` is masked
+      //     to NULL when is_lost=false (privacy by default)
+      //   - public_profiles: returns id, display_name, photo_url, friend_code
+      const { data } = await supabase.from('public_pets').select('*').eq('id', petId).single();
       if (data) {
         setPet(data as Pet);
-        const { data: profile } = await supabase.from('profiles').select('display_name').eq('id', data.owner_id).single();
+        const { data: profile } = await supabase.from('public_profiles').select('display_name').eq('id', data.owner_id).single();
         if (profile) setOwnerName(profile.display_name);
       }
       setLoading(false);
@@ -48,7 +54,7 @@ export default function PublicPetPage() {
     <div className="min-h-screen bg-stone-100 flex flex-col items-center justify-center p-6">
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl overflow-hidden">
         {pet.photo_url ? (
-          <img src={pet.photo_url} alt={pet.name} className="w-full h-64 object-cover" referrerPolicy="no-referrer" />
+          <img src={pet.photo_url} alt={pet.name} className="w-full h-64 object-cover" />
         ) : (
           <div className="w-full h-64 bg-stone-100 flex items-center justify-center">
             <SpeciesIcon className="w-24 h-24 text-stone-300" />

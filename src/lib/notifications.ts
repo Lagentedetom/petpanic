@@ -35,7 +35,7 @@ export async function requestNotificationPermission(userId: string): Promise<boo
       auth: sub.keys!.auth,
     }, { onConflict: 'endpoint' });
 
-    console.log('Push subscription saved');
+    // LO-01 fix: success path silent. Errors still log.
     return true;
   } catch (err) {
     console.error('Error subscribing to push:', err);

@@ -3,15 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { MapContainer, TileLayer, Marker, Circle, Popup } from 'react-leaflet';
 import L from 'leaflet';
-import { Plus, Search, Navigation, MapPin, User as UserIcon, CheckCircle2 } from 'lucide-react';
+import { Plus, Search, Navigation, MapPin, User as UserIcon, CheckCircle2, Lock, Sparkles } from 'lucide-react';
 import { cn } from '../lib/cn';
 import { useApp } from '../context/AppContext';
+import { useSubscription } from '../hooks/useSubscription';
 import MapFlyTo from '../components/MapFlyTo';
 import '../lib/leaflet-setup';
 
 export default function WalkingZonesPage() {
   const navigate = useNavigate();
-  const { user, userProfile, walkingZones, currentZoneId, location, joinZone, createWalkingZone, togglePrimaryZone, setLocation } = useApp();
+  const { userProfile, walkingZones, currentZoneId, location, joinZone, createWalkingZone, togglePrimaryZone, setLocation, showToast } = useApp();
+  const {
+    canJoinZone,
+    canCreateNewZone,
+    reachedZoneLimit,
+    hasActiveSocial,
+    isTrialing,
+    maxZones,
+    zonesIOwn,
+  } = useSubscription();
 
   const [isCreatingZone, setIsCreatingZone] = useState(false);
   const [zoneForm, setZoneForm] = useState({ name: '', radius: 200 });
@@ -20,6 +30,14 @@ export default function WalkingZonesPage() {
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => { if (location && !mapSearch) setMapCenter([location.lat, location.lng]); }, [location]);
+
+  // Scroll the create-zone form into view once it actually mounts.
+  // Replaces a previous setTimeout(100) hack that broke on slow first paints.
+  useEffect(() => {
+    if (!isCreatingZone) return;
+    const el = document.getElementById('create-zone-form');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [isCreatingZone]);
 
   const handleSearchLocation = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,11 +52,11 @@ export default function WalkingZonesPage() {
   };
 
   const handleLocateMe = () => {
-    if (!navigator.geolocation) { alert("Tu navegador no soporta geolocalización."); return; }
+    if (!navigator.geolocation) { showToast("Tu navegador no soporta geolocalización.", "error"); return; }
     setIsSearching(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => { const nl = { lat: pos.coords.latitude, lng: pos.coords.longitude }; setLocation(nl); setMapCenter([nl.lat, nl.lng]); setMapSearch(''); setIsSearching(false); },
-      () => { alert("No se pudo obtener tu ubicación."); setIsSearching(false); },
+      () => { showToast("No se pudo obtener tu ubicación.", "error"); setIsSearching(false); },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
@@ -51,12 +69,57 @@ export default function WalkingZonesPage() {
     setZoneForm({ name: '', radius: 200 });
   };
 
+  const handleOpenCreateForm = () => {
+    if (!hasActiveSocial) {
+      showToast('Necesitas PetPanic Social para crear zonas de paseo.', 'error');
+      navigate('/plan');
+      return;
+    }
+    if (reachedZoneLimit) {
+      showToast(
+        isTrialing
+          ? 'Durante el mes gratis solo puedes crear 1 zona. Activa Social para crear hasta 5.'
+          : `Has alcanzado el límite de ${maxZones} zonas.`,
+        'error'
+      );
+      return;
+    }
+    setIsCreatingZone(true);
+  };
+
   return (
     <motion.div key="walking-zones" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-black tracking-tighter">ZONAS DE PASEO</h2>
-        <button onClick={() => setIsCreatingZone(true)} aria-label="Crear zona" className="bg-orange-600 text-white p-3 rounded-2xl shadow-lg shadow-orange-100"><Plus className="w-6 h-6" /></button>
-      </div>
+      <h2 className="text-3xl font-black tracking-tighter">ZONAS DE PASEO</h2>
+
+      {/* Gating banner: no Social at all */}
+      {!hasActiveSocial && (
+        <button
+          onClick={() => navigate('/plan')}
+          className="w-full flex items-center justify-between gap-3 bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-2xl p-4 text-left hover:shadow-md transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <p className="font-bold text-sm text-stone-900">Desbloquea las zonas de paseo</p>
+              <p className="text-xs text-stone-500">Con PetPanic Social puedes crear tu zona y unirte a otras</p>
+            </div>
+          </div>
+          <span className="text-xs font-bold text-orange-600 uppercase tracking-widest flex-shrink-0">Activar</span>
+        </button>
+      )}
+
+      {/* Trial + zone usage indicator */}
+      {isTrialing && hasActiveSocial && (
+        <div className="bg-orange-50 border border-orange-200 rounded-2xl px-4 py-3 text-xs text-stone-600 flex items-center justify-between gap-3">
+          <span className="flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-orange-500" />
+            Mes gratis · usas {zonesIOwn}/{maxZones} zonas propias
+          </span>
+          <button onClick={() => navigate('/plan')} className="font-bold text-orange-600 uppercase tracking-widest">Mi plan</button>
+        </div>
+      )}
 
       <div className="flex gap-2">
         <form onSubmit={handleSearchLocation} className="relative flex-1">
@@ -88,8 +151,29 @@ export default function WalkingZonesPage() {
         </MapContainer>
       </div>
 
+      {/* Primary CTA: create zone (only if user can and hasn't opened the form) */}
+      {!isCreatingZone && canCreateNewZone && (
+        <button
+          onClick={handleOpenCreateForm}
+          className="w-full flex items-center justify-center gap-3 bg-orange-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-orange-100 hover:bg-orange-700 active:scale-[0.98] transition-all"
+        >
+          <Plus className="w-5 h-5" />
+          Crear zona aquí
+        </button>
+      )}
+
+      {/* Limit reached CTA (explains why instead of letting them click into nothing) */}
+      {!isCreatingZone && hasActiveSocial && reachedZoneLimit && (
+        <div className="w-full flex items-center justify-center gap-3 bg-stone-100 text-stone-500 font-medium py-4 rounded-2xl text-sm">
+          <Lock className="w-4 h-4" />
+          {isTrialing
+            ? 'Durante el mes gratis solo puedes crear 1 zona'
+            : `Límite alcanzado (${maxZones} zonas)`}
+        </div>
+      )}
+
       {isCreatingZone && (
-        <div className="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4">
+        <div id="create-zone-form" className="bg-white p-6 rounded-3xl border-2 border-orange-400 shadow-lg shadow-orange-100 space-y-4">
           <h3 className="font-bold">Crear Nueva Zona</h3>
           <p className="text-xs text-stone-400">La zona se creará en tu ubicación actual.</p>
           <form onSubmit={handleCreateZone} className="space-y-4">
@@ -115,8 +199,8 @@ export default function WalkingZonesPage() {
           const isActive = currentZoneId === zone.id;
           return (
             <div key={zone.id} className={cn("bg-white p-6 rounded-3xl border transition-all cursor-pointer", isActive ? "border-orange-500 ring-2 ring-orange-100" : "border-stone-200")} onClick={() => navigate(`/zones/${zone.id}`)}>
-              <div className="flex justify-between items-start mb-4">
-                <div><h3 className="text-xl font-bold">{zone.name}</h3><p className="text-stone-400 text-sm">{zone.radius}m de radio</p></div>
+              <div className="flex justify-between items-start mb-4 gap-3">
+                <div className="min-w-0 flex-1"><h3 className="text-xl font-bold truncate">{zone.name}</h3><p className="text-stone-400 text-sm">{zone.radius}m de radio</p></div>
                 {isActive && <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest animate-pulse">¡Estás aquí!</span>}
                 <button onClick={(e) => { e.stopPropagation(); togglePrimaryZone(zone.id); }}
                   aria-label="Zona principal"
@@ -127,7 +211,24 @@ export default function WalkingZonesPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2"><UserIcon className="w-4 h-4 text-stone-400" /><span className="text-sm font-medium text-stone-600">{zone.member_count ?? 0} miembros</span></div>
                 {!zone.is_member ? (
-                  <button onClick={(e) => { e.stopPropagation(); joinZone(zone); }} className="bg-stone-900 text-white text-xs font-bold px-4 py-2 rounded-xl">Unirse</button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!canJoinZone) {
+                        showToast('Necesitas PetPanic Social para unirte a una zona.', 'error');
+                        navigate('/plan');
+                        return;
+                      }
+                      joinZone(zone);
+                    }}
+                    className={cn(
+                      'text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5',
+                      canJoinZone ? 'bg-stone-900 text-white' : 'bg-stone-100 text-stone-400'
+                    )}
+                  >
+                    {!canJoinZone && <Lock className="w-3 h-3" />}
+                    Unirse
+                  </button>
                 ) : <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">Miembro</span>}
               </div>
             </div>

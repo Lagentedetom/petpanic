@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, Edit2, User as UserIcon, LogOut, Trash2, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, Edit2, User as UserIcon, LogOut, Trash2, AlertTriangle, Sparkles, ChevronRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useSubscription } from '../hooks/useSubscription';
 import { supabase } from '../lib/supabase';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { userProfile, updateProfile, logOut } = useApp();
+  const { isTrialing, isActivePaid, daysLeftInTrial } = useSubscription();
+  const planLabel = isActivePaid
+    ? 'PetPanic Social · activo'
+    : isTrialing
+      ? `Mes gratis · ${daysLeftInTrial} ${daysLeftInTrial === 1 ? 'día' : 'días'} restantes`
+      : 'PetPanic Gratis · activo';
 
   const [isEditing, setIsEditing] = useState(false);
   const [profileForm, setProfileForm] = useState({ first_name: '', last_name: '', display_name: '' });
@@ -49,12 +56,12 @@ export default function ProfilePage() {
         {isEditing ? (
           <form onSubmit={handleSave} className="space-y-6">
             <div className="space-y-4">
-              <div className="space-y-2"><label className="text-sm font-bold uppercase tracking-wider text-stone-500">Nombre</label>
-                <input required type="text" value={profileForm.first_name} onChange={e => setProfileForm(prev => ({ ...prev, first_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Tu nombre" /></div>
-              <div className="space-y-2"><label className="text-sm font-bold uppercase tracking-wider text-stone-500">Apellidos</label>
-                <input required type="text" value={profileForm.last_name} onChange={e => setProfileForm(prev => ({ ...prev, last_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Tus apellidos" /></div>
-              <div className="space-y-2"><label className="text-sm font-bold uppercase tracking-wider text-stone-500">Nombre de Usuario (Público)</label>
-                <input type="text" value={profileForm.display_name} onChange={e => setProfileForm(prev => ({ ...prev, display_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Ej: Nico Tomic" />
+              <div className="space-y-2"><label htmlFor="profile-first-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">Nombre</label>
+                <input id="profile-first-name" required type="text" autoComplete="given-name" value={profileForm.first_name} onChange={e => setProfileForm(prev => ({ ...prev, first_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Tu nombre" /></div>
+              <div className="space-y-2"><label htmlFor="profile-last-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">Apellidos</label>
+                <input id="profile-last-name" required type="text" autoComplete="family-name" value={profileForm.last_name} onChange={e => setProfileForm(prev => ({ ...prev, last_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Tus apellidos" /></div>
+              <div className="space-y-2"><label htmlFor="profile-display-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">Nombre de Usuario (Público)</label>
+                <input id="profile-display-name" type="text" autoComplete="username" value={profileForm.display_name} onChange={e => setProfileForm(prev => ({ ...prev, display_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Ej: Nico Tomic" />
                 <p className="text-[10px] text-stone-400">Este es el nombre que verán otros usuarios.</p></div>
             </div>
             <div className="flex gap-4">
@@ -77,7 +84,21 @@ export default function ProfilePage() {
               </div>
               <div className="space-y-1"><p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1">Código de Amigo</p><p className="bg-orange-50 p-3 rounded-xl font-bold text-orange-600 tracking-widest">{userProfile?.friend_code}</p></div>
             </div>
-            <button onClick={logOut} className="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 font-bold py-4 rounded-2xl hover:bg-red-100 transition-all mt-8"><LogOut className="w-5 h-5" /> CERRAR SESIÓN</button>
+            <button
+              onClick={() => navigate('/plan')}
+              className="w-full flex items-center justify-between gap-2 bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 text-stone-900 font-bold py-4 px-5 rounded-2xl hover:shadow-md transition-all mt-6"
+            >
+              <span className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-orange-500" />
+                <span className="flex flex-col items-start">
+                  <span>Mi plan</span>
+                  <span className="text-[11px] font-medium text-stone-500">{planLabel}</span>
+                </span>
+              </span>
+              <ChevronRight className="w-5 h-5 text-stone-400" />
+            </button>
+
+            <button onClick={logOut} className="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 font-bold py-4 rounded-2xl hover:bg-red-100 transition-all mt-4"><LogOut className="w-5 h-5" /> CERRAR SESIÓN</button>
           </>
         )}
       </div>
@@ -93,19 +114,23 @@ export default function ProfilePage() {
         {showDeleteConfirm && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6"
+            className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-6"
             onClick={() => !isDeleting && setShowDeleteConfirm(false)}
           >
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="delete-account-title"
+              aria-describedby="delete-account-desc"
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
               className="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4"
               onClick={e => e.stopPropagation()}
             >
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-                <AlertTriangle className="w-8 h-8 text-red-600" />
+                <AlertTriangle aria-hidden="true" className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-xl font-bold">¿Eliminar tu cuenta?</h3>
-              <p className="text-stone-500 text-sm">Esta acción es permanente. Se eliminarán todos tus datos: mascotas, alertas, amigos y zonas de paseo. No se puede deshacer.</p>
+              <h3 id="delete-account-title" className="text-xl font-bold">¿Eliminar tu cuenta?</h3>
+              <p id="delete-account-desc" className="text-stone-500 text-sm">Esta acción es permanente. Se eliminarán todos tus datos: mascotas, alertas, amigos y zonas de paseo. No se puede deshacer.</p>
               {deleteError && <p className="text-red-500 text-xs font-medium">{deleteError}</p>}
               <div className="flex gap-3">
                 <button onClick={() => setShowDeleteConfirm(false)} disabled={isDeleting}
