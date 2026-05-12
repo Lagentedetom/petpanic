@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appIDs": ["TEAMID.com.petpanic.app"],
+        "appIDs": ["G3H52JKEG8.com.petpanic.app"],
         "components": [
           { "/": "/pet/*",    "comment": "Public pet QR pages → open in app" },
           { "/": "/alerts/*", "comment": "Alert details → open in app from push" },
@@ -13,6 +13,6 @@
     ]
   },
   "webcredentials": {
-    "apps": ["TEAMID.com.petpanic.app"]
+    "apps": ["G3H52JKEG8.com.petpanic.app"]
   }
 }
