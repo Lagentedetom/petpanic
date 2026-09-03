@@ -128,7 +128,7 @@ export default function ZoneDetailsPage() {
               })}
               {presenceWithSelf.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length > 0 && (
                 <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 text-center">
-                  <p className="text-xs text-stone-400 font-medium">
+                  <p className="text-xs text-orange-600 font-medium">
                     + {presenceWithSelf.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length} paseantes más en la zona. Conéctate como amigo para ver sus nombres.
                   </p>
                 </div>

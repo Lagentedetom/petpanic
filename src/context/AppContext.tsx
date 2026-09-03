@@ -322,6 +322,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return () => { supabase.removeChannel(channel); };
   }, [user, fetchZones]);
 
+  // fetchZones filters zones by distance from the device location, but reads
+  // locationRef at call time — so the mount call above runs before GPS resolves
+  // and produces an empty list that otherwise never refreshes. Re-run it when
+  // the coarse location key changes (location resolved, or user moved ~1km),
+  // mirroring the fetchAlerts/locKey effect.
+  useEffect(() => {
+    if (!user || !locKey) return;
+    fetchZones();
+  }, [user, locKey, fetchZones]);
+
   // ── Friendships listener ──
   useEffect(() => {
     if (!user) return;

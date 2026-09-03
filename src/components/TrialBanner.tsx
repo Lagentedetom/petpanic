@@ -35,13 +35,18 @@ export default function TrialBanner() {
   // Paid subscriber: nothing to show.
   if (isActivePaid) return null;
 
+  // The banner is the topmost element on screen (above the Header), so it owns
+  // the safe-area inset — without it the text hides under the notch/Dynamic Island.
+  const bannerStyle = { paddingTop: 'max(0.75rem, env(safe-area-inset-top))' };
+
   // Active trial: countdown banner. Last 5 days flips to urgent variant.
   if (isTrialing) {
     const urgent = daysLeftInTrial <= 5;
     return (
       <button
         onClick={() => navigate('/plan')}
-        className={`w-full flex items-center justify-between gap-3 px-5 py-3 text-sm font-medium transition-colors ${
+        style={bannerStyle}
+        className={`w-full flex items-center justify-between gap-3 px-5 pb-3 text-sm font-medium transition-colors ${
           urgent
             ? 'bg-orange-600 text-white hover:bg-orange-700'
             : 'bg-gradient-to-r from-orange-50 to-yellow-50 text-stone-900 hover:from-orange-100 hover:to-yellow-100 border-b border-orange-200'
@@ -69,7 +74,8 @@ export default function TrialBanner() {
     return (
       <button
         onClick={() => navigate('/plan')}
-        className="w-full flex items-center justify-between gap-3 px-5 py-3 text-sm font-medium bg-stone-900 text-white hover:bg-stone-800 transition-colors"
+        style={bannerStyle}
+        className="w-full flex items-center justify-between gap-3 px-5 pb-3 text-sm font-medium bg-stone-900 text-white hover:bg-stone-800 transition-colors"
       >
         <span className="flex items-center gap-2 min-w-0">
           <AlertTriangle className="w-4 h-4 flex-shrink-0 text-orange-300" />
@@ -86,7 +92,8 @@ export default function TrialBanner() {
     return (
       <button
         onClick={() => navigate('/plan')}
-        className="w-full flex items-center justify-between gap-3 px-5 py-3 text-sm font-medium bg-gradient-to-r from-orange-50 to-yellow-50 text-stone-900 hover:from-orange-100 hover:to-yellow-100 border-b border-orange-200 transition-colors"
+        style={bannerStyle}
+        className="w-full flex items-center justify-between gap-3 px-5 pb-3 text-sm font-medium bg-gradient-to-r from-orange-50 to-yellow-50 text-stone-900 hover:from-orange-100 hover:to-yellow-100 border-b border-orange-200 transition-colors"
       >
         <span className="flex items-center gap-2 min-w-0">
           <Sparkles className="w-4 h-4 flex-shrink-0 text-orange-500" />
