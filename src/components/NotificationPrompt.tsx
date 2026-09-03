@@ -1,16 +1,27 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Bell, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { requestNotificationPermission, getNotificationPermissionState } from '../lib/notifications';
+import { isNative } from '../lib/native';
+import { registerNativePush, requestNotificationPermission, getNotificationPermissionState } from '../lib/notifications';
 
 export default function NotificationPrompt() {
   const { user } = useApp();
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
     if (!user) return;
+
+    // Native (iOS/Android): skip the custom card and register directly — the OS
+    // shows its own permission dialog, and the web Notification API isn't
+    // available inside the WebView anyway.
+    if (isNative()) {
+      void registerNativePush(user.id, (path) => navigate(path));
+      return;
+    }
 
     const permission = getNotificationPermissionState();
     const dismissed = sessionStorage.getItem('notif-prompt-dismissed');
@@ -21,7 +32,7 @@ export default function NotificationPrompt() {
       const timer = setTimeout(() => setShow(true), 3000);
       return () => clearTimeout(timer);
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const handleEnable = async () => {
     if (!user) return;

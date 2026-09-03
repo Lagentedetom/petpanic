@@ -20,6 +20,14 @@ serve(async (req) => {
     const VAPID_PRIVATE_KEY = Deno.env.get("VAPID_PRIVATE_KEY")!;
     const VAPID_SUBJECT = Deno.env.get("VAPID_SUBJECT") || "mailto:admin@petpanic.com";
 
+    // APNs config — optional. If unset, iOS subscribers are skipped and Web
+    // Push still works, so the function never hard-fails on a missing key.
+    const APNS_KEY = Deno.env.get("APNS_KEY") || "";
+    const APNS_KEY_ID = Deno.env.get("APNS_KEY_ID") || "";
+    const APNS_TEAM_ID = Deno.env.get("APNS_TEAM_ID") || "";
+    const APNS_BUNDLE_ID = Deno.env.get("APNS_BUNDLE_ID") || "";
+    const APNS_HOST = Deno.env.get("APNS_HOST") || "https://api.push.apple.com";
+
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     // Get nearby subscribers using PostGIS function
@@ -45,49 +53,89 @@ serve(async (req) => {
 
     console.log(`Found ${subscribers.length} nearby subscribers for alert ${record.id}`);
 
-    // Build the push payload
-    const pushPayload = JSON.stringify({
-      title: `🚨 ¡${record.pet_name} se ha perdido!`,
-      body: "Una mascota se ha perdido cerca de ti. Toca para ayudar.",
-      alertId: record.id,
-    });
+    // Notification content, shared by both delivery channels.
+    const title = `🚨 ¡${record.pet_name} se ha perdido!`;
+    const body = "Una mascota se ha perdido cerca de ti. Toca para ayudar.";
+    const webPayload = JSON.stringify({ title, body, alertId: record.id });
 
-    // Send Web Push to each subscriber
+    // Sign the APNs JWT once and reuse it for every iOS send this invocation.
+    let apnsJwt = "";
+    if (APNS_KEY && APNS_KEY_ID && APNS_TEAM_ID && APNS_BUNDLE_ID) {
+      try {
+        apnsJwt = await createApnsJwt(APNS_KEY, APNS_KEY_ID, APNS_TEAM_ID);
+      } catch (err) {
+        console.error("APNs JWT creation failed:", err);
+      }
+    }
+
     let sent = 0;
     let failed = 0;
 
     for (const sub of subscribers) {
       try {
-        const pushSubscription = {
-          endpoint: sub.endpoint,
-          keys: {
-            p256dh: sub.p256dh,
-            auth: sub.sub_auth,
-          },
-        };
-
-        // Use the Web Push protocol via fetch
-        const result = await sendWebPush(
-          pushSubscription,
-          pushPayload,
-          VAPID_PUBLIC_KEY,
-          VAPID_PRIVATE_KEY,
-          VAPID_SUBJECT
-        );
-
-        if (result.ok) {
-          sent++;
-        } else if (result.status === 404 || result.status === 410) {
-          // Subscription expired or invalid - remove it
-          console.log(`Removing invalid subscription for user ${sub.sub_user_id}`);
-          await supabase
-            .from("push_subscriptions")
-            .delete()
-            .eq("endpoint", sub.endpoint);
-          failed++;
+        if (sub.platform === "ios") {
+          // ── APNs (native iOS) ──
+          if (!apnsJwt) {
+            console.warn(`Skipping iOS subscriber ${sub.sub_user_id} — APNs not configured`);
+            failed++;
+            continue;
+          }
+          const res = await sendApns(APNS_HOST, apnsJwt, APNS_BUNDLE_ID, sub.device_token, {
+            title,
+            body,
+            alertId: record.id,
+          });
+          if (res.status === 200) {
+            sent++;
+          } else {
+            const reason = await res.text().catch(() => "");
+            if (
+              res.status === 410 ||
+              reason.includes("BadDeviceToken") ||
+              reason.includes("Unregistered")
+            ) {
+              console.log(`Removing dead APNs token for user ${sub.sub_user_id}`);
+              await supabase
+                .from("push_subscriptions")
+                .delete()
+                .eq("device_token", sub.device_token);
+            } else {
+              console.error(`APNs failed for ${sub.sub_user_id}: ${res.status} ${reason}`);
+            }
+            failed++;
+          }
         } else {
-          console.error(`Push failed for ${sub.sub_user_id}: ${result.status}`);
-          failed++;
+          // ── Web Push (browser / PWA) ──
+          const pushSubscription = {
+            endpoint: sub.endpoint,
+            keys: {
+              p256dh: sub.p256dh,
+              auth: sub.sub_auth,
+            },
+          };
+
+          const result = await sendWebPush(
+            pushSubscription,
+            webPayload,
+            VAPID_PUBLIC_KEY,
+            VAPID_PRIVATE_KEY,
+            VAPID_SUBJECT
+          );
+
+          if (result.ok) {
+            sent++;
+          } else if (result.status === 404 || result.status === 410) {
+            // Subscription expired or invalid - remove it
+            console.log(`Removing invalid subscription for user ${sub.sub_user_id}`);
+            await supabase
+              .from("push_subscriptions")
+              .delete()
+              .eq("endpoint", sub.endpoint);
+            failed++;
+          } else {
+            console.error(`Push failed for ${sub.sub_user_id}: ${result.status}`);
+            failed++;
+          }
         }
       } catch (err) {
         console.error(`Push error for ${sub.sub_user_id}:`, err);
@@ -102,6 +150,73 @@ serve(async (req) => {
     return new Response(JSON.stringify({ error: String(err) }), { status: 500 });
   }
 });
+
+// ── APNs (Apple Push Notification service) ──
+
+async function sendApns(
+  host: string,
+  jwt: string,
+  bundleId: string,
+  deviceToken: string,
+  msg: { title: string; body: string; alertId: string }
+): Promise<Response> {
+  return fetch(`${host}/3/device/${deviceToken}`, {
+    method: "POST",
+    headers: {
+      authorization: `bearer ${jwt}`,
+      "apns-topic": bundleId,
+      "apns-push-type": "alert",
+      "apns-priority": "10",
+    },
+    body: JSON.stringify({
+      aps: {
+        alert: { title: msg.title, body: msg.body },
+        sound: "default",
+      },
+      alertId: msg.alertId,
+    }),
+  });
+}
+
+async function createApnsJwt(
+  p8: string,
+  keyId: string,
+  teamId: string
+): Promise<string> {
+  const header = { alg: "ES256", kid: keyId };
+  const now = Math.floor(Date.now() / 1000);
+  const claims = { iss: teamId, iat: now };
+
+  const headerB64 = base64urlEncode(encoder.encode(JSON.stringify(header)));
+  const claimsB64 = base64urlEncode(encoder.encode(JSON.stringify(claims)));
+  const unsigned = `${headerB64}.${claimsB64}`;
+
+  const cryptoKey = await crypto.subtle.importKey(
+    "pkcs8",
+    pemToDer(p8),
+    { name: "ECDSA", namedCurve: "P-256" },
+    false,
+    ["sign"]
+  );
+
+  const signature = await crypto.subtle.sign(
+    { name: "ECDSA", hash: "SHA-256" },
+    cryptoKey,
+    encoder.encode(unsigned)
+  );
+
+  return `${unsigned}.${base64urlEncode(new Uint8Array(signature))}`;
+}
+
+// Strip the PEM armor from an APNs .p8 key and return raw DER bytes.
+function pemToDer(pem: string): Uint8Array {
+  const b64 = pem
+    .replace(/\\n/g, "\n")
+    .replace(/-----[A-Z ]+-----/g, "")
+    .replace(/\s+/g, "");
+  const binary = atob(b64);
+  return Uint8Array.from([...binary].map((c) => c.charCodeAt(0)));
+}
 
 // ── Web Push implementation using Web Crypto API ──
 
