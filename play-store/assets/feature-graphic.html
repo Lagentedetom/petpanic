@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1024px; height: 500px; overflow: hidden; }
+  body {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #ea580c 0%, #f26344 55%, #f97316 100%);
+    color: #fff;
+    position: relative;
+  }
+  .wrap {
+    width: 1024px; height: 500px;
+    display: flex; align-items: flex-start; flex-direction: column;
+    justify-content: center;
+    padding: 0 70px 92px 70px;
+    position: relative;
+    z-index: 2;
+  }
+  .left { width: 620px; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.35);
+    padding: 7px 16px; border-radius: 999px;
+    font-size: 18px; font-weight: 700; letter-spacing: .3px;
+    margin-bottom: 22px;
+  }
+  h1 {
+    font-size: 60px; line-height: 1.04; font-weight: 800;
+    letter-spacing: -1.2px;
+  }
+  h1 .accent { color: #1c1c2e; }
+  p.tag {
+    margin-top: 22px; font-size: 25px; font-weight: 600;
+    color: rgba(255,255,255,.95);
+  }
+  .brand {
+    position: absolute; bottom: 38px; left: 70px;
+    display: flex; align-items: center; gap: 14px; z-index: 3;
+  }
+  .brand .logo {
+    width: 52px; height: 52px; border-radius: 13px;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,.18);
+  }
+  .brand .name { font-size: 30px; font-weight: 800; letter-spacing: -.5px; }
+  /* big decorative paw cluster on the right */
+  .paws {
+    position: absolute; right: -20px; top: 0; bottom: 0;
+    width: 460px; z-index: 1; opacity: .9;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .paws svg { width: 430px; height: 430px; filter: drop-shadow(0 10px 30px rgba(0,0,0,.15)); }
+</style>
+</head>
+<body>
+  <div class="paws">
+    <!-- two paw prints, white translucent -->
+    <svg viewBox="0 0 320 320" fill="rgba(255,255,255,.16)">
+      <g transform="translate(40,30)">
+        <ellipse cx="120" cy="150" rx="55" ry="48"/>
+        <ellipse cx="70" cy="80" rx="20" ry="27"/>
+        <ellipse cx="120" cy="58" rx="22" ry="29"/>
+        <ellipse cx="172" cy="80" rx="20" ry="27"/>
+        <ellipse cx="205" cy="135" rx="17" ry="23"/>
+      </g>
+      <g transform="translate(120,120)">
+        <ellipse cx="120" cy="150" rx="55" ry="48"/>
+        <ellipse cx="70" cy="80" rx="20" ry="27"/>
+        <ellipse cx="120" cy="58" rx="22" ry="29"/>
+        <ellipse cx="172" cy="80" rx="20" ry="27"/>
+        <ellipse cx="205" cy="135" rx="17" ry="23"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="wrap">
+    <div class="left">
+      <span class="badge">🐾 Mascotas perdidas</span>
+      <h1>Cuando tu mascota se pierde,<br><span class="accent">tu barrio responde.</span></h1>
+      <p class="tag">Avisa al instante a vecinos y protectoras.</p>
+    </div>
+  </div>
+
+  <div class="brand">
+    <div class="logo">
+      <svg width="34" height="34" viewBox="0 0 320 320" fill="#3b3b3b">
+        <ellipse cx="160" cy="195" rx="52" ry="46"/>
+        <ellipse cx="112" cy="128" rx="19" ry="25"/>
+        <ellipse cx="160" cy="108" rx="21" ry="27"/>
+        <ellipse cx="208" cy="128" rx="19" ry="25"/>
+        <ellipse cx="240" cy="180" rx="16" ry="22"/>
+      </svg>
+    </div>
+    <span class="name">PetPanic</span>
+  </div>
+</body>
+</html>
