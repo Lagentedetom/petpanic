@@ -29,6 +29,7 @@ const PublicPetPage = lazy(() => import('./pages/PublicPetPage'));
 const ProtectorasAltaPage = lazy(() => import('./pages/ProtectorasAltaPage'));
 const ProtectorasConfirmarPage = lazy(() => import('./pages/ProtectorasConfirmarPage'));
 const ProtectorasBajaPage = lazy(() => import('./pages/ProtectorasBajaPage'));
+const BetaLandingPage = lazy(() => import('./pages/BetaLandingPage'));
 
 function PageLoader() {
   return (
@@ -61,6 +62,7 @@ function AppRoutes() {
   if (location.pathname === '/protectoras' || location.pathname === '/protectoras/alta') return <Suspense fallback={<PageLoader />}><ProtectorasAltaPage /></Suspense>;
   if (location.pathname === '/protectoras/confirmar') return <Suspense fallback={<PageLoader />}><ProtectorasConfirmarPage /></Suspense>;
   if (location.pathname === '/protectoras/baja') return <Suspense fallback={<PageLoader />}><ProtectorasBajaPage /></Suspense>;
+  if (location.pathname === '/beta') return <Suspense fallback={<PageLoader />}><BetaLandingPage /></Suspense>;
 
   if (loading) {
     return (
