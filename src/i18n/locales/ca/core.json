@@ -1,0 +1,34 @@
+{
+  "toast": {
+    "alertActivated": "Alerta activada! Hem avisat els usuaris propers.",
+    "petFound": "Mascota trobada! Alerta resolta.",
+    "zoneCreated": "S'ha creat la zona «{{name}}». Ja n'ets el fundador o la fundadora."
+  },
+  "errors": {
+    "alert": {
+      "locationRequired": "Necessitem la teva ubicació per activar l'alerta.",
+      "contactRequired": "Afegeix dades de contacte a la teva mascota abans d'activar l'alerta.",
+      "activate": "No s'ha pogut activar l'alerta. Torna-ho a provar.",
+      "resolve": "No s'ha pogut resoldre l'alerta. Torna-ho a provar."
+    },
+    "zone": {
+      "overlap": "Ja hi ha una zona de passeig a menys de 200 m. Uneix-t'hi en lloc de crear-ne una de nova.",
+      "limitReached": "Has arribat al límit de zones que pots crear amb el teu pla.",
+      "createNeedsSocial": "Necessites PetPanic Social per crear zones de passeig.",
+      "create": "No s'ha pogut crear la zona. Torna-ho a provar.",
+      "joinNeedsSocial": "Necessites PetPanic Social per unir-te a una zona de passeig.",
+      "join": "No t'has pogut unir a la zona. Torna-ho a provar."
+    },
+    "friends": {
+      "codeMissing": "No es pot enviar la sol·licitud: falta el codi d'amic.",
+      "codeInvalid": "El codi d'amic no és vàlid.",
+      "requestExists": "Ja hi ha una sol·licitud entre vosaltres.",
+      "requestNeedsSocial": "Necessites PetPanic Social per enviar sol·licituds d'amistat.",
+      "request": "No s'ha pogut enviar la sol·licitud. Torna-ho a provar."
+    }
+  },
+  "distance": {
+    "meters": "{{value}} m",
+    "kilometers": "{{value}} km"
+  }
+}

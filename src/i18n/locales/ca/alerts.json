@@ -1,0 +1,34 @@
+{
+  "details": {
+    "title": "Detalls de l'alerta",
+    "notFound": "No hem trobat aquesta alerta.",
+    "resolvedBanner": "<strong>Alerta resolta.</strong> Aquesta mascota ja ha aparegut. La pàgina es manté com a referència, però el xat ja no admet missatges nous.",
+    "lostSince": "Es va perdre {{time}}",
+    "mapTitle": "Ubicació aproximada de la mascota",
+    "openInMaps": "OBRE A GOOGLE MAPS",
+    "breed": "Raça",
+    "color": "Color",
+    "traits": "Trets",
+    "notSpecified": "Sense especificar",
+    "noDescription": "Sense descripció addicional",
+    "ownerContact": "Contacte del propietari",
+    "contactNote": "Si us plau, contacta només si tens informació útil."
+  },
+  "share": {
+    "button": "Comparteix l'alerta",
+    "title": "{{name}} s'ha perdut!",
+    "text": "Ajuda a trobar {{name}} ({{description}}). Contacte: {{contact}}",
+    "fallbackDescription": "mascota",
+    "copied": "Alerta copiada al porta-retalls"
+  },
+  "chat": {
+    "title": "Missatges d'ajuda",
+    "empty": "Encara no hi ha missatges. Si en saps alguna cosa, escriu-ho aquí.",
+    "photoAlt": "Foto adjunta",
+    "messageLabel": "Missatge",
+    "placeholder": "Escriu un missatge…",
+    "attachPhoto": "Adjunta una foto",
+    "send": "Envia el missatge",
+    "closed": "El xat es va tancar quan es va resoldre l'alerta."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "brand": "PetPanic",
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "continue": "Continue",
+    "retry": "Try again",
+    "delete": "Delete",
+    "edit": "Edit",
+    "send": "Send",
+    "accept": "OK",
+    "loading": "Loading…"
+  },
+  "nav": {
+    "home": "Home",
+    "pets": "Pets",
+    "zones": "Zones",
+    "friends": "Friends",
+    "alerts": "Alerts",
+    "alertsNone": "Alerts, none nearby",
+    "alertsNearby_one": "Alerts, {{count}} nearby",
+    "alertsNearby_other": "Alerts, {{count}} nearby",
+    "logout": "Log out"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again."
+  }
+}

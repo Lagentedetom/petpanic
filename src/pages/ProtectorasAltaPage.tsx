@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Bell, MapPin, Mail, Check, AlertCircle } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 
 type CpInfo = { city: string; province: string } | null;
 
 export default function ProtectorasAltaPage() {
+  const { t } = useTranslation('shelters');
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [cpBase, setCpBase] = useState('');
@@ -19,6 +21,7 @@ export default function ProtectorasAltaPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  // Clave de traducción del error (namespace `shelters`), no el texto.
   const [error, setError] = useState<string | null>(null);
 
   // Validate CP against spanish_postal_codes as the user types (debounced).
@@ -80,7 +83,7 @@ export default function ProtectorasAltaPage() {
       setSubmitted(true);
     } catch (err) {
       console.error(err);
-      setError('No hemos podido enviar la suscripción. Inténtalo en un minuto.');
+      setError('signup.errors.send');
     } finally {
       setSubmitting(false);
     }
@@ -93,13 +96,12 @@ export default function ProtectorasAltaPage() {
           <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
             <Mail className="w-8 h-8 text-orange-600" />
           </div>
-          <h1 className="text-2xl font-bold">Comprueba tu correo</h1>
+          <h1 className="text-2xl font-bold">{t('signup.sent.title')}</h1>
           <p className="text-stone-600 leading-relaxed">
-            Hemos enviado un email a <strong>{email}</strong> para confirmar la suscripción.
-            Solo tenéis que abrirlo y pulsar el botón <em>Confirmar suscripción</em>.
+            <Trans t={t} i18nKey="signup.sent.body" values={{ email }} components={{ strong: <strong />, em: <em /> }} />
           </p>
           <p className="text-xs text-stone-400">
-            ¿No lo veis? Mirad en la carpeta de spam o promociones. El remitente es <strong>alertas@petpanic.es</strong>.
+            <Trans t={t} i18nKey="signup.sent.spam" values={{ sender: 'alertas@petpanic.es' }} components={{ strong: <strong /> }} />
           </p>
         </div>
       </PublicShell>
@@ -109,27 +111,27 @@ export default function ProtectorasAltaPage() {
   return (
     <PublicShell>
       <div className="space-y-2">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-orange-600">Para protectoras</p>
-        <h1 className="text-3xl font-bold leading-tight">Recibe alertas de perros perdidos en tu zona</h1>
+        <p className="text-[11px] font-bold uppercase tracking-widest text-orange-600">{t('signup.eyebrow')}</p>
+        <h1 className="text-3xl font-bold leading-tight">{t('signup.title')}</h1>
         <p className="text-stone-600 leading-relaxed pt-2">
-          Sin contraseñas. Sin app. Sin perfil que mantener. Solo un email cada vez que se pierda o se encuentre una mascota cerca de vuestra protectora. Os daréis de baja con un click cuando queráis.
+          {t('signup.intro')}
         </p>
       </div>
 
       <ul className="space-y-3 py-2 text-sm text-stone-700">
-        <Feat icon={Bell}>Un correo cuando alguien activa una alerta de perro perdido en vuestra zona</Feat>
-        <Feat icon={MapPin}>Definís la zona con el código postal + radio de cobertura</Feat>
-        <Feat icon={Check}>Otro correo cuando se cierra la alerta — para que no tengáis casos colgando</Feat>
+        <Feat icon={Bell}>{t('signup.features.alert')}</Feat>
+        <Feat icon={MapPin}>{t('signup.features.zone')}</Feat>
+        <Feat icon={Check}>{t('signup.features.closed')}</Feat>
       </ul>
 
       <form onSubmit={handleSubmit} className="space-y-4 pt-2" noValidate>
-        <Field label="Nombre de la protectora" htmlFor="prot-nombre">
+        <Field label={t('signup.fields.name')} htmlFor="prot-nombre">
           <input
             id="prot-nombre"
             type="text"
             value={nombre}
             onChange={e => setNombre(e.target.value)}
-            placeholder="Asociación Protectora de Animales de…"
+            placeholder={t('signup.fields.namePlaceholder')}
             className={inputClass}
             required
             maxLength={120}
@@ -137,13 +139,13 @@ export default function ProtectorasAltaPage() {
           />
         </Field>
 
-        <Field label="Email de contacto" htmlFor="prot-email">
+        <Field label={t('signup.fields.email')} htmlFor="prot-email">
           <input
             id="prot-email"
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            placeholder="alertas@protectora.org"
+            placeholder={t('signup.fields.emailPlaceholder')}
             className={inputClass}
             required
             autoComplete="email"
@@ -151,7 +153,7 @@ export default function ProtectorasAltaPage() {
         </Field>
 
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Código postal" htmlFor="prot-cp">
+          <Field label={t('signup.fields.postcode')} htmlFor="prot-cp">
             <input
               id="prot-cp"
               type="text"
@@ -165,18 +167,18 @@ export default function ProtectorasAltaPage() {
               autoComplete="postal-code"
             />
             <p className="text-xs text-stone-400 mt-1 min-h-[1.25rem]">
-              {cpBase.length === 5 && cpChecking && 'Comprobando…'}
+              {cpBase.length === 5 && cpChecking && t('signup.fields.postcodeChecking')}
               {cpBase.length === 5 && !cpChecking && cpInfo && (
                 <span className="text-stone-600">
                   ✓ {cpInfo.city}, {cpInfo.province}
                 </span>
               )}
               {cpBase.length === 5 && !cpChecking && !cpInfo && (
-                <span className="text-red-600">CP no encontrado</span>
+                <span className="text-red-600">{t('signup.fields.postcodeNotFound')}</span>
               )}
             </p>
           </Field>
-          <Field label="Radio (km)" htmlFor="prot-radio">
+          <Field label={t('signup.fields.radius')} htmlFor="prot-radio">
             <input
               id="prot-radio"
               type="number"
@@ -188,24 +190,24 @@ export default function ProtectorasAltaPage() {
               className={inputClass}
               required
             />
-            <p className="text-xs text-stone-400 mt-1">5 a 100 km</p>
+            <p className="text-xs text-stone-400 mt-1">{t('signup.fields.radiusHint')}</p>
           </Field>
         </div>
 
         <fieldset className="space-y-2 pt-2">
           <legend className="text-sm font-bold uppercase tracking-wider text-stone-500 mb-2">
-            ¿Qué queréis recibir?
+            {t('signup.optIns.legend')}
           </legend>
-          <Toggle label="Avisos de mascotas perdidas" checked={optInPerdidos} onChange={setOptInPerdidos} />
-          <Toggle label="Avisos de mascotas encontradas (cierre de caso)" checked={optInEncontrados} onChange={setOptInEncontrados} />
-          <Toggle label="Incluir también alertas hasta 50 km (zona ampliada)" checked={optInOverflow} onChange={setOptInOverflow} />
-          <Toggle label="Resumen diario (un solo email al día con todos los casos)" checked={digestDiario} onChange={setDigestDiario} />
+          <Toggle label={t('signup.optIns.lost')} checked={optInPerdidos} onChange={setOptInPerdidos} />
+          <Toggle label={t('signup.optIns.found')} checked={optInEncontrados} onChange={setOptInEncontrados} />
+          <Toggle label={t('signup.optIns.overflow')} checked={optInOverflow} onChange={setOptInOverflow} />
+          <Toggle label={t('signup.optIns.digest')} checked={digestDiario} onChange={setDigestDiario} />
         </fieldset>
 
         {error && (
           <div role="alert" className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2">
             <AlertCircle aria-hidden="true" className="w-4 h-4 flex-shrink-0 mt-0.5" />
-            <span>{error}</span>
+            <span>{t(error)}</span>
           </div>
         )}
 
@@ -214,26 +216,26 @@ export default function ProtectorasAltaPage() {
           disabled={!canSubmit || submitting}
           className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-stone-200 disabled:text-stone-400 text-white font-bold py-4 rounded-2xl transition-colors text-base"
         >
-          {submitting ? 'Enviando…' : 'Suscribirnos a las alertas'}
+          {submitting ? t('signup.submitting') : t('signup.submit')}
         </button>
 
         <p className="text-xs text-stone-400 leading-relaxed">
-          Al darte de alta aceptas recibir emails relacionados con alertas de mascotas perdidas en tu zona. Podrás darte de baja con un click en cualquier momento. Cumplimos LOPD/GDPR — más detalles en nuestra{' '}
-          <a href="/privacidad" className="underline">política de privacidad</a>.
+          <Trans t={t} i18nKey="signup.consent" components={{ privacyLink: <a href="/privacidad" className="underline" /> }} />
         </p>
       </form>
     </PublicShell>
   );
 }
 
+// Devuelve la clave de traducción del error (namespace `shelters`).
 function mapError(code?: string): string {
   switch (code) {
-    case 'invalid_nombre': return 'El nombre de la protectora no es válido.';
-    case 'invalid_email': return 'El email no es válido.';
-    case 'invalid_cp': return 'Ese código postal no existe en nuestra base de datos.';
-    case 'invalid_radio': return 'El radio debe estar entre 5 y 100 km.';
-    case 'no_opt_in': return 'Tienes que marcar al menos uno de los dos tipos de aviso.';
-    default: return 'No hemos podido procesar tu suscripción.';
+    case 'invalid_nombre': return 'signup.errors.invalidName';
+    case 'invalid_email': return 'signup.errors.invalidEmail';
+    case 'invalid_cp': return 'signup.errors.invalidPostcode';
+    case 'invalid_radio': return 'signup.errors.invalidRadius';
+    case 'no_opt_in': return 'signup.errors.noOptIn';
+    default: return 'signup.errors.generic';
   }
 }
 

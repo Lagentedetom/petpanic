@@ -1,0 +1,23 @@
+{
+  "title": "Eliminar tu cuenta",
+  "intro": "Puedes borrar tu cuenta de PetPanic y todos sus datos cuando quieras, desde la app o escribiéndonos.",
+  "inApp": {
+    "title": "Desde la app",
+    "step1": "Entra en PetPanic con tu cuenta.",
+    "step2": "Abre tu perfil.",
+    "step3": "Pulsa «Eliminar mi cuenta» y confírmalo."
+  },
+  "byEmail": {
+    "title": "Si ya no tienes la app",
+    "body": "Escríbenos a <a>{{email}}</a> desde el correo con el que te registraste y pide que borremos tu cuenta. Lo hacemos en un máximo de 30 días y te avisamos cuando esté hecho."
+  },
+  "what": {
+    "title": "Qué se borra",
+    "deleted": "Se borran tu cuenta, tu perfil, tus mascotas, tus alertas, tus mensajes, tus amistades y tu ubicación guardada.",
+    "kept": "Si tenías una suscripción a PetPanic Social, las facturas se conservan el tiempo que exige la ley fiscal, sin ningún otro dato tuyo. Si pagabas desde la App Store o Google Play, cancela también allí la suscripción: borrar la cuenta no la cancela."
+  },
+  "email": {
+    "subject": "Eliminar mi cuenta de PetPanic",
+    "body": "Hola, quiero que borréis mi cuenta de PetPanic y todos sus datos. Mi correo de registro es este mismo."
+  }
+}

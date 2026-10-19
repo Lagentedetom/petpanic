@@ -1,3 +1,5 @@
+import i18n from './i18n';
+
 export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371; // Radius of the earth in km
   const dLat = deg2rad(lat2 - lat1);
@@ -18,9 +20,11 @@ function deg2rad(deg: number) {
 
 export function formatDistance(km: number) {
   if (km < 1) {
-    return `${Math.round(km * 1000)}m`;
+    return i18n.t('core:distance.meters', { value: Math.round(km * 1000) });
   }
-  return `${km.toFixed(1)}km`;
+  // Decimal con el separador del idioma activo: «1,5 km» en es/ca, «1.5 km» en en.
+  const value = new Intl.NumberFormat(i18n.language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(km);
+  return i18n.t('core:distance.kilometers', { value });
 }
 
 /**

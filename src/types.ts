@@ -20,6 +20,7 @@ export interface UserProfile {
   trial_ends_at?: string | null;
   current_period_end?: string | null;
   stripe_customer_id?: string | null;
+  billing_source?: "stripe" | "app_store" | "play_store" | null;
   stripe_subscription_id?: string | null;
 }
 

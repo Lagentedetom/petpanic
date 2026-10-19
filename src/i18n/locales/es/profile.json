@@ -1,0 +1,40 @@
+{
+  "header": {
+    "title": "Mi perfil",
+    "editTitle": "Editar perfil",
+    "edit": "Editar perfil"
+  },
+  "fields": {
+    "firstName": "Nombre",
+    "lastName": "Apellidos",
+    "displayName": "Nombre de usuario (público)",
+    "friendCode": "Código de amigo"
+  },
+  "form": {
+    "firstNamePlaceholder": "Tu nombre",
+    "lastNamePlaceholder": "Tus apellidos",
+    "displayNamePlaceholder": "P. ej.: Marta Soler",
+    "displayNameHint": "Es el nombre que verán los demás usuarios.",
+    "cancel": "CANCELAR",
+    "save": "GUARDAR",
+    "saving": "GUARDANDO…"
+  },
+  "plan": {
+    "title": "Mi plan",
+    "paid": "PetPanic Social · activo",
+    "trial_one": "Mes gratis · queda {{count}} día",
+    "trial_other": "Mes gratis · quedan {{count}} días",
+    "free": "PetPanic Gratis · activo"
+  },
+  "logout": "CERRAR SESIÓN",
+  "delete": {
+    "button": "Eliminar mi cuenta",
+    "title": "¿Eliminar tu cuenta?",
+    "body": "Esta acción es permanente. Se eliminarán todos tus datos: mascotas, alertas, amigos y zonas de paseo. No se puede deshacer.",
+    "cancel": "Cancelar",
+    "confirm": "Sí, eliminar",
+    "deleting": "Eliminando…",
+    "noSession": "No hay ninguna sesión activa.",
+    "failed": "No se ha podido eliminar la cuenta."
+  }
+}

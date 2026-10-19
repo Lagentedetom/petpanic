@@ -1,0 +1,34 @@
+{
+  "details": {
+    "title": "Detalles de la alerta",
+    "notFound": "No hemos encontrado esta alerta.",
+    "resolvedBanner": "<strong>Alerta resuelta.</strong> Esta mascota ya ha aparecido. La página se mantiene como referencia, pero el chat ya no admite mensajes nuevos.",
+    "lostSince": "Se perdió {{time}}",
+    "mapTitle": "Ubicación aproximada de la mascota",
+    "openInMaps": "ABRIR EN GOOGLE MAPS",
+    "breed": "Raza",
+    "color": "Color",
+    "traits": "Rasgos",
+    "notSpecified": "Sin especificar",
+    "noDescription": "Sin descripción adicional",
+    "ownerContact": "Contacto del dueño",
+    "contactNote": "Por favor, contacta solo si tienes información útil."
+  },
+  "share": {
+    "button": "Compartir alerta",
+    "title": "¡{{name}} se ha perdido!",
+    "text": "Ayuda a encontrar a {{name}} ({{description}}). Contacto: {{contact}}",
+    "fallbackDescription": "mascota",
+    "copied": "Alerta copiada al portapapeles"
+  },
+  "chat": {
+    "title": "Mensajes de ayuda",
+    "empty": "Todavía no hay mensajes. Si sabes algo, escríbelo aquí.",
+    "photoAlt": "Foto adjunta",
+    "messageLabel": "Mensaje",
+    "placeholder": "Escribe un mensaje…",
+    "attachPhoto": "Adjuntar foto",
+    "send": "Enviar mensaje",
+    "closed": "El chat se cerró al resolverse la alerta."
+  }
+}

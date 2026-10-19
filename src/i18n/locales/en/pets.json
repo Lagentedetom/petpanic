@@ -1,0 +1,74 @@
+{
+  "species": {
+    "perro": "Dog",
+    "gato": "Cat",
+    "otro": "Other"
+  },
+  "fields": {
+    "name": "Name",
+    "species": "Species",
+    "breed": "Breed",
+    "color": "Colour",
+    "traits": "Traits and temperament",
+    "empty": "-"
+  },
+  "dashboard": {
+    "nearbyTitle": "Nearby alerts (within 2 km)",
+    "lostTitle": "{{name}} is lost!",
+    "distanceFromYou": "{{distance}} away",
+    "myPets": "My pets",
+    "registerPet": "Add a pet",
+    "empty": "You haven't added any pets yet.",
+    "registerNow": "Add one now",
+    "showQr": "Show QR code",
+    "editPet": "Edit pet",
+    "found": "Found!",
+    "panicButton": "PANIC BUTTON"
+  },
+  "history": {
+    "title": "History",
+    "found": "{{name}} was found",
+    "after": "After {{duration}}",
+    "minutes": "{{count}} min",
+    "hoursMinutes": "{{hours}} h {{minutes}} min"
+  },
+  "panicConfirm": {
+    "title": "Is {{name}} lost?",
+    "description": "Nearby users will be notified. Once sent, notifications can't be taken back.",
+    "confirm": "Yes, send the alert"
+  },
+  "qr": {
+    "title": "{{name}}'s QR code",
+    "description": "Scan it to open your pet's public profile. Print it and attach it to their collar."
+  },
+  "register": {
+    "titleNew": "Add a pet",
+    "titleEdit": "Edit pet",
+    "photo": {
+      "uploading": "Uploading…",
+      "change": "Change photo",
+      "add": "Upload photo",
+      "previewAlt": "Photo of the pet",
+      "inputLabel": "Choose a photo of the pet",
+      "errorType": "Only JPG, PNG or WebP images are allowed.",
+      "errorSize": "The image can't be larger than 5 MB."
+    },
+    "namePlaceholder": "e.g. Max",
+    "breedPlaceholder": "e.g. Labrador",
+    "colorPlaceholder": "e.g. Brown and white",
+    "traitsPlaceholder": "e.g. Gets scared easily, very affectionate…",
+    "contact": "Contact details (private)",
+    "contactPlaceholder": "e.g. Phone 600 000 000",
+    "contactHelp": "Only shown if you press the panic button: then nearby users and anyone who scans your pet's QR code will see them.",
+    "submitNew": "Save pet",
+    "submitEdit": "Save changes"
+  },
+  "public": {
+    "notFound": "Pet not found.",
+    "registeredBy": "Registered by {{name}}",
+    "lostTitle": "{{name}} is lost!",
+    "lostHelp": "If you see this pet, contact the owner right away.",
+    "callOwner": "Call the owner",
+    "footer": "Profile made with PetPanic"
+  }
+}

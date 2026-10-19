@@ -1,0 +1,33 @@
+{
+  "header": {
+    "title": "AMIGOS",
+    "yourCode": "Tu código"
+  },
+  "search": {
+    "placeholder": "Introduce el código de tu amigo",
+    "submit": "Buscar"
+  },
+  "results": {
+    "title": "Resultados",
+    "sendRequest": "Enviar solicitud a {{name}}",
+    "pending": "Pendiente",
+    "friends": "Amigos"
+  },
+  "card": {
+    "code": "Código: {{code}}"
+  },
+  "pending": {
+    "title": "Solicitudes pendientes",
+    "newRequest": "Nueva solicitud",
+    "fallbackUser": "este usuario",
+    "accept": "Aceptar la solicitud de {{name}}",
+    "decline": "Rechazar la solicitud de {{name}}"
+  },
+  "list": {
+    "title": "Tus amigos",
+    "empty": "Todavía no has añadido a ningún amigo.",
+    "unknownUser": "Usuario conectado",
+    "fallbackFriend": "este amigo",
+    "remove": "Eliminar a {{name}} de tus amigos"
+  }
+}

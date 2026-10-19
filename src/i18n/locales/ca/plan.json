@@ -1,0 +1,92 @@
+{
+  "title": "El meu pla",
+  "toast": {
+    "activated": "Subscripció activada. Benvingut a PetPanic Social.",
+    "cancelled": "Pagament cancel·lat. Pots activar Social quan vulguis.",
+    "checkoutError": "No s'ha pogut iniciar el pagament. Torna-ho a provar.",
+    "purchased": "Compra feta. Social s'activa en uns segons.",
+    "purchaseError": "No s'ha pogut completar la compra. Torna-ho a provar.",
+    "restored": "Compres restaurades.",
+    "nothingToRestore": "No hi ha cap subscripció per restaurar en aquest compte.",
+    "manageError": "No s'ha pogut obrir la gestió de la subscripció."
+  },
+  "status": {
+    "activeLabel": "Pla actiu",
+    "activeAnnual": "PetPanic Social anual",
+    "activeMonthly": "PetPanic Social mensual",
+    "managedOnWeb": "La teva subscripció es gestiona des del web de PetPanic.",
+    "managedOnApple": "La teva subscripció es gestiona des de l'App Store, a la configuració de l'iPhone.",
+    "managedOnGoogle": "La teva subscripció es gestiona des de Google Play.",
+    "manage": "Gestiona la subscripció",
+    "trialLabel": "Prova gratuïta",
+    "trialDaysLeft_one": "Et queda {{count}} dia de PetPanic Social",
+    "trialDaysLeft_other": "Et queden {{count}} dies de PetPanic Social",
+    "trialBody": "Tens tot Social sense pagar res ni donar cap targeta. Quan s'acabi, decideixes si continues.",
+    "expiredLabel": "La prova gratuïta s'ha acabat",
+    "expiredTitle": "Activa Social per tornar a les teves zones",
+    "expiredBody": "Buscar la teva mascota continua sent gratuït. Les zones de passeig i els amics tornen tan bon punt activis Social."
+  },
+  "social": {
+    "badge": "El que és gratuït hi és inclòs",
+    "intervalLabel": "Tria cada quant pagar",
+    "annual": "Anual",
+    "monthly": "Mensual",
+    "perYear": "l'any",
+    "perMonth": "al mes",
+    "features": {
+      "zones": "Crea la teva zona de passeig i uneix-te a les del barri",
+      "join": "Apareix a les zones on t'apuntes",
+      "count": "Mira quanta gent passeja ara a les teves zones",
+      "friendArrives": "Avís quan arriba un amic, encara que siguis a casa",
+      "friends": "Amics per codi i missatges privats"
+    },
+    "cta": "Activa PetPanic Social",
+    "ctaTrial": "Subscriu-me ara",
+    "trialNote": "Si et subscrius ara, es cobra avui i la prova s'acaba.",
+    "storeSoon": "La subscripció des de l'aplicació estarà disponible ben aviat."
+  },
+  "legal": {
+    "autoRenewApple": "Subscripció de renovació automàtica. Es cobra al teu compte d'Apple quan confirmes la compra i es renova al final de cada període tret que la cancel·lis com a mínim 24 hores abans. La pots gestionar i cancel·lar a la configuració del teu compte d'Apple.",
+    "autoRenewGoogle": "Subscripció de renovació automàtica. Es cobra al teu compte de Google Play quan confirmes la compra i es renova al final de cada període tret que la cancel·lis abans. La pots gestionar i cancel·lar a Google Play → Subscripcions.",
+    "terms": "Condicions d'ús",
+    "privacy": "Política de privadesa",
+    "restore": "Restaura les compres",
+    "webNote": "Pagament segur amb Stripe. Sense permanència: el cancel·les quan vulguis."
+  },
+  "free": {
+    "title": "Buscar la teva mascota",
+    "always": "gratuït, sempre",
+    "features": {
+      "pets": "Fitxes sense límit per a totes les teves mascotes",
+      "panic": "Botó del pànic i alerta al mapa",
+      "notify": "Avís als veïns i protectores a 5 km",
+      "chat": "Xat de l'alerta, amb fotos",
+      "qr": "Placa amb QR per al collar"
+    },
+    "note": "Això no serà mai de pagament. Si deixes Social, les teves zones continuen al mapa i la cerca funciona igual."
+  },
+  "privacy": {
+    "title": "La teva ubicació, sense lletra petita",
+    "location": "Mentre fas servir l'aplicació desem la teva posició <b>arrodonida a uns 100 metres</b>, per saber quines alertes et toquen. No et seguim amb l'aplicació tancada i ningú més veu on ets.",
+    "zones": "A les zones de passeig, el teu nom només el veuen <b>els teus amics</b>. La resta veu quanta gent hi ha, mai qui."
+  },
+  "faq": {
+    "title": "Preguntes freqüents",
+    "free": {
+      "q": "He de pagar per llançar una alerta?",
+      "a": "No. Les alertes, els avisos, el xat, les fitxes i la placa amb QR són gratuïts i ho continuaran sent."
+    },
+    "trial": {
+      "q": "Com funciona la prova?",
+      "a": "Quan crees el compte tens 30 dies de Social sense donar cap targeta. Quan s'acaben, si no et subscrius, perds les zones de passeig i els amics, però la cerca continua igual. No se't cobra res sense que ho demanis."
+    },
+    "cancel": {
+      "q": "Puc cancel·lar quan vulgui?",
+      "a": "Sí, des de {{store}}. Si cancel·les, mantens Social fins al final del període que ja has pagat."
+    },
+    "zones": {
+      "q": "Què passa amb les meves zones si deixo Social?",
+      "a": "Continuen al mapa per a tothom. En recuperes la part social tan bon punt tornis a activar Social, sense perdre res."
+    }
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "title": "My plan",
+  "toast": {
+    "activated": "Subscription active. Welcome to PetPanic Social.",
+    "cancelled": "Payment cancelled. You can turn on Social whenever you like.",
+    "checkoutError": "We couldn't start the payment. Please try again.",
+    "purchased": "Purchase complete. Social will switch on in a few seconds.",
+    "purchaseError": "We couldn't complete the purchase. Please try again.",
+    "restored": "Purchases restored.",
+    "nothingToRestore": "There's no subscription to restore on this account.",
+    "manageError": "We couldn't open subscription settings."
+  },
+  "status": {
+    "activeLabel": "Active plan",
+    "activeAnnual": "PetPanic Social, yearly",
+    "activeMonthly": "PetPanic Social, monthly",
+    "managedOnWeb": "Your subscription is managed on the PetPanic website.",
+    "managedOnApple": "Your subscription is managed in the App Store, in your iPhone settings.",
+    "managedOnGoogle": "Your subscription is managed in Google Play.",
+    "manage": "Manage subscription",
+    "trialLabel": "Free trial",
+    "trialDaysLeft_one": "{{count}} day of PetPanic Social left",
+    "trialDaysLeft_other": "{{count}} days of PetPanic Social left",
+    "trialBody": "You have all of Social without paying or giving a card. When it ends, you decide whether to carry on.",
+    "expiredLabel": "Your free trial has ended",
+    "expiredTitle": "Turn on Social to get your zones back",
+    "expiredBody": "Searching for your pet is still free. Walking zones and friends come back as soon as you turn on Social."
+  },
+  "social": {
+    "badge": "Everything free is included",
+    "intervalLabel": "Choose how often to pay",
+    "annual": "Yearly",
+    "monthly": "Monthly",
+    "perYear": "per year",
+    "perMonth": "per month",
+    "features": {
+      "zones": "Create your walking zone and join the ones nearby",
+      "join": "Show up in the zones you join",
+      "count": "See how many people are walking in your zones right now",
+      "friendArrives": "Get told when a friend arrives, even if you're at home",
+      "friends": "Friends by code and private messages"
+    },
+    "cta": "Turn on PetPanic Social",
+    "ctaTrial": "Subscribe now",
+    "trialNote": "If you subscribe now, you're charged today and the trial ends.",
+    "storeSoon": "Subscribing from the app is coming very soon."
+  },
+  "legal": {
+    "autoRenewApple": "Auto-renewing subscription. Payment is charged to your Apple account when you confirm, and it renews at the end of each period unless you cancel at least 24 hours before. You can manage and cancel it in your Apple account settings.",
+    "autoRenewGoogle": "Auto-renewing subscription. Payment is charged to your Google Play account when you confirm, and it renews at the end of each period unless you cancel before. You can manage and cancel it in Google Play → Subscriptions.",
+    "terms": "Terms of use",
+    "privacy": "Privacy policy",
+    "restore": "Restore purchases",
+    "webNote": "Secure payment with Stripe. No commitment: cancel whenever you like."
+  },
+  "free": {
+    "title": "Finding your pet",
+    "always": "free, always",
+    "features": {
+      "pets": "Unlimited profiles for all your pets",
+      "panic": "Panic button and alert on the map",
+      "notify": "Alert to neighbours and shelters within 5 km",
+      "chat": "Alert chat, with photos",
+      "qr": "QR tag for the collar"
+    },
+    "note": "This will never be paid. If you leave Social, your zones stay on the map and searching works just the same."
+  },
+  "privacy": {
+    "title": "Your location, no small print",
+    "location": "While you use the app we store your position <b>rounded to about 100 metres</b>, so we know which alerts are yours. We don't follow you with the app closed, and nobody else sees where you are.",
+    "zones": "In walking zones, only <b>your friends</b> see your name. Everyone else sees how many people are there, never who."
+  },
+  "faq": {
+    "title": "Questions",
+    "free": {
+      "q": "Do I have to pay to send an alert?",
+      "a": "No. Alerts, notifications, the chat, pet profiles and the QR tag are free and will stay that way."
+    },
+    "trial": {
+      "q": "How does the trial work?",
+      "a": "When you sign up you get 30 days of Social without giving a card. When it ends, if you don't subscribe, you lose walking zones and friends, but searching works the same. You're never charged unless you ask to be."
+    },
+    "cancel": {
+      "q": "Can I cancel whenever I want?",
+      "a": "Yes, from {{store}}. If you cancel, you keep Social until the end of the period you've already paid for."
+    },
+    "zones": {
+      "q": "What happens to my zones if I leave Social?",
+      "a": "They stay on the map for everyone. You get their social side back as soon as you turn Social on again, without losing anything."
+    }
+  }
+}

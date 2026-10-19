@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "title": "PetPanic — Prueba la app | Beta cerrada"
+  },
+  "header": {
+    "cta": "Probar la app"
+  },
+  "hero": {
+    "badge": "Beta cerrada — piloto con protectoras",
+    "title": "Si se pierde,<br/><accent>que lo busque todo el barrio.</accent>",
+    "lead": "Cuando lanzas un aviso, PetPanic manda una notificación a quien tiene la app a menos de 5 km y un correo a las protectoras de tu zona que se han apuntado.",
+    "install": "Instalar la app",
+    "tryWeb": "Probarla en el navegador",
+    "note": "Sin tarjeta. Buscar es gratis, siempre."
+  },
+  "whatIs": {
+    "title": "Que el aviso no se quede en una farola.",
+    "problem": "Un mensaje en el grupo de WhatsApp del bloque o un cartel pegado a una farola solo lo ve quien pasa por allí. Mientras tanto, tu mascota sigue moviéndose.",
+    "solution": "<strong>PetPanic</strong> manda tu aviso a quien tiene la app a menos de 5 km y a las protectoras de la zona que se han apuntado. Sin imprimir nada. Sin esperar a que alguien lo comparta."
+  },
+  "how": {
+    "title": "Cómo funciona",
+    "steps": {
+      "register": {
+        "title": "Registra a tu mascota",
+        "desc": "Una foto, su nombre y unos datos básicos."
+      },
+      "alert": {
+        "title": "Si se pierde, lanza un aviso",
+        "desc": "Un solo botón. La app capta tu ubicación y crea la alerta al momento."
+      },
+      "notify": {
+        "title": "Avisamos a quien está cerca",
+        "desc": "Quien tiene PetPanic a menos de 5 km recibe una notificación, y las protectoras de la zona que se han apuntado, un correo."
+      },
+      "together": {
+        "title": "La buscáis juntos",
+        "desc": "En el chat de la alerta, quien la ve te escribe y te manda fotos. Cuando aparece, marcas la alerta como resuelta."
+      }
+    }
+  },
+  "features": {
+    "title": "Lo que hace por ti",
+    "items": {
+      "nearby": {
+        "title": "Avisos a menos de 5 km",
+        "desc": "La notificación solo llega a quien tiene PetPanic a menos de 5 km del aviso. Sin spam, sin ruido."
+      },
+      "shelters": {
+        "title": "Protectoras de la zona",
+        "desc": "Las protectoras de tu zona que se han apuntado reciben tu aviso por correo."
+      },
+      "chat": {
+        "title": "Chat de la alerta",
+        "desc": "Cada alerta tiene su chat, con fotos, para que quien vea a tu mascota te lo pueda contar."
+      },
+      "tag": {
+        "title": "Chapa con QR",
+        "desc": "Si alguien encuentra a tu mascota y escanea su chapa, ve su ficha y, si está perdida, tu teléfono."
+      },
+      "friends": {
+        "title": "Red de amigos",
+        "desc": "Conecta con otras personas que tienen mascota. Incluido en PetPanic Social."
+      },
+      "walks": {
+        "title": "Zonas de paseo",
+        "desc": "Guarda los sitios donde sueles pasear. Incluido en PetPanic Social."
+      }
+    }
+  },
+  "pilot": {
+    "badge": "Para socios del piloto",
+    "title": "¿Te ha llegado este enlace desde tu protectora?",
+    "intro": "Estás entre las primeras personas que prueban PetPanic. Lo que nos cuentes decide qué arreglamos y qué va primero.",
+    "join": {
+      "title": "Cómo participar",
+      "install": {
+        "title": "Instala la app.",
+        "play": "Disponible en <link>Google Play (canal de prueba)</link>. En iPhone, de momento, usa la versión web.",
+        "web": "Estamos terminando el alta en Google Play. Hasta entonces puedes usar la versión web abriendo <link>app.petpanic.es</link> en tu móvil."
+      },
+      "use": {
+        "title_one": "Úsala {{count}} semana con normalidad.",
+        "title_other": "Úsala {{count}} semanas con normalidad.",
+        "desc": "Registra a tu mascota, lanza un aviso de prueba, conecta con amigos, mira el mapa. Lo que harías de verdad."
+      },
+      "tell": {
+        "title": "Cuéntanos.",
+        "desc_one": "Al final del piloto te mandamos un formulario corto ({{count}} minuto) para que nos digas qué te ha gustado y qué no. Si algo no funciona durante el piloto, escríbenos directamente a <mail>{{email}}</mail>.",
+        "desc_other": "Al final del piloto te mandamos un formulario corto ({{count}} minutos) para que nos digas qué te ha gustado y qué no. Si algo no funciona durante el piloto, escríbenos directamente a <mail>{{email}}</mail>."
+      }
+    },
+    "perks": {
+      "title": "Qué te llevas tú",
+      "trial": "<strong>30 días gratis de PetPanic Social</strong>, sin tarjeta: zonas de paseo y amigos. Después, si quieres seguir, 4,99 €/mes o 39,99 €/año.",
+      "free": "<strong>Buscar es gratis, siempre.</strong> Para participar en el piloto no tienes que pagar nada.",
+      "team": "<strong>Acceso directo al equipo.</strong> Si algo no te encaja, nos escribes y lo miramos contigo."
+    }
+  },
+  "faq": {
+    "title": "Dudas frecuentes",
+    "items": {
+      "free": {
+        "q": "¿Es gratis?",
+        "a": "Buscar es gratis, siempre. PetPanic Social, con zonas de paseo y amigos, cuesta 4,99 €/mes o 39,99 €/año, con 30 días gratis sin tarjeta. Para el piloto no la necesitas."
+      },
+      "data": {
+        "q": "¿Qué pasa con mis datos?",
+        "a": "Tus datos están alojados en servidores europeos (Supabase, eu-west-2). Cuando lanzas un aviso, su ubicación llega a quien tiene PetPanic a menos de 5 km. Puedes borrar tu cuenta en cualquier momento desde el perfil."
+      },
+      "iphone": {
+        "q": "¿Funciona en iPhone?",
+        "a": "La versión web (app.petpanic.es) funciona en iPhone. La app nativa para iOS todavía no está lista; te avisaremos por correo cuando esté disponible en TestFlight."
+      },
+      "noPet": {
+        "q": "Soy socio de una protectora pero no tengo mascota, ¿puedo participar?",
+        "a": "Sí. Puedes registrarte sin mascota propia y usar la app para ayudar cuando alguien lance un aviso en tu zona. Es justo lo que más necesitamos probar."
+      },
+      "duration": {
+        "q": "¿Cuánto dura el piloto?",
+        "a": "Tres semanas de uso activo y una de cierre. Después decides si te quedas o no, sin compromiso."
+      }
+    }
+  },
+  "cta": {
+    "title": "¿Empezamos?",
+    "text": "Si has llegado hasta aquí, ya formas parte del piloto. Solo te falta abrir la app.",
+    "open": "Abrir PetPanic",
+    "write": "Escríbenos",
+    "mailSubject": "Quiero participar en el piloto de PetPanic"
+  },
+  "footer": {
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "copyright": "© {{year}} La Gente de Tom S.L.U. — Hecho en Sant Cugat."
+  }
+}

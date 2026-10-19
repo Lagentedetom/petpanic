@@ -1,0 +1,24 @@
+{
+  "greeting": "Hola",
+  "openProfile": "Abrir mi perfil",
+  "nearby": {
+    "title": "Alertas cercanas",
+    "lostTitle": "¡{{name}} se ha perdido!",
+    "nearYou": "Cerca de ti"
+  },
+  "pets": {
+    "title": "Mis mascotas",
+    "empty": "Registra tu primera mascota"
+  },
+  "zones": {
+    "title": "Zonas de paseo",
+    "walking": "paseando",
+    "unit_one": "zona",
+    "unit_other": "zonas"
+  },
+  "friends": {
+    "title": "Amigos",
+    "unit": "en tu red"
+  },
+  "settings": "Mi perfil y configuración"
+}

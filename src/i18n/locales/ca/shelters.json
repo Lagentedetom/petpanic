@@ -1,0 +1,69 @@
+{
+  "signup": {
+    "eyebrow": "Per a protectores",
+    "title": "Rebeu alertes de gossos perduts a la vostra zona",
+    "intro": "Sense contrasenyes. Sense app. Sense cap perfil per mantenir. Només un correu cada vegada que es perdi o es trobi una mascota a prop de la vostra protectora. Us podreu donar de baixa amb un clic quan vulgueu.",
+    "features": {
+      "alert": "Un correu quan algú activa una alerta de gos perdut a la vostra zona",
+      "zone": "Definiu la zona amb el codi postal i un radi de cobertura",
+      "closed": "Un altre correu quan es tanca l'alerta, perquè no us quedin casos penjats"
+    },
+    "fields": {
+      "name": "Nom de la protectora",
+      "namePlaceholder": "Associació Protectora d'Animals de…",
+      "email": "Correu electrònic de contacte",
+      "emailPlaceholder": "alertes@protectora.org",
+      "postcode": "Codi postal",
+      "postcodeChecking": "S'està comprovant…",
+      "postcodeNotFound": "No hem trobat aquest codi postal",
+      "radius": "Radi (km)",
+      "radiusHint": "De 5 a 100 km"
+    },
+    "optIns": {
+      "legend": "Què voleu rebre?",
+      "lost": "Avisos de mascotes perdudes",
+      "found": "Avisos de mascotes trobades (tancament del cas)",
+      "overflow": "Incloure-hi també les alertes fins a 50 km (zona ampliada)",
+      "digest": "Resum diari (un sol correu al dia amb tots els casos)"
+    },
+    "submit": "Subscriure'ns a les alertes",
+    "submitting": "S'està enviant…",
+    "consent": "En donar-vos d'alta accepteu rebre correus relacionats amb alertes de mascotes perdudes a la vostra zona. Us podreu donar de baixa amb un clic en qualsevol moment. Complim l'RGPD i la LOPDGDD: en trobareu més detalls a la nostra <privacyLink>política de privacitat</privacyLink>.",
+    "sent": {
+      "title": "Reviseu el correu",
+      "body": "Hem enviat un correu a <strong>{{email}}</strong> per confirmar la subscripció. Només cal que l'obriu i premeu el botó de confirmació.",
+      "spam": "No el veieu? Mireu a la carpeta de correu brossa o de promocions. El remitent és <strong>{{sender}}</strong>."
+    },
+    "errors": {
+      "send": "No hem pogut enviar la subscripció. Torneu-ho a provar d'aquí a un minut.",
+      "invalidName": "El nom de la protectora no és vàlid.",
+      "invalidEmail": "L'adreça electrònica no és vàlida.",
+      "invalidPostcode": "Aquest codi postal no existeix a la nostra base de dades.",
+      "invalidRadius": "El radi ha de ser d'entre 5 i 100 km.",
+      "noOptIn": "Heu de marcar com a mínim un dels dos tipus d'avís.",
+      "generic": "No hem pogut processar la vostra subscripció."
+    }
+  },
+  "confirm": {
+    "loading": "S'està confirmant la vostra subscripció…",
+    "okTitle": "Subscripció activada!",
+    "okBody": "<strong>{{name}}</strong> rebrà un correu a <strong>{{email}}</strong> cada vegada que es perdi o es trobi una mascota a la vostra zona.",
+    "okFooter": "Us podeu donar de baixa amb un sol clic des de qualsevol d'aquests correus. Gràcies per afegir-vos a la xarxa de recerca.",
+    "invalidTitle": "Enllaç no vàlid",
+    "invalidBody": "Aquest enllaç de confirmació no és vàlid o ja s'ha fet servir. Si ja teníeu una subscripció activa, continua en marxa: rebreu els correus amb normalitat.",
+    "backToSignup": "Torneu al formulari d'alta",
+    "errorTitle": "Alguna cosa ha fallat",
+    "errorBody": "Ara mateix no hem pogut confirmar la vostra subscripció. Torneu-ho a provar d'aquí a un minut o torneu a donar-vos d'alta."
+  },
+  "unsubscribe": {
+    "loading": "S'està processant la baixa…",
+    "okTitle": "Us heu donat de baixa",
+    "okBody": "<strong>{{email}}</strong> ja no rebrà més alertes. Gràcies pel temps que heu dedicat a ajudar a trobar mascotes perdudes.",
+    "okFooter": "Si ha estat un error o canvieu d'opinió, us podeu tornar a donar d'alta quan vulgueu.",
+    "resubscribe": "Torneu a donar-vos d'alta",
+    "invalidTitle": "Enllaç no vàlid",
+    "invalidBody": "Aquest enllaç no és vàlid o la subscripció ja estava donada de baixa. No rebreu més correus.",
+    "errorTitle": "Alguna cosa ha fallat",
+    "errorBody": "Ara mateix no hem pogut processar la baixa. Torneu-ho a provar d'aquí a un minut. Si el problema continua, escriviu-nos a hola@petpanic.es."
+  }
+}

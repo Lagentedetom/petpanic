@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Sparkles, ChevronRight, AlertTriangle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useSubscription } from '../hooks/useSubscription';
@@ -17,6 +18,7 @@ import { useSubscription } from '../hooks/useSubscription';
  * - Plain free user (never had Social) → soft upsell ("Descubre PetPanic Social")
  */
 export default function TrialBanner() {
+  const { t } = useTranslation('shell');
   const navigate = useNavigate();
   const { userProfile } = useApp();
   const { isTrialing, isActivePaid, daysLeftInTrial, hasActiveSocial, status } =
@@ -58,8 +60,8 @@ export default function TrialBanner() {
           />
           <span className="truncate">
             {urgent
-              ? `¡Solo te quedan ${daysLeftInTrial} ${daysLeftInTrial === 1 ? 'día' : 'días'} de Social!`
-              : `Te quedan ${daysLeftInTrial} días de PetPanic Social gratis`}
+              ? t('trial.daysLeftUrgent', { count: daysLeftInTrial })
+              : t('trial.daysLeft', { count: daysLeftInTrial })}
           </span>
         </span>
         <ChevronRight className="w-4 h-4 flex-shrink-0" />
@@ -79,7 +81,7 @@ export default function TrialBanner() {
       >
         <span className="flex items-center gap-2 min-w-0">
           <AlertTriangle className="w-4 h-4 flex-shrink-0 text-orange-300" />
-          <span className="truncate">Tu mes gratis ha terminado — activa Social</span>
+          <span className="truncate">{t('trial.ended')}</span>
         </span>
         <ChevronRight className="w-4 h-4 flex-shrink-0" />
       </button>
@@ -97,7 +99,7 @@ export default function TrialBanner() {
       >
         <span className="flex items-center gap-2 min-w-0">
           <Sparkles className="w-4 h-4 flex-shrink-0 text-orange-500" />
-          <span className="truncate">Descubre PetPanic Social — 30 días gratis</span>
+          <span className="truncate">{t('trial.discover')}</span>
         </span>
         <ChevronRight className="w-4 h-4 flex-shrink-0" />
       </button>

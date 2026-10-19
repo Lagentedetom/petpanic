@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 import { Dog, Bell, ChevronLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function NotificationToast() {
+  const { t } = useTranslation('shell');
   const { notification, setNotification } = useApp();
   const navigate = useNavigate();
 
@@ -20,9 +22,9 @@ export default function NotificationToast() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-0.5">
                 <Bell className="w-3 h-3 animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">¡Emergencia Cercana!</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest opacity-80">{t('lostPetToast.label')}</span>
               </div>
-              <p className="text-sm font-bold leading-tight">{notification.pet_name} se ha perdido cerca de ti.</p>
+              <p className="text-sm font-bold leading-tight">{t('lostPetToast.message', { name: notification.pet_name })}</p>
             </div>
             <ChevronLeft className="w-5 h-5 rotate-180 opacity-50" />
           </div>

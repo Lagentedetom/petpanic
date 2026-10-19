@@ -1,0 +1,70 @@
+{
+  "list": {
+    "title": "WALKING ZONES",
+    "available": "Available zones",
+    "empty": "There are no zones yet. Be the first!",
+    "radius": "{{radius}} m radius",
+    "youAreHere": "You're here!",
+    "primaryZone": "Main zone",
+    "members_one": "{{count}} member",
+    "members_other": "{{count}} members",
+    "join": "Join",
+    "member": "Member"
+  },
+  "gate": {
+    "title": "Unlock walking zones",
+    "subtitle": "With PetPanic Social you can create your own zone and join others",
+    "cta": "Activate"
+  },
+  "trial": {
+    "usage": "Free month · you're using {{used}}/{{max}} of your own zones",
+    "myPlan": "My plan"
+  },
+  "search": {
+    "placeholder": "Search for a city or area (e.g. Logroño)",
+    "submit": "Search",
+    "locateMe": "My location"
+  },
+  "map": {
+    "viewDetails": "View details"
+  },
+  "create": {
+    "cta": "Create a zone here",
+    "title": "Create a new zone",
+    "hint": "The zone will be created at your current location.",
+    "namePlaceholder": "Zone name (e.g. Retiro Park)",
+    "radiusLabel": "Radius (metres): {{radius}} m",
+    "submit": "Create zone here",
+    "cancel": "Cancel"
+  },
+  "limit": {
+    "trial": "During the free month you can only create 1 zone",
+    "reached_one": "Limit reached ({{count}} zone)",
+    "reached_other": "Limit reached ({{count}} zones)"
+  },
+  "toasts": {
+    "noGeolocation": "Your browser doesn't support geolocation.",
+    "locationFailed": "We couldn't get your location.",
+    "needSocialCreate": "You need PetPanic Social to create walking zones.",
+    "needSocialJoin": "You need PetPanic Social to join a zone.",
+    "trialLimit": "During the free month you can only create 1 zone. Activate Social to create up to 5.",
+    "limitReached_one": "You've reached the limit of {{count}} zone.",
+    "limitReached_other": "You've reached the limit of {{count}} zones."
+  },
+  "details": {
+    "notFound": "Zone not found.",
+    "currentStatus": "Right now",
+    "walking_one": "{{count}} PERSON WALKING",
+    "walking_other": "{{count}} PEOPLE WALKING",
+    "privacyNote": "For privacy, you'll only see your friends' names. Everyone else is shown as an anonymous count.",
+    "joinToSee": "Join the zone to see who's out walking.",
+    "presentNow": "In the zone now",
+    "nobodyHere": "Nobody is in the zone right now.",
+    "you": "You",
+    "withPets": "With: {{pets}}",
+    "noPet": "No pet",
+    "othersHidden_one": "+ {{count}} more walker in the zone. You'll only see their name if you're friends.",
+    "othersHidden_other": "+ {{count}} more walkers in the zone. You'll only see their names if you're friends.",
+    "membersOnly": "You need to be a member of this zone to see who's out walking."
+  }
+}

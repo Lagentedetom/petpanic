@@ -1,0 +1,23 @@
+{
+  "title": "Elimina el teu compte",
+  "intro": "Pots esborrar el teu compte de PetPanic i totes les dades quan vulguis, des de l'aplicació o escrivint-nos.",
+  "inApp": {
+    "title": "Des de l'aplicació",
+    "step1": "Entra a PetPanic amb el teu compte.",
+    "step2": "Obre el teu perfil.",
+    "step3": "Toca «Elimina el compte» i confirma-ho."
+  },
+  "byEmail": {
+    "title": "Si ja no tens l'aplicació",
+    "body": "Escriu-nos a <a>{{email}}</a> des del correu amb què et vas registrar i demana'ns que esborrem el teu compte. Ho fem en un màxim de 30 dies i t'avisem quan estigui fet."
+  },
+  "what": {
+    "title": "Què s'esborra",
+    "deleted": "S'esborren el teu compte, el perfil, les mascotes, les alertes, els missatges, les amistats i la ubicació desada.",
+    "kept": "Si tenies una subscripció a PetPanic Social, les factures es conserven el temps que exigeix la llei fiscal, sense cap altra dada teva. Si pagaves des de l'App Store o Google Play, cancel·la-hi també la subscripció: esborrar el compte no la cancel·la."
+  },
+  "email": {
+    "subject": "Eliminar el meu compte de PetPanic",
+    "body": "Hola, vull que esborreu el meu compte de PetPanic i totes les dades. El meu correu de registre és aquest mateix."
+  }
+}

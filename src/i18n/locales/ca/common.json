@@ -1,0 +1,33 @@
+{
+  "brand": "PetPanic",
+  "actions": {
+    "save": "Desa",
+    "cancel": "Cancel·la",
+    "close": "Tanca",
+    "back": "Torna",
+    "continue": "Continua",
+    "retry": "Torna-ho a provar",
+    "delete": "Elimina",
+    "edit": "Edita",
+    "send": "Envia",
+    "accept": "D'acord",
+    "loading": "S'està carregant…"
+  },
+  "nav": {
+    "home": "Inici",
+    "pets": "Mascotes",
+    "zones": "Zones",
+    "friends": "Amics",
+    "alerts": "Avisos",
+    "alertsNone": "Avisos, cap alerta",
+    "alertsNearby_one": "Avisos, {{count}} alerta a prop",
+    "alertsNearby_other": "Avisos, {{count}} alertes a prop",
+    "logout": "Tanca la sessió"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "errors": {
+    "generic": "Alguna cosa ha fallat. Torna-ho a provar."
+  }
+}

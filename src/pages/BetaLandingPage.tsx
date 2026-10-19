@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import {
   AlertCircle,
@@ -11,6 +12,8 @@ import {
   CheckCircle2,
   Mail,
   ArrowRight,
+  MessageSquare,
+  QrCode,
 } from 'lucide-react';
 
 /**
@@ -31,9 +34,10 @@ const PLAY_STORE_URL: string | null = null; // TODO: set when Google Play Intern
 const CONTACT_EMAIL = 'hola@petpanic.es';
 
 export default function BetaLandingPage() {
+  const { t } = useTranslation('beta');
   useEffect(() => {
-    document.title = 'PetPanic — Prueba la app | Beta cerrada';
-  }, []);
+    document.title = t('meta.title');
+  }, [t]);
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900">
@@ -57,23 +61,24 @@ export default function BetaLandingPage() {
 /* -------------------------------------------------------------------------- */
 
 function Header() {
+  const { t } = useTranslation('beta');
   return (
     <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-stone-200">
       <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
         <a href="/beta" className="flex items-center gap-2">
           <img
             src="/petpanic-logo.svg"
-            alt="PetPanic"
+            alt={t('common:brand')}
             className="h-8 w-8"
             loading="eager"
           />
-          <span className="font-bold text-lg text-stone-900">PetPanic</span>
+          <span className="font-bold text-lg text-stone-900">{t('common:brand')}</span>
         </a>
         <a
           href="#instalar"
           className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-4 py-2 rounded-xl text-sm transition-colors"
         >
-          Probar la app
+          {t('header.cta')}
         </a>
       </div>
     </header>
@@ -85,6 +90,7 @@ function Header() {
 /* -------------------------------------------------------------------------- */
 
 function Hero() {
+  const { t } = useTranslation('beta');
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-stone-50 to-amber-50 border-b border-stone-200">
       <div className="max-w-5xl mx-auto px-5 py-16 sm:py-24">
@@ -96,17 +102,17 @@ function Hero() {
         >
           <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-semibold mb-5">
             <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-            Beta cerrada — piloto con protectoras
+            {t('hero.badge')}
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-stone-900">
-            Cuando tu perro se pierde,
-            <br />
-            <span className="text-orange-600">tu barrio entero responde.</span>
+            <Trans
+              t={t}
+              i18nKey="hero.title"
+              components={{ br: <br />, accent: <span className="text-orange-600" /> }}
+            />
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-stone-700 leading-relaxed max-w-2xl">
-            PetPanic avisa al instante a los vecinos y protectoras de tu zona en cuanto
-            lanzas un aviso. Más ojos buscando, en menos tiempo. Hecho en España, gratis
-            para empezar.
+            {t('hero.lead')}
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <a
@@ -114,18 +120,18 @@ function Hero() {
               className="inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-orange-600/20 transition-colors"
             >
               <Smartphone className="w-5 h-5" />
-              Instalar la app
+              {t('hero.install')}
             </a>
             <a
               href="https://app.petpanic.es"
               className="inline-flex items-center justify-center gap-2 bg-white hover:bg-stone-50 text-stone-900 font-semibold px-6 py-3 rounded-xl border border-stone-300 transition-colors"
             >
-              Probarla en el navegador
+              {t('hero.tryWeb')}
               <ArrowRight className="w-4 h-4" />
             </a>
           </div>
           <p className="mt-5 text-sm text-stone-500">
-            Sin tarjeta. Funciones esenciales gratis para siempre.
+            {t('hero.note')}
           </p>
         </motion.div>
       </div>
@@ -138,23 +144,21 @@ function Hero() {
 /* -------------------------------------------------------------------------- */
 
 function WhatIs() {
+  const { t } = useTranslation('beta');
   return (
     <section className="py-16 sm:py-20">
       <div className="max-w-3xl mx-auto px-5">
         <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-6">
-          Las primeras horas son las que más importan.
+          {t('whatIs.title')}
         </h2>
         <div className="space-y-5 text-stone-700 text-lg leading-relaxed">
+          <p>{t('whatIs.problem')}</p>
           <p>
-            Cuando un perro se pierde, la mayoría de avisos se quedan en el grupo de
-            WhatsApp del bloque o en un cartel pegado a una farola. Mientras tanto,
-            el perro sigue moviéndose.
-          </p>
-          <p>
-            <strong className="text-stone-900">PetPanic</strong> hace que tu aviso
-            llegue al instante a las personas que están cerca: vecinos, amigos y
-            protectoras de la zona. Sin imprimir nada. Sin esperar a que alguien lo
-            comparta.
+            <Trans
+              t={t}
+              i18nKey="whatIs.solution"
+              components={{ strong: <strong className="text-stone-900" /> }}
+            />
           </p>
         </div>
       </div>
@@ -167,38 +171,23 @@ function WhatIs() {
 /* -------------------------------------------------------------------------- */
 
 function HowItWorks() {
+  const { t } = useTranslation('beta');
   const steps = [
-    {
-      num: '1',
-      title: 'Registra a tu mascota',
-      desc: 'Una foto, su nombre y unos datos básicos. Cinco minutos.',
-      icon: Heart,
-    },
-    {
-      num: '2',
-      title: 'Si se pierde, lanza un aviso',
-      desc: 'Un solo botón. La app capta tu ubicación y crea la alerta al momento.',
-      icon: AlertCircle,
-    },
-    {
-      num: '3',
-      title: 'Avisamos a quienes están cerca',
-      desc: 'Tus amigos en PetPanic y las protectoras que cubren la zona reciben el aviso al instante.',
-      icon: Bell,
-    },
-    {
-      num: '4',
-      title: 'La encontráis juntos',
-      desc: 'Cuando aparece, marcas la alerta como resuelta y avisamos a todo el mundo.',
-      icon: CheckCircle2,
-    },
-  ];
+    { num: '1', id: 'register', icon: Heart },
+    { num: '2', id: 'alert', icon: AlertCircle },
+    { num: '3', id: 'notify', icon: Bell },
+    { num: '4', id: 'together', icon: CheckCircle2 },
+  ].map((s) => ({
+    ...s,
+    title: t(`how.steps.${s.id}.title`),
+    desc: t(`how.steps.${s.id}.desc`),
+  }));
 
   return (
     <section className="bg-white py-16 sm:py-20 border-y border-stone-200">
       <div className="max-w-5xl mx-auto px-5">
         <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-12 text-center">
-          Cómo funciona
+          {t('how.title')}
         </h2>
         <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((s, i) => (
@@ -231,44 +220,25 @@ function HowItWorks() {
 /* -------------------------------------------------------------------------- */
 
 function Features() {
+  const { t } = useTranslation('beta');
   const features = [
-    {
-      icon: AlertCircle,
-      title: 'Avisos geolocalizados',
-      desc: 'Tu aviso solo se envía a quienes están en el radio relevante. Sin spam, sin ruido.',
-    },
-    {
-      icon: MapPin,
-      title: 'Mapa de la zona',
-      desc: 'Ves en tiempo real las mascotas perdidas cerca de ti y las zonas activas de búsqueda.',
-    },
-    {
-      icon: Users,
-      title: 'Red de amigos',
-      desc: 'Conecta con otras personas que también tienen mascotas. Os ayudáis cuando una se pierde.',
-    },
-    {
-      icon: Heart,
-      title: 'Zonas de paseo',
-      desc: 'Comparte los sitios donde paseas habitualmente. Otros usuarios ven dónde hay actividad.',
-    },
-    {
-      icon: Shield,
-      title: 'Protectoras conectadas',
-      desc: 'Las protectoras locales reciben tus avisos al instante. Más ojos, mejor coordinación.',
-    },
-    {
-      icon: Bell,
-      title: 'Sin instalar nada para los amigos',
-      desc: 'Quien recibe el aviso lo abre desde un enlace. No hace falta que tengan la app.',
-    },
-  ];
+    { id: 'nearby', icon: AlertCircle },
+    { id: 'shelters', icon: Shield },
+    { id: 'chat', icon: MessageSquare },
+    { id: 'tag', icon: QrCode },
+    { id: 'friends', icon: Users },
+    { id: 'walks', icon: MapPin },
+  ].map((f) => ({
+    ...f,
+    title: t(`features.items.${f.id}.title`),
+    desc: t(`features.items.${f.id}.desc`),
+  }));
 
   return (
     <section className="py-16 sm:py-20">
       <div className="max-w-5xl mx-auto px-5">
         <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-12 text-center">
-          Lo que hace por ti
+          {t('features.title')}
         </h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((f) => (
@@ -294,6 +264,8 @@ function Features() {
 /* -------------------------------------------------------------------------- */
 
 function PilotSection() {
+  const { t } = useTranslation('beta');
+  const linkClass = 'underline font-semibold hover:text-white';
   return (
     <section
       id="instalar"
@@ -301,48 +273,36 @@ function PilotSection() {
     >
       <div className="max-w-3xl mx-auto px-5">
         <div className="inline-flex items-center gap-2 bg-white/15 px-3 py-1 rounded-full text-xs font-semibold mb-5">
-          Para socios del piloto
+          {t('pilot.badge')}
         </div>
         <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-          ¿Te ha llegado este enlace desde tu protectora?
+          {t('pilot.title')}
         </h2>
         <p className="text-orange-100 text-lg leading-relaxed mb-8">
-          Estás en el grupo de personas que va a probar PetPanic antes de su lanzamiento
-          público. Tu feedback es lo que determina qué arreglamos y qué priorizamos.
+          {t('pilot.intro')}
         </p>
 
         <div className="bg-white/10 backdrop-blur rounded-2xl p-6 sm:p-8 mb-8">
-          <h3 className="font-bold text-xl mb-4">Cómo participar</h3>
+          <h3 className="font-bold text-xl mb-4">{t('pilot.join.title')}</h3>
           <ol className="space-y-4 text-orange-50">
             <li className="flex gap-3">
               <span className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-white text-orange-700 font-bold text-sm">
                 1
               </span>
               <span>
-                <strong className="text-white">Instala la app.</strong>{' '}
+                <strong className="text-white">{t('pilot.join.install.title')}</strong>{' '}
                 {PLAY_STORE_URL ? (
-                  <>
-                    Disponible en{' '}
-                    <a
-                      href={PLAY_STORE_URL}
-                      className="underline font-semibold hover:text-white"
-                    >
-                      Google Play (canal de prueba)
-                    </a>
-                    . iPhone aún no — llega en pocos días.
-                  </>
+                  <Trans
+                    t={t}
+                    i18nKey="pilot.join.install.play"
+                    components={{ link: <a href={PLAY_STORE_URL} className={linkClass} /> }}
+                  />
                 ) : (
-                  <>
-                    Estamos terminando el alta en Google Play. Hasta entonces puedes
-                    usar la versión web abriendo{' '}
-                    <a
-                      href="https://app.petpanic.es"
-                      className="underline font-semibold hover:text-white"
-                    >
-                      app.petpanic.es
-                    </a>{' '}
-                    en tu móvil.
-                  </>
+                  <Trans
+                    t={t}
+                    i18nKey="pilot.join.install.web"
+                    components={{ link: <a href="https://app.petpanic.es" className={linkClass} /> }}
+                  />
                 )}
               </span>
             </li>
@@ -351,9 +311,8 @@ function PilotSection() {
                 2
               </span>
               <span>
-                <strong className="text-white">Úsala 3 semanas con normalidad.</strong>{' '}
-                Registra a tu mascota, prueba lanzar un aviso de prueba, conecta con
-                amigos, mira el mapa. Lo que harías de verdad.
+                <strong className="text-white">{t('pilot.join.use.title', { count: 3 })}</strong>{' '}
+                {t('pilot.join.use.desc')}
               </span>
             </li>
             <li className="flex gap-3">
@@ -361,46 +320,34 @@ function PilotSection() {
                 3
               </span>
               <span>
-                <strong className="text-white">Cuéntanos.</strong> Al final del piloto
-                te mandamos un formulario corto (10 minutos) para que nos digas qué te
-                ha gustado y qué no. Si encuentras algo que no funciona durante el
-                piloto, escríbenos directamente a{' '}
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
-                  className="underline font-semibold hover:text-white"
-                >
-                  {CONTACT_EMAIL}
-                </a>
-                .
+                <strong className="text-white">{t('pilot.join.tell.title')}</strong>{' '}
+                <Trans
+                  t={t}
+                  i18nKey="pilot.join.tell.desc"
+                  count={10}
+                  values={{ email: CONTACT_EMAIL }}
+                  components={{ mail: <a href={`mailto:${CONTACT_EMAIL}`} className={linkClass} /> }}
+                />
               </span>
             </li>
           </ol>
         </div>
 
         <div className="bg-white/10 backdrop-blur rounded-2xl p-6 sm:p-8">
-          <h3 className="font-bold text-xl mb-4">Qué te llevas tú</h3>
+          <h3 className="font-bold text-xl mb-4">{t('pilot.perks.title')}</h3>
           <ul className="space-y-3 text-orange-50">
-            <li className="flex gap-3 items-start">
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <span>
-                <strong className="text-white">6 meses gratis</strong> de PetPanic Social
-                cuando lancemos la versión de pago.
-              </span>
-            </li>
-            <li className="flex gap-3 items-start">
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <span>
-                <strong className="text-white">Tu protectora recibe una donación</strong>{' '}
-                en agradecimiento por ayudar al piloto.
-              </span>
-            </li>
-            <li className="flex gap-3 items-start">
-              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <span>
-                <strong className="text-white">Acceso directo al equipo.</strong>{' '}
-                Si algo no te encaja, lo arreglamos contigo.
-              </span>
-            </li>
+            {(['trial', 'free', 'team'] as const).map((id) => (
+              <li key={id} className="flex gap-3 items-start">
+                <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <span>
+                  <Trans
+                    t={t}
+                    i18nKey={`pilot.perks.${id}`}
+                    components={{ strong: <strong className="text-white" /> }}
+                  />
+                </span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -413,34 +360,17 @@ function PilotSection() {
 /* -------------------------------------------------------------------------- */
 
 function FAQ() {
-  const items = [
-    {
-      q: '¿Es gratis?',
-      a: 'Las funciones esenciales son gratis y van a seguir siéndolo. Hay una versión de pago con extras (PetPanic Social) pero durante el piloto no la necesitas.',
-    },
-    {
-      q: '¿Qué pasa con mis datos?',
-      a: 'Tus datos están alojados en servidores europeos (Supabase, eu-west-2). Solo compartimos tu ubicación cuando tú lanzas un aviso, y solo con personas en el radio relevante. Puedes borrar tu cuenta en cualquier momento desde el perfil.',
-    },
-    {
-      q: '¿Funciona en iPhone?',
-      a: 'La versión web (app.petpanic.es) funciona en iPhone. La app nativa para iOS llega en pocos días — te avisaremos por email cuando esté disponible en TestFlight.',
-    },
-    {
-      q: 'Soy socio de una protectora pero no tengo perro, ¿puedo participar?',
-      a: 'Sí. Puedes registrar la cuenta sin mascota propia y usar la app para ayudar cuando otras personas lancen avisos en tu zona. Eso es justamente lo que más necesitamos probar.',
-    },
-    {
-      q: '¿Cuánto dura el piloto?',
-      a: 'Tres semanas de uso activo + una de cierre. Después decides si te quedas o no, sin compromiso.',
-    },
-  ];
+  const { t } = useTranslation('beta');
+  const items = (['free', 'data', 'iphone', 'noPet', 'duration'] as const).map((id) => ({
+    q: t(`faq.items.${id}.q`),
+    a: t(`faq.items.${id}.a`),
+  }));
 
   return (
     <section className="py-16 sm:py-20 bg-stone-100">
       <div className="max-w-3xl mx-auto px-5">
         <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-10">
-          Dudas frecuentes
+          {t('faq.title')}
         </h2>
         <dl className="space-y-4">
           {items.map((it) => (
@@ -469,15 +399,15 @@ function FAQ() {
 /* -------------------------------------------------------------------------- */
 
 function CTA() {
+  const { t } = useTranslation('beta');
   return (
     <section className="py-16 sm:py-20 bg-white border-t border-stone-200">
       <div className="max-w-3xl mx-auto px-5 text-center">
         <h2 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-4">
-          ¿Empezamos?
+          {t('cta.title')}
         </h2>
         <p className="text-stone-600 text-lg mb-8 max-w-xl mx-auto">
-          Si has llegado hasta aquí, ya formas parte del piloto. Solo te falta abrir la
-          app.
+          {t('cta.text')}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
@@ -485,14 +415,14 @@ function CTA() {
             className="inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-orange-600/20 transition-colors"
           >
             <Smartphone className="w-5 h-5" />
-            Abrir PetPanic
+            {t('cta.open')}
           </a>
           <a
-            href={`mailto:${CONTACT_EMAIL}?subject=Quiero%20participar%20en%20el%20piloto%20de%20PetPanic`}
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(t('cta.mailSubject'))}`}
             className="inline-flex items-center justify-center gap-2 bg-white hover:bg-stone-50 text-stone-900 font-semibold px-6 py-3 rounded-xl border border-stone-300 transition-colors"
           >
             <Mail className="w-4 h-4" />
-            Escríbenos
+            {t('cta.write')}
           </a>
         </div>
       </div>
@@ -505,26 +435,27 @@ function CTA() {
 /* -------------------------------------------------------------------------- */
 
 function Footer() {
+  const { t } = useTranslation('beta');
   return (
     <footer className="bg-stone-900 text-stone-300 py-10">
       <div className="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <img
             src="/petpanic-logo.svg"
-            alt="PetPanic"
+            alt={t('common:brand')}
             className="h-7 w-7 brightness-0 invert"
           />
-          <span className="font-bold text-white">PetPanic</span>
+          <span className="font-bold text-white">{t('common:brand')}</span>
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
           <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-white transition">
             {CONTACT_EMAIL}
           </a>
           <a href="/privacidad" className="hover:text-white transition">
-            Privacidad
+            {t('footer.privacy')}
           </a>
           <a href="/terminos" className="hover:text-white transition">
-            Términos
+            {t('footer.terms')}
           </a>
           <a href="https://petpanic.es" className="hover:text-white transition">
             petpanic.es
@@ -532,7 +463,7 @@ function Footer() {
         </nav>
       </div>
       <div className="max-w-5xl mx-auto px-5 mt-6 text-xs text-stone-500">
-        © {new Date().getFullYear()} La Gente de Tom S.L.U. — Hecho en Sant Cugat.
+        {t('footer.copyright', { year: new Date().getFullYear() })}
       </div>
     </footer>
   );

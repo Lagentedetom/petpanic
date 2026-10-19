@@ -1,0 +1,42 @@
+{
+  "menu": {
+    "label": "Més opcions",
+    "report": {
+      "alert": "Denuncia aquesta alerta",
+      "message": "Denuncia aquest missatge",
+      "user": "Denuncia aquest usuari"
+    },
+    "block": "Bloqueja {{name}}"
+  },
+  "report": {
+    "title": {
+      "alert": "Denuncia l'alerta",
+      "message": "Denuncia el missatge",
+      "user": "Denuncia l'usuari"
+    },
+    "why": "Què passa amb aquest contingut?",
+    "reasons": {
+      "spam": "És correu brossa o publicitat",
+      "offensive": "És ofensiu o insultant",
+      "fake": "És fals o un engany",
+      "danger": "Posa en perill algú o un animal",
+      "other": "Una altra cosa"
+    },
+    "details": "Explica'ns-ho (opcional)",
+    "promise": "Revisem totes les denúncies en menys de 24 hores. Qui la rep no sap qui l'ha feta.",
+    "send": "Envia la denúncia",
+    "sent": "Gràcies. Ho revisarem en menys de 24 hores.",
+    "already": "Ja ho havies denunciat. Ho estem revisant.",
+    "error": "No s'ha pogut enviar la denúncia. Torna-ho a provar."
+  },
+  "block": {
+    "confirm": "Vols bloquejar {{name}}? Deixaràs de veure'n els missatges. El pots desbloquejar des del teu perfil.",
+    "done": "Has bloquejat {{name}}.",
+    "error": "No s'ha pogut bloquejar. Torna-ho a provar.",
+    "thisUser": "aquest usuari"
+  },
+  "blocked": {
+    "title": "Usuaris bloquejats",
+    "unblock": "Desbloqueja"
+  }
+}

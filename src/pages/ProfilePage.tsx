@@ -2,19 +2,24 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, Edit2, User as UserIcon, LogOut, Trash2, AlertTriangle, Sparkles, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useApp } from '../context/AppContext';
+import BlockedUsers from '../components/BlockedUsers';
+import { LANGUAGES, LANGUAGE_NAMES, setLanguage, type Language } from '../i18n';
 import { useSubscription } from '../hooks/useSubscription';
 import { supabase } from '../lib/supabase';
 
 export default function ProfilePage() {
+  const { t, i18n } = useTranslation('profile');
   const navigate = useNavigate();
   const { userProfile, updateProfile, logOut } = useApp();
   const { isTrialing, isActivePaid, daysLeftInTrial } = useSubscription();
   const planLabel = isActivePaid
-    ? 'PetPanic Social · activo'
+    ? t('plan.paid')
     : isTrialing
-      ? `Mes gratis · ${daysLeftInTrial} ${daysLeftInTrial === 1 ? 'día' : 'días'} restantes`
-      : 'PetPanic Gratis · activo';
+      ? t('plan.trial', { count: daysLeftInTrial })
+      : t('plan.free');
+  const currentLanguage = i18n.resolvedLanguage ?? i18n.language;
 
   const [isEditing, setIsEditing] = useState(false);
   const [profileForm, setProfileForm] = useState({ first_name: '', last_name: '', display_name: '' });
@@ -46,27 +51,27 @@ export default function ProfilePage() {
     <motion.div key="profile" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 pb-20">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button onClick={() => { if (isEditing) setIsEditing(false); else navigate('/'); }} aria-label="Volver" className="p-3 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
-          <h2 className="text-2xl font-bold">{isEditing ? 'Editar Perfil' : 'Mi Perfil'}</h2>
+          <button onClick={() => { if (isEditing) setIsEditing(false); else navigate('/'); }} aria-label={t('common:actions.back')} className="p-3 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
+          <h2 className="text-2xl font-bold">{isEditing ? t('header.editTitle') : t('header.title')}</h2>
         </div>
-        {!isEditing && <button onClick={handleEdit} aria-label="Editar perfil" className="p-3 bg-stone-900 text-white rounded-xl shadow-lg shadow-stone-200"><Edit2 className="w-5 h-5" /></button>}
+        {!isEditing && <button onClick={handleEdit} aria-label={t('header.edit')} className="p-3 bg-stone-900 text-white rounded-xl shadow-lg shadow-stone-200"><Edit2 className="w-5 h-5" /></button>}
       </div>
 
       <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm space-y-6">
         {isEditing ? (
           <form onSubmit={handleSave} className="space-y-6">
             <div className="space-y-4">
-              <div className="space-y-2"><label htmlFor="profile-first-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">Nombre</label>
-                <input id="profile-first-name" required type="text" autoComplete="given-name" value={profileForm.first_name} onChange={e => setProfileForm(prev => ({ ...prev, first_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Tu nombre" /></div>
-              <div className="space-y-2"><label htmlFor="profile-last-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">Apellidos</label>
-                <input id="profile-last-name" required type="text" autoComplete="family-name" value={profileForm.last_name} onChange={e => setProfileForm(prev => ({ ...prev, last_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Tus apellidos" /></div>
-              <div className="space-y-2"><label htmlFor="profile-display-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">Nombre de Usuario (Público)</label>
-                <input id="profile-display-name" type="text" autoComplete="username" value={profileForm.display_name} onChange={e => setProfileForm(prev => ({ ...prev, display_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Ej: Nico Tomic" />
-                <p className="text-[10px] text-stone-400">Este es el nombre que verán otros usuarios.</p></div>
+              <div className="space-y-2"><label htmlFor="profile-first-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">{t('fields.firstName')}</label>
+                <input id="profile-first-name" required type="text" autoComplete="given-name" value={profileForm.first_name} onChange={e => setProfileForm(prev => ({ ...prev, first_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder={t('form.firstNamePlaceholder')} /></div>
+              <div className="space-y-2"><label htmlFor="profile-last-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">{t('fields.lastName')}</label>
+                <input id="profile-last-name" required type="text" autoComplete="family-name" value={profileForm.last_name} onChange={e => setProfileForm(prev => ({ ...prev, last_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder={t('form.lastNamePlaceholder')} /></div>
+              <div className="space-y-2"><label htmlFor="profile-display-name" className="text-sm font-bold uppercase tracking-wider text-stone-500">{t('fields.displayName')}</label>
+                <input id="profile-display-name" type="text" autoComplete="username" value={profileForm.display_name} onChange={e => setProfileForm(prev => ({ ...prev, display_name: e.target.value }))} className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder={t('form.displayNamePlaceholder')} />
+                <p className="text-[10px] text-stone-400">{t('form.displayNameHint')}</p></div>
             </div>
             <div className="flex gap-4">
-              <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-stone-100 text-stone-600 font-bold py-4 rounded-2xl transition-all">CANCELAR</button>
-              <button type="submit" disabled={isSaving} className="flex-1 bg-stone-900 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-stone-100 disabled:opacity-50">{isSaving ? 'GUARDANDO...' : 'GUARDAR'}</button>
+              <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-stone-100 text-stone-600 font-bold py-4 rounded-2xl transition-all">{t('form.cancel')}</button>
+              <button type="submit" disabled={isSaving} className="flex-1 bg-stone-900 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-stone-100 disabled:opacity-50">{isSaving ? t('form.saving') : t('form.save')}</button>
             </div>
           </form>
         ) : (
@@ -79,10 +84,10 @@ export default function ProfilePage() {
             </div>
             <div className="space-y-4 pt-4 border-t border-stone-100">
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1"><p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1">Nombre</p><p className="bg-stone-50 p-3 rounded-xl font-medium text-stone-600">{userProfile?.first_name || '-'}</p></div>
-                <div className="space-y-1"><p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1">Apellidos</p><p className="bg-stone-50 p-3 rounded-xl font-medium text-stone-600">{userProfile?.last_name || '-'}</p></div>
+                <div className="space-y-1"><p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1">{t('fields.firstName')}</p><p className="bg-stone-50 p-3 rounded-xl font-medium text-stone-600">{userProfile?.first_name || '-'}</p></div>
+                <div className="space-y-1"><p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1">{t('fields.lastName')}</p><p className="bg-stone-50 p-3 rounded-xl font-medium text-stone-600">{userProfile?.last_name || '-'}</p></div>
               </div>
-              <div className="space-y-1"><p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1">Código de Amigo</p><p className="bg-orange-50 p-3 rounded-xl font-bold text-orange-600 tracking-widest">{userProfile?.friend_code}</p></div>
+              <div className="space-y-1"><p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1">{t('fields.friendCode')}</p><p className="bg-orange-50 p-3 rounded-xl font-bold text-orange-600 tracking-widest">{userProfile?.friend_code}</p></div>
             </div>
             <button
               onClick={() => navigate('/plan')}
@@ -91,14 +96,30 @@ export default function ProfilePage() {
               <span className="flex items-center gap-3">
                 <Sparkles className="w-5 h-5 text-orange-500" />
                 <span className="flex flex-col items-start">
-                  <span>Mi plan</span>
+                  <span>{t('plan.title')}</span>
                   <span className="text-[11px] font-medium text-stone-500">{planLabel}</span>
                 </span>
               </span>
               <ChevronRight className="w-5 h-5 text-stone-400" />
             </button>
 
-            <button onClick={logOut} className="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 font-bold py-4 rounded-2xl hover:bg-red-100 transition-all mt-4"><LogOut className="w-5 h-5" /> CERRAR SESIÓN</button>
+            <div className="space-y-1 mt-6">
+              <label htmlFor="profile-language" className="block text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1">{t('common:language.label')}</label>
+              <select
+                id="profile-language"
+                value={currentLanguage}
+                onChange={e => setLanguage(e.target.value as Language)}
+                className="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl font-medium text-stone-600 focus:ring-2 focus:ring-orange-500 outline-none"
+              >
+                {LANGUAGES.map(lang => (
+                  <option key={lang} value={lang} lang={lang}>{LANGUAGE_NAMES[lang]}</option>
+                ))}
+              </select>
+            </div>
+
+            <BlockedUsers />
+
+            <button onClick={logOut} className="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 font-bold py-4 rounded-2xl hover:bg-red-100 transition-all mt-4"><LogOut className="w-5 h-5" /> {t('logout')}</button>
           </>
         )}
       </div>
@@ -106,7 +127,7 @@ export default function ProfilePage() {
       {!isEditing && (
         <button onClick={() => setShowDeleteConfirm(true)}
           className="w-full flex items-center justify-center gap-2 text-stone-400 text-xs font-medium hover:text-red-600 transition-colors py-4">
-          <Trash2 className="w-4 h-4" /> Eliminar mi cuenta
+          <Trash2 className="w-4 h-4" /> {t('delete.button')}
         </button>
       )}
 
@@ -129,30 +150,30 @@ export default function ProfilePage() {
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
                 <AlertTriangle aria-hidden="true" className="w-8 h-8 text-red-600" />
               </div>
-              <h3 id="delete-account-title" className="text-xl font-bold">¿Eliminar tu cuenta?</h3>
-              <p id="delete-account-desc" className="text-stone-500 text-sm">Esta acción es permanente. Se eliminarán todos tus datos: mascotas, alertas, amigos y zonas de paseo. No se puede deshacer.</p>
+              <h3 id="delete-account-title" className="text-xl font-bold">{t('delete.title')}</h3>
+              <p id="delete-account-desc" className="text-stone-500 text-sm">{t('delete.body')}</p>
               {deleteError && <p className="text-red-500 text-xs font-medium">{deleteError}</p>}
               <div className="flex gap-3">
                 <button onClick={() => setShowDeleteConfirm(false)} disabled={isDeleting}
                   className="flex-1 py-3 border border-stone-200 rounded-2xl font-bold text-stone-600 hover:bg-stone-50 transition-colors disabled:opacity-50">
-                  Cancelar
+                  {t('delete.cancel')}
                 </button>
                 <button disabled={isDeleting} onClick={async () => {
                   setIsDeleting(true);
                   setDeleteError(null);
                   try {
                     const { data: { session } } = await supabase.auth.getSession();
-                    if (!session) throw new Error("No hay sesión activa");
+                    if (!session) throw new Error(t('delete.noSession'));
                     const res = await supabase.functions.invoke('delete-account');
                     if (res.error) throw res.error;
                     await supabase.auth.signOut();
                   } catch (err: any) {
-                    setDeleteError(err.message || "Error al eliminar la cuenta");
+                    setDeleteError(err.message || t('delete.failed'));
                     setIsDeleting(false);
                   }
                 }}
                   className="flex-1 py-3 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 transition-colors disabled:opacity-50">
-                  {isDeleting ? 'Eliminando...' : 'Sí, eliminar'}
+                  {isDeleting ? t('delete.deleting') : t('delete.confirm')}
                 </button>
               </div>
             </motion.div>

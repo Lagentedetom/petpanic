@@ -1,0 +1,135 @@
+{
+  "updated": "Última actualització: {{date}}",
+  "terms": {
+    "title": "Condicions del servei",
+    "owner": {
+      "title": "1. Titular del servei",
+      "body": "PetPanic és un servei de <strong>La Gente de Tom S.L.U.</strong>, amb NIF B65836116 i domicili social a Sant Cugat del Vallès (Barcelona). Ens pots escriure a <strong>hola@petpanic.es</strong>."
+    },
+    "acceptance": {
+      "title": "2. Acceptació de les condicions",
+      "body": "En accedir a PetPanic i fer-lo servir, acceptes aquestes condicions del servei. Si no hi estàs d'acord, no facis servir l'aplicació."
+    },
+    "service": {
+      "title": "3. Descripció del servei",
+      "body": "PetPanic és una plataforma comunitària que permet als propietaris de mascotes registrar els seus animals, crear alertes quan es perden i posar-se en contacte amb altres usuaris propers per facilitar-ne la recerca. També ofereix zones de passeig comunitàries amb presència en temps real."
+    },
+    "account": {
+      "title": "4. Registre i compte",
+      "body": "Per fer servir PetPanic has de crear un compte amb informació verídica. Ets responsable de mantenir la confidencialitat de les teves credencials. Has de tenir més de 16 anys per fer servir el servei."
+    },
+    "acceptableUse": {
+      "title": "5. Ús acceptable",
+      "intro": "Et comprometes a:",
+      "items": {
+        "noFakeAlerts": "No crear alertes falses de mascotes perdudes.",
+        "noHarassment": "No fer servir la plataforma per assetjar, amenaçar o molestar altres usuaris.",
+        "noOffensiveContent": "No compartir contingut ofensiu, il·legal o inadequat als missatges.",
+        "truthfulInfo": "Proporcionar informació verídica sobre les teves mascotes.",
+        "noUnauthorizedAccess": "No intentar accedir a dades d'altres usuaris sense autorització."
+      }
+    },
+    "location": {
+      "title": "6. Geolocalització",
+      "body": "Mentre fas servir l'aplicació, PetPanic utilitza la teva ubicació, arrodonida a uns 100 metres, per enviar-te les alertes de mascotes perdudes en un radi de 5 km i per detectar la teva presència a les zones de passeig. No fem cap seguiment en segon pla. Pots desactivar la geolocalització a la configuració del dispositiu, tot i que algunes funcions no estaran disponibles."
+    },
+    "content": {
+      "title": "7. Contingut dels usuaris",
+      "body": "Ets responsable del contingut que publiques (fotos, missatges, dades de mascotes). Està prohibit publicar contingut ofensiu, fals, violent o aliè a la recerca de mascotes perdudes. Qualsevol usuari pot denunciar un contingut des de l'aplicació i bloquejar un altre usuari. Revisem les denúncies en menys de 24 hores i podem retirar el contingut i tancar el compte de qui incompleixi aquestes condicions."
+    },
+    "liability": {
+      "title": "8. Limitació de responsabilitat",
+      "body": "PetPanic és una eina d'ajuda comunitària. No garantim que es recuperin les mascotes perdudes. No som responsables de les interaccions entre usuaris fora de la plataforma."
+    },
+    "changes": {
+      "title": "9. Modificacions",
+      "body": "Ens reservem el dret de modificar aquestes condicions. T'avisarem dels canvis a través de l'aplicació."
+    },
+    "law": {
+      "title": "10. Legislació aplicable",
+      "body": "Aquestes condicions es regeixen per la legislació espanyola. Per a qualsevol controvèrsia, seran competents els jutjats i tribunals d'Espanya."
+    },
+    "contact": {
+      "title": "11. Contacte",
+      "body": "Per a qualsevol consulta sobre aquestes condicions, escriu-nos a <strong>hola@petpanic.es</strong>."
+    }
+  },
+  "privacy": {
+    "title": "Política de privacitat",
+    "controller": {
+      "title": "1. Responsable del tractament",
+      "body": "El responsable del tractament de les teves dades personals és <strong>La Gente de Tom S.L.U.</strong>, titular de PetPanic, amb NIF B65836116 i domicili social a Sant Cugat del Vallès (Barcelona). Ens pots escriure a <strong>hola@petpanic.es</strong>."
+    },
+    "data": {
+      "title": "2. Dades que recollim",
+      "intro": "Recollim les dades següents:",
+      "items": {
+        "account": "<strong>Dades del compte:</strong> correu electrònic, nom, cognoms, nom d'usuari i foto de perfil (si utilitzes Google).",
+        "pets": "<strong>Dades de les mascotes:</strong> nom, espècie, raça, color, característiques, foto i dades de contacte.",
+        "location": "<strong>Dades d'ubicació:</strong> la teva posició aproximada, arrodonida a uns 100 metres, mentre fas servir l'aplicació. No registrem la teva ubicació en segon pla.",
+        "usage": "<strong>Dades d'ús:</strong> zones de passeig de què formes part, alertes creades i missatges enviats."
+      }
+    },
+    "purpose": {
+      "title": "3. Finalitat del tractament",
+      "intro": "Utilitzem les teves dades per:",
+      "items": {
+        "account": "Gestionar el teu compte i el teu perfil.",
+        "lostPets": "Facilitar la recerca de mascotes perdudes mitjançant alertes geolocalitzades.",
+        "zones": "Mostrar la teva presència a les zones de passeig de què formes part; el teu nom només el veuen els teus amics.",
+        "push": "Enviar-te notificacions push sobre alertes en un radi de 5 km de la teva posició.",
+        "messages": "Permetre la comunicació entre usuaris a través dels missatges de les alertes."
+      }
+    },
+    "legalBasis": {
+      "title": "4. Base jurídica",
+      "intro": "El tractament de les teves dades es basa en:",
+      "items": {
+        "consent": "<strong>Consentiment:</strong> quan et registres i acceptes aquestes condicions.",
+        "contract": "<strong>Execució del contracte:</strong> per prestar-te el servei.",
+        "legitimateInterest": "<strong>Interès legítim:</strong> per millorar la seguretat i el funcionament de la plataforma."
+      }
+    },
+    "location": {
+      "title": "5. Ubicació i privacitat",
+      "body": "Mentre fas servir l'aplicació, desem la teva posició arrodonida a uns 100 metres; mai no desem la teva ubicació exacta. La fem servir per enviar-te les alertes de mascotes perdudes a menys de 5 km de tu. No fem cap seguiment en segon pla: quan no fas servir l'aplicació, no registrem la teva ubicació. A les zones de passeig, els altres membres només veuen un recompte anònim; el teu nom i el de la teva mascota només els veuen els teus amics. Quan crees una alerta, l'única ubicació pública és el punt on es va perdre la mascota."
+    },
+    "sharing": {
+      "title": "6. Comunicació de dades",
+      "body": "No venem ni cedim les teves dades a tercers. Utilitzem Supabase com a proveïdor d'infraestructura (base de dades, autenticació i emmagatzematge). Les dades s'emmagatzemen en servidors de Supabase a Londres (regió eu-west-2, Regne Unit). El Regne Unit té una decisió d'adequació de la Comissió Europea, de manera que la transferència està permesa per l'RGPD."
+    },
+    "retention": {
+      "title": "7. Conservació de les dades",
+      "body": "Conservem les teves dades mentre mantinguis el compte actiu. Les alertes resoltes es conserven com a historial. Pots sol·licitar l'eliminació del teu compte i de totes les teves dades en qualsevol moment des del perfil."
+    },
+    "rights": {
+      "title": "8. Els teus drets (RGPD)",
+      "intro": "Tens dret a:",
+      "items": {
+        "access": "<strong>Accés:</strong> sol·licitar una còpia de les teves dades personals.",
+        "rectification": "<strong>Rectificació:</strong> corregir dades inexactes des del perfil.",
+        "erasure": "<strong>Supressió:</strong> eliminar el teu compte i totes les teves dades des del perfil.",
+        "portability": "<strong>Portabilitat:</strong> sol·licitar les teves dades en un format llegible.",
+        "objection": "<strong>Oposició:</strong> oposar-te al tractament de les teves dades.",
+        "restriction": "<strong>Limitació:</strong> sol·licitar la limitació del tractament."
+      },
+      "outro": "Per exercir aquests drets, escriu-nos a <strong>hola@petpanic.es</strong>."
+    },
+    "security": {
+      "title": "9. Seguretat",
+      "body": "Apliquem mesures de seguretat tècniques i organitzatives, com ara el xifratge en trànsit (HTTPS), l'autenticació segura i polítiques d'accés a la mateixa base de dades (Row Level Security)."
+    },
+    "storage": {
+      "title": "10. Galetes i emmagatzematge local",
+      "body": "PetPanic no utilitza galetes de tercers. Utilitzem l'emmagatzematge local del navegador (localStorage) només per mantenir la sessió activa i recordar l'idioma que has triat. No fem cap seguiment publicitari."
+    },
+    "minors": {
+      "title": "11. Menors",
+      "body": "PetPanic no està adreçat a menors de 16 anys. No recollim intencionadament dades de menors d'aquesta edat."
+    },
+    "authority": {
+      "title": "12. Autoritat de control",
+      "body": "Pots presentar una reclamació davant l'Agència Espanyola de Protecció de Dades (AEPD) a <strong>www.aepd.es</strong>."
+    }
+  }
+}

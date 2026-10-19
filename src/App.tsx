@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, MotionConfig } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { AppProvider, useApp } from './context/AppContext';
 import { onDeepLink } from './lib/native';
 import Header from './components/Header';
@@ -30,6 +31,7 @@ const ProtectorasAltaPage = lazy(() => import('./pages/ProtectorasAltaPage'));
 const ProtectorasConfirmarPage = lazy(() => import('./pages/ProtectorasConfirmarPage'));
 const ProtectorasBajaPage = lazy(() => import('./pages/ProtectorasBajaPage'));
 const BetaLandingPage = lazy(() => import('./pages/BetaLandingPage'));
+const DeleteAccountPage = lazy(() => import('./pages/DeleteAccountPage'));
 
 function PageLoader() {
   return (
@@ -40,6 +42,7 @@ function PageLoader() {
 }
 
 function AppRoutes() {
+  const { t } = useTranslation('shell');
   const { user, loading } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
@@ -58,6 +61,7 @@ function AppRoutes() {
   // Public pages (accessible without login)
   if (location.pathname === '/terminos') return <Suspense fallback={<PageLoader />}><TermsPage /></Suspense>;
   if (location.pathname === '/privacidad') return <Suspense fallback={<PageLoader />}><PrivacyPage /></Suspense>;
+  if (location.pathname === '/eliminar-cuenta') return <Suspense fallback={<PageLoader />}><DeleteAccountPage /></Suspense>;
   if (location.pathname.startsWith('/pet/')) return <Suspense fallback={<PageLoader />}><Routes><Route path="/pet/:petId" element={<PublicPetPage />} /></Routes></Suspense>;
   if (location.pathname === '/protectoras' || location.pathname === '/protectoras/alta') return <Suspense fallback={<PageLoader />}><ProtectorasAltaPage /></Suspense>;
   if (location.pathname === '/protectoras/confirmar') return <Suspense fallback={<PageLoader />}><ProtectorasConfirmarPage /></Suspense>;
@@ -83,7 +87,7 @@ function AppRoutes() {
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-orange-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-xl focus:font-bold focus:shadow-lg"
       >
-        Saltar al contenido
+        {t('skipToContent')}
       </a>
       <NotificationToast />
       <TrialBanner />

@@ -1,0 +1,70 @@
+{
+  "list": {
+    "title": "ZONES DE PASSEIG",
+    "available": "Zones disponibles",
+    "empty": "Encara no hi ha cap zona. Sigues el primer!",
+    "radius": "{{radius}} m de radi",
+    "youAreHere": "Ets aquí!",
+    "primaryZone": "Zona principal",
+    "members_one": "{{count}} membre",
+    "members_other": "{{count}} membres",
+    "join": "Uneix-te",
+    "member": "Membre"
+  },
+  "gate": {
+    "title": "Desbloqueja les zones de passeig",
+    "subtitle": "Amb PetPanic Social pots crear la teva zona i unir-te a altres zones",
+    "cta": "Activa"
+  },
+  "trial": {
+    "usage": "Mes gratuït · fas servir {{used}}/{{max}} zones pròpies",
+    "myPlan": "El meu pla"
+  },
+  "search": {
+    "placeholder": "Cerca una ciutat o zona (p. ex.: Girona)",
+    "submit": "Cerca",
+    "locateMe": "La meva ubicació"
+  },
+  "map": {
+    "viewDetails": "Mostra els detalls"
+  },
+  "create": {
+    "cta": "Crea una zona aquí",
+    "title": "Crea una zona nova",
+    "hint": "La zona es crearà a la teva ubicació actual.",
+    "namePlaceholder": "Nom de la zona (p. ex.: Parc de la Ciutadella)",
+    "radiusLabel": "Radi (metres): {{radius}} m",
+    "submit": "Crea la zona aquí",
+    "cancel": "Cancel·la"
+  },
+  "limit": {
+    "trial": "Durant el mes gratuït només pots crear 1 zona",
+    "reached_one": "Has arribat al límit ({{count}} zona)",
+    "reached_other": "Has arribat al límit ({{count}} zones)"
+  },
+  "toasts": {
+    "noGeolocation": "El teu navegador no admet la geolocalització.",
+    "locationFailed": "No s'ha pogut obtenir la teva ubicació.",
+    "needSocialCreate": "Necessites PetPanic Social per crear zones de passeig.",
+    "needSocialJoin": "Necessites PetPanic Social per unir-te a una zona.",
+    "trialLimit": "Durant el mes gratuït només pots crear 1 zona. Activa Social per crear-ne fins a 5.",
+    "limitReached_one": "Has arribat al límit de {{count}} zona.",
+    "limitReached_other": "Has arribat al límit de {{count}} zones."
+  },
+  "details": {
+    "notFound": "No s'ha trobat la zona.",
+    "currentStatus": "Estat actual",
+    "walking_one": "{{count}} PERSONA PASSEJANT",
+    "walking_other": "{{count}} PERSONES PASSEJANT",
+    "privacyNote": "Per privadesa, només veuràs els noms dels teus amics. La resta apareix com un recompte anònim.",
+    "joinToSee": "Uneix-te a la zona per veure qui hi passeja.",
+    "presentNow": "Ara a la zona",
+    "nobodyHere": "Ara mateix no hi ha ningú a la zona.",
+    "you": "Tu",
+    "withPets": "Amb: {{pets}}",
+    "noPet": "Sense mascota",
+    "othersHidden_one": "+ {{count}} persona més passejant per la zona. Només en veuràs el nom si sou amics.",
+    "othersHidden_other": "+ {{count}} persones més passejant per la zona. Només en veuràs els noms si sou amics.",
+    "membersOnly": "Has de ser membre d'aquesta zona per veure qui hi passeja."
+  }
+}

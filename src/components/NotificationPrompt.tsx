@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Bell, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useApp } from '../context/AppContext';
 import { isNative } from '../lib/native';
 import { registerNativePush, requestNotificationPermission, getNotificationPermissionState } from '../lib/notifications';
 
 export default function NotificationPrompt() {
+  const { t } = useTranslation('shell');
   const { user } = useApp();
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
@@ -61,9 +63,9 @@ export default function NotificationPrompt() {
               <Bell className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h4 className="font-bold text-sm mb-1">Activa las notificaciones</h4>
+              <h4 className="font-bold text-sm mb-1">{t('notificationPrompt.title')}</h4>
               <p className="text-stone-400 text-xs leading-relaxed mb-3">
-                Recibe alertas cuando una mascota se pierda cerca de ti, incluso con la app cerrada.
+                {t('notificationPrompt.text')}
               </p>
               <div className="flex gap-2">
                 <button
@@ -71,17 +73,17 @@ export default function NotificationPrompt() {
                   disabled={requesting}
                   className="bg-orange-600 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-orange-700 transition-colors disabled:opacity-50"
                 >
-                  {requesting ? 'Activando...' : 'Activar'}
+                  {requesting ? t('notificationPrompt.enabling') : t('notificationPrompt.enable')}
                 </button>
                 <button
                   onClick={handleDismiss}
                   className="text-stone-500 text-xs font-bold px-4 py-2 rounded-xl hover:text-stone-300 transition-colors"
                 >
-                  Ahora no
+                  {t('notificationPrompt.later')}
                 </button>
               </div>
             </div>
-            <button onClick={handleDismiss} aria-label="Cerrar" className="text-stone-500 hover:text-white p-2">
+            <button onClick={handleDismiss} aria-label={t('notificationPrompt.close')} className="text-stone-500 hover:text-white p-2">
               <X className="w-4 h-4" />
             </button>
           </div>

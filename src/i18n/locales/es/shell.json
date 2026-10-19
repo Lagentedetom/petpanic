@@ -1,0 +1,33 @@
+{
+  "skipToContent": "Saltar al contenido",
+  "cookies": {
+    "text": "Esta app usa el almacenamiento local del dispositivo para mantener tu sesión. No usamos cookies de terceros ni seguimiento publicitario.",
+    "privacyLink": "Política de privacidad",
+    "accept": "Aceptar"
+  },
+  "notificationPrompt": {
+    "title": "Activa las notificaciones",
+    "text": "Recibe avisos cuando una mascota se pierda cerca de ti, incluso con la app cerrada.",
+    "enable": "Activar",
+    "enabling": "Activando…",
+    "later": "Ahora no",
+    "close": "Cerrar"
+  },
+  "trial": {
+    "daysLeft_one": "Te queda {{count}} día de PetPanic Social gratis",
+    "daysLeft_other": "Te quedan {{count}} días de PetPanic Social gratis",
+    "daysLeftUrgent_one": "¡Solo te queda {{count}} día de Social!",
+    "daysLeftUrgent_other": "¡Solo te quedan {{count}} días de Social!",
+    "ended": "Tu prueba gratuita ha terminado — activa Social",
+    "discover": "Descubre PetPanic Social — 30 días gratis"
+  },
+  "lostPetToast": {
+    "label": "¡Alerta cerca de ti!",
+    "message": "{{name}} se ha perdido cerca de ti."
+  },
+  "errorBoundary": {
+    "title": "Algo ha fallado",
+    "text": "Ha ocurrido un error inesperado. Inténtalo de nuevo.",
+    "retry": "Reintentar"
+  }
+}

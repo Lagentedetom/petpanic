@@ -1,0 +1,34 @@
+{
+  "toast": {
+    "alertActivated": "¡Alerta activada! Hemos avisado a los usuarios cercanos.",
+    "petFound": "¡Mascota encontrada! Alerta resuelta.",
+    "zoneCreated": "Zona «{{name}}» creada. Ya eres su fundador/a."
+  },
+  "errors": {
+    "alert": {
+      "locationRequired": "Necesitamos tu ubicación para activar la alerta.",
+      "contactRequired": "Añade datos de contacto a tu mascota antes de activar la alerta.",
+      "activate": "No se ha podido activar la alerta. Inténtalo de nuevo.",
+      "resolve": "No se ha podido resolver la alerta. Inténtalo de nuevo."
+    },
+    "zone": {
+      "overlap": "Ya hay una zona de paseo a menos de 200 m. Únete a ella en lugar de crear una nueva.",
+      "limitReached": "Has alcanzado el límite de zonas que puedes crear con tu plan.",
+      "createNeedsSocial": "Necesitas PetPanic Social para crear zonas de paseo.",
+      "create": "No se ha podido crear la zona. Inténtalo de nuevo.",
+      "joinNeedsSocial": "Necesitas PetPanic Social para unirte a una zona de paseo.",
+      "join": "No has podido unirte a la zona. Inténtalo de nuevo."
+    },
+    "friends": {
+      "codeMissing": "No se puede enviar la solicitud: falta el código de amigo.",
+      "codeInvalid": "El código de amigo no es válido.",
+      "requestExists": "Ya hay una solicitud entre vosotros.",
+      "requestNeedsSocial": "Necesitas PetPanic Social para enviar solicitudes de amistad.",
+      "request": "No se ha podido enviar la solicitud. Inténtalo de nuevo."
+    }
+  },
+  "distance": {
+    "meters": "{{value}} m",
+    "kilometers": "{{value}} km"
+  }
+}

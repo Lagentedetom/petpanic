@@ -1,0 +1,42 @@
+{
+  "menu": {
+    "label": "More options",
+    "report": {
+      "alert": "Report this alert",
+      "message": "Report this message",
+      "user": "Report this user"
+    },
+    "block": "Block {{name}}"
+  },
+  "report": {
+    "title": {
+      "alert": "Report alert",
+      "message": "Report message",
+      "user": "Report user"
+    },
+    "why": "What's wrong with this?",
+    "reasons": {
+      "spam": "It's spam or advertising",
+      "offensive": "It's offensive or abusive",
+      "fake": "It's false or a scam",
+      "danger": "It puts someone or an animal at risk",
+      "other": "Something else"
+    },
+    "details": "Tell us more (optional)",
+    "promise": "We review every report within 24 hours. The person reported isn't told who reported them.",
+    "send": "Send report",
+    "sent": "Thanks. We'll review it within 24 hours.",
+    "already": "You've already reported this. We're looking into it.",
+    "error": "We couldn't send the report. Please try again."
+  },
+  "block": {
+    "confirm": "Block {{name}}? You won't see their messages any more. You can unblock them from your profile.",
+    "done": "You've blocked {{name}}.",
+    "error": "We couldn't block them. Please try again.",
+    "thisUser": "this user"
+  },
+  "blocked": {
+    "title": "Blocked users",
+    "unblock": "Unblock"
+  }
+}

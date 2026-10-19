@@ -1,0 +1,33 @@
+{
+  "header": {
+    "title": "AMICS",
+    "yourCode": "El teu codi"
+  },
+  "search": {
+    "placeholder": "Escriu el codi d'amic",
+    "submit": "Cerca"
+  },
+  "results": {
+    "title": "Resultats",
+    "sendRequest": "Envia una sol·licitud a {{name}}",
+    "pending": "Pendent",
+    "friends": "Amics"
+  },
+  "card": {
+    "code": "Codi: {{code}}"
+  },
+  "pending": {
+    "title": "Sol·licituds pendents",
+    "newRequest": "Sol·licitud nova",
+    "fallbackUser": "aquest usuari",
+    "accept": "Accepta la sol·licitud de {{name}}",
+    "decline": "Rebutja la sol·licitud de {{name}}"
+  },
+  "list": {
+    "title": "Els teus amics",
+    "empty": "Encara no has afegit cap amic.",
+    "unknownUser": "Usuari connectat",
+    "fallbackFriend": "aquest amic",
+    "remove": "Treu {{name}} dels teus amics"
+  }
+}

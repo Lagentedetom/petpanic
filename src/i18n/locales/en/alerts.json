@@ -1,0 +1,34 @@
+{
+  "details": {
+    "title": "Alert details",
+    "notFound": "Alert not found.",
+    "resolvedBanner": "<strong>Alert resolved.</strong> This pet has been found. The page stays up for reference, but the chat no longer accepts new messages.",
+    "lostSince": "Lost {{time}}",
+    "mapTitle": "Approximate location of the pet",
+    "openInMaps": "OPEN IN GOOGLE MAPS",
+    "breed": "Breed",
+    "color": "Colour",
+    "traits": "Traits",
+    "notSpecified": "Not specified",
+    "noDescription": "No extra description",
+    "ownerContact": "Owner's contact",
+    "contactNote": "Please only get in touch if you have useful information."
+  },
+  "share": {
+    "button": "Share alert",
+    "title": "{{name}} is lost!",
+    "text": "Help find {{name}} ({{description}}). Contact: {{contact}}",
+    "fallbackDescription": "pet",
+    "copied": "Alert copied to clipboard"
+  },
+  "chat": {
+    "title": "Help messages",
+    "empty": "No messages yet. If you know something, write it here.",
+    "photoAlt": "Attached photo",
+    "messageLabel": "Message",
+    "placeholder": "Write a message…",
+    "attachPhoto": "Attach photo",
+    "send": "Send message",
+    "closed": "The chat closed when the alert was resolved."
+  }
+}

@@ -3,10 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
 import { ChevronLeft, User as UserIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useApp } from '../context/AppContext';
 import type { ZonePresence } from '../types';
 
 export default function ZoneDetailsPage() {
+  const { t } = useTranslation('zones');
   const navigate = useNavigate();
   const { zoneId } = useParams();
   const { user, userProfile, pets, walkingZones, friendships, currentZoneId, zonesLoaded } = useApp();
@@ -25,7 +27,7 @@ export default function ZoneDetailsPage() {
       {
         zone_id: zoneId!,
         user_id: user.id,
-        user_name: userProfile?.display_name || 'Tú',
+        user_name: userProfile?.display_name || t('details.you'),
         user_photo: userProfile?.photo_url || '',
         pet_names: pets.map(p => p.name),
         updated_at: new Date().toISOString(),
@@ -71,8 +73,8 @@ export default function ZoneDetailsPage() {
   if (!selectedZone) {
     return (
       <div className="text-center py-20 text-stone-400">
-        <p>Zona no encontrada.</p>
-        <button onClick={() => navigate('/zones')} className="text-orange-600 font-bold mt-4">Volver</button>
+        <p>{t('details.notFound')}</p>
+        <button onClick={() => navigate('/zones')} className="text-orange-600 font-bold mt-4">{t('common:actions.back')}</button>
       </div>
     );
   }
@@ -83,27 +85,27 @@ export default function ZoneDetailsPage() {
   return (
     <motion.div key="zone-details" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="space-y-8">
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/zones')} aria-label="Volver" className="p-3 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
+        <button onClick={() => navigate('/zones')} aria-label={t('common:actions.back')} className="p-3 bg-white rounded-full shadow-sm border border-stone-200"><ChevronLeft className="w-6 h-6" /></button>
         <h2 className="text-2xl font-bold">{selectedZone.name}</h2>
       </div>
 
       <div className="bg-stone-900 text-white p-8 rounded-3xl space-y-2">
-        <p className="text-stone-400 text-xs font-bold uppercase tracking-widest">Estado Actual</p>
+        <p className="text-stone-400 text-xs font-bold uppercase tracking-widest">{t('details.currentStatus')}</p>
         <h3 className="text-3xl font-black">
-          {presenceWithSelf.length} {presenceWithSelf.length === 1 ? 'PERSONA' : 'PERSONAS'} PASEANDO
+          {t('details.walking', { count: presenceWithSelf.length })}
         </h3>
         <p className="text-stone-400 text-sm">
           {selectedZone.is_member
-            ? "Por privacidad, solo verás los nombres de tus amigos. El resto aparece como recuento anónimo."
-            : "Únete a la zona para ver quién está paseando."}
+            ? t('details.privacyNote')
+            : t('details.joinToSee')}
         </p>
       </div>
 
       {selectedZone.is_member ? (
         <div className="space-y-4">
-          <h4 className="text-xs font-bold uppercase tracking-widest text-stone-400 px-2">Presentes ahora</h4>
+          <h4 className="text-xs font-bold uppercase tracking-widest text-stone-400 px-2">{t('details.presentNow')}</h4>
           {presenceWithSelf.length === 0 ? (
-            <div className="bg-white p-12 rounded-3xl border border-stone-100 text-center italic text-stone-400">No hay nadie en la zona en este momento.</div>
+            <div className="bg-white p-12 rounded-3xl border border-stone-100 text-center italic text-stone-400">{t('details.nobodyHere')}</div>
           ) : (
             <div className="grid gap-4">
               {presenceWithSelf.map(presence => {
@@ -119,8 +121,8 @@ export default function ZoneDetailsPage() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <h5 className="font-bold">{isSelf ? "Tú" : presence.user_name}</h5>
-                      <p className="text-xs text-stone-400">Con: {presence.pet_names.join(', ') || 'Sin mascota'}</p>
+                      <h5 className="font-bold">{isSelf ? t('details.you') : presence.user_name}</h5>
+                      <p className="text-xs text-stone-400">{t('details.withPets', { pets: presence.pet_names.join(', ') || t('details.noPet') })}</p>
                     </div>
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
                   </div>
@@ -129,7 +131,7 @@ export default function ZoneDetailsPage() {
               {presenceWithSelf.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length > 0 && (
                 <div className="bg-stone-50 p-4 rounded-2xl border border-stone-100 text-center">
                   <p className="text-xs text-orange-600 font-medium">
-                    + {presenceWithSelf.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length} paseantes más en la zona. Conéctate como amigo para ver sus nombres.
+                    {t('details.othersHidden', { count: presenceWithSelf.filter(p => p.user_id !== user?.id && !isFriendOf(p.user_id)).length })}
                   </p>
                 </div>
               )}
@@ -138,7 +140,7 @@ export default function ZoneDetailsPage() {
         </div>
       ) : (
         <div className="bg-white p-12 rounded-3xl border border-stone-100 text-center space-y-2">
-          <p className="text-stone-400 italic">Debes ser miembro de esta zona para ver quién está paseando.</p>
+          <p className="text-stone-400 italic">{t('details.membersOnly')}</p>
         </div>
       )}
     </motion.div>

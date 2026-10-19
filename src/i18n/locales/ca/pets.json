@@ -1,0 +1,74 @@
+{
+  "species": {
+    "perro": "Gos",
+    "gato": "Gat",
+    "otro": "Altre"
+  },
+  "fields": {
+    "name": "Nom",
+    "species": "Espècie",
+    "breed": "Raça",
+    "color": "Color",
+    "traits": "Trets i caràcter",
+    "empty": "-"
+  },
+  "dashboard": {
+    "nearbyTitle": "Alertes a prop (a menys de 2 km)",
+    "lostTitle": "{{name}} s'ha perdut!",
+    "distanceFromYou": "a {{distance}} de tu",
+    "myPets": "Les meves mascotes",
+    "registerPet": "Registra una mascota",
+    "empty": "Encara no has registrat cap mascota.",
+    "registerNow": "Registra-la ara",
+    "showQr": "Mostra el codi QR",
+    "editPet": "Edita la mascota",
+    "found": "Ja ha aparegut!",
+    "panicButton": "BOTÓ DEL PÀNIC"
+  },
+  "history": {
+    "title": "Historial",
+    "found": "{{name}} ha aparegut",
+    "after": "Després de {{duration}}",
+    "minutes": "{{count}} min",
+    "hoursMinutes": "{{hours}} h {{minutes}} min"
+  },
+  "panicConfirm": {
+    "title": "{{name}} s'ha perdut?",
+    "description": "S'avisarà els usuaris propers. Un cop enviats, els avisos no es poden retirar.",
+    "confirm": "Sí, activa l'alerta"
+  },
+  "qr": {
+    "title": "QR de {{name}}",
+    "description": "Escaneja'l per obrir el perfil públic de la teva mascota. Imprimeix-lo i posa'l al collar."
+  },
+  "register": {
+    "titleNew": "Registra una mascota",
+    "titleEdit": "Edita la mascota",
+    "photo": {
+      "uploading": "S'està pujant…",
+      "change": "Canvia la foto",
+      "add": "Puja una foto",
+      "previewAlt": "Foto de la mascota",
+      "inputLabel": "Tria una foto de la mascota",
+      "errorType": "Només s'admeten imatges JPG, PNG o WebP.",
+      "errorSize": "La imatge no pot superar els 5 MB."
+    },
+    "namePlaceholder": "P. ex.: Max",
+    "breedPlaceholder": "P. ex.: Labrador",
+    "colorPlaceholder": "P. ex.: Marró i blanc",
+    "traitsPlaceholder": "P. ex.: S'espanta fàcilment, és molt afectuós…",
+    "contact": "Dades de contacte (privades)",
+    "contactPlaceholder": "P. ex.: Telèfon 600 000 000",
+    "contactHelp": "Només es mostren si actives el botó del pànic: llavors les veuran els usuaris propers i qualsevol persona que escanegi el QR de la teva mascota.",
+    "submitNew": "Desa la mascota",
+    "submitEdit": "Desa els canvis"
+  },
+  "public": {
+    "notFound": "No hem trobat aquesta mascota.",
+    "registeredBy": "Registrat per {{name}}",
+    "lostTitle": "{{name}} s'ha perdut!",
+    "lostHelp": "Si veus aquesta mascota, avisa el propietari com més aviat millor.",
+    "callOwner": "Truca al propietari",
+    "footer": "Perfil creat amb PetPanic"
+  }
+}

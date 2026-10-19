@@ -2,35 +2,31 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Dog, MapPin, Bell, ChevronRight, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const steps = [
   {
     icon: Dog,
     color: 'bg-orange-100 text-orange-600',
-    title: 'Registra tu mascota',
-    description: 'Añade a tu perro o gato con su foto, raza y datos de contacto. Si algún día se pierde, la comunidad podrá ayudarte a encontrarlo.',
+    key: 'pet',
     action: '/pets/register',
-    actionLabel: 'Registrar mascota',
   },
   {
     icon: MapPin,
     color: 'bg-emerald-100 text-emerald-600',
-    title: 'Únete a una zona de paseo',
-    description: 'Encuentra zonas de paseo cerca de ti y conéctate con otros dueños de tu barrio. Podrás ver quién está paseando en tiempo real.',
+    key: 'zone',
     action: '/zones',
-    actionLabel: 'Ver zonas',
   },
   {
     icon: Bell,
     color: 'bg-sky-100 text-sky-600',
-    title: 'Activa las notificaciones',
-    description: 'Recibe alertas cuando una mascota se pierda cerca de ti. Las primeras 2 horas son vitales para encontrarla.',
+    key: 'notifications',
     action: null,
-    actionLabel: 'Entendido',
   },
 ];
 
 export default function Onboarding() {
+  const { t } = useTranslation('auth');
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   // LO-06 fix: read localStorage once via useState initializer instead of
@@ -73,10 +69,10 @@ export default function Onboarding() {
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-orange-600">Primeros pasos</span>
-              <span className="text-[10px] text-stone-400">{currentStep + 1}/{steps.length}</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-orange-600">{t('onboarding.heading')}</span>
+              <span className="text-[10px] text-stone-400">{t('onboarding.progress', { current: currentStep + 1, total: steps.length })}</span>
             </div>
-            <button onClick={handleSkip} aria-label="Saltar onboarding" className="p-3 -m-3 text-stone-400 hover:text-stone-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-xl">
+            <button onClick={handleSkip} aria-label={t('onboarding.dismiss')} className="p-3 -m-3 text-stone-400 hover:text-stone-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-xl">
               <X aria-hidden="true" className="w-4 h-4" />
             </button>
           </div>
@@ -92,21 +88,21 @@ export default function Onboarding() {
               <div className={`w-12 h-12 rounded-2xl ${step.color} flex items-center justify-center`}>
                 <step.icon className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold">{step.title}</h3>
-              <p className="text-stone-500 text-sm leading-relaxed">{step.description}</p>
+              <h3 className="text-lg font-bold">{t(`onboarding.steps.${step.key}.title`)}</h3>
+              <p className="text-stone-500 text-sm leading-relaxed">{t(`onboarding.steps.${step.key}.description`)}</p>
             </motion.div>
           </AnimatePresence>
 
           <div className="flex items-center gap-3 pt-2">
             <button onClick={handleAction}
               className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-2xl transition-colors flex items-center justify-center gap-2 text-sm">
-              {step.actionLabel}
+              {t(`onboarding.steps.${step.key}.action`)}
               <ChevronRight className="w-4 h-4" />
             </button>
             {!isLast && (
               <button onClick={() => setCurrentStep(prev => prev + 1)}
                 className="text-stone-400 text-xs font-medium hover:text-stone-600 transition-colors px-3 py-3">
-                Saltar
+                {t('onboarding.skip')}
               </button>
             )}
           </div>

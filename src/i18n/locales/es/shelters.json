@@ -1,0 +1,69 @@
+{
+  "signup": {
+    "eyebrow": "Para protectoras",
+    "title": "Recibid alertas de perros perdidos en vuestra zona",
+    "intro": "Sin contraseñas. Sin app. Sin perfil que mantener. Solo un correo cada vez que se pierda o se encuentre una mascota cerca de vuestra protectora. Podréis daros de baja con un clic cuando queráis.",
+    "features": {
+      "alert": "Un correo cuando alguien activa una alerta de perro perdido en vuestra zona",
+      "zone": "Definís la zona con el código postal y un radio de cobertura",
+      "closed": "Otro correo cuando se cierra la alerta, para que no tengáis casos colgando"
+    },
+    "fields": {
+      "name": "Nombre de la protectora",
+      "namePlaceholder": "Asociación Protectora de Animales de…",
+      "email": "Correo de contacto",
+      "emailPlaceholder": "alertas@protectora.org",
+      "postcode": "Código postal",
+      "postcodeChecking": "Comprobando…",
+      "postcodeNotFound": "Código postal no encontrado",
+      "radius": "Radio (km)",
+      "radiusHint": "De 5 a 100 km"
+    },
+    "optIns": {
+      "legend": "¿Qué queréis recibir?",
+      "lost": "Avisos de mascotas perdidas",
+      "found": "Avisos de mascotas encontradas (cierre de caso)",
+      "overflow": "Incluir también alertas hasta 50 km (zona ampliada)",
+      "digest": "Resumen diario (un solo correo al día con todos los casos)"
+    },
+    "submit": "Suscribirnos a las alertas",
+    "submitting": "Enviando…",
+    "consent": "Al daros de alta aceptáis recibir correos relacionados con alertas de mascotas perdidas en vuestra zona. Podréis daros de baja con un clic en cualquier momento. Cumplimos el RGPD y la LOPDGDD: tenéis más detalles en nuestra <privacyLink>política de privacidad</privacyLink>.",
+    "sent": {
+      "title": "Revisad vuestro correo",
+      "body": "Hemos enviado un correo a <strong>{{email}}</strong> para confirmar la suscripción. Solo tenéis que abrirlo y pulsar el botón <em>Confirmar suscripción</em>.",
+      "spam": "¿No lo veis? Mirad en la carpeta de spam o de promociones. El remitente es <strong>{{sender}}</strong>."
+    },
+    "errors": {
+      "send": "No hemos podido enviar la suscripción. Intentadlo dentro de un minuto.",
+      "invalidName": "El nombre de la protectora no es válido.",
+      "invalidEmail": "El correo no es válido.",
+      "invalidPostcode": "Ese código postal no existe en nuestra base de datos.",
+      "invalidRadius": "El radio debe estar entre 5 y 100 km.",
+      "noOptIn": "Tenéis que marcar al menos uno de los dos tipos de aviso.",
+      "generic": "No hemos podido procesar vuestra suscripción."
+    }
+  },
+  "confirm": {
+    "loading": "Confirmando vuestra suscripción…",
+    "okTitle": "¡Suscripción activada!",
+    "okBody": "<strong>{{name}}</strong> recibirá un correo en <strong>{{email}}</strong> cada vez que se pierda o se encuentre una mascota en vuestra zona.",
+    "okFooter": "Podéis daros de baja con un solo clic desde cualquiera de esos correos. Gracias por sumaros a la red de búsqueda.",
+    "invalidTitle": "Enlace no válido",
+    "invalidBody": "Este enlace de confirmación no es válido o ya se ha usado. Si ya teníais una suscripción activa, sigue en marcha: recibiréis los correos con normalidad.",
+    "backToSignup": "Volver al formulario de alta",
+    "errorTitle": "Algo ha fallado",
+    "errorBody": "No hemos podido confirmar vuestra suscripción ahora mismo. Intentadlo dentro de un minuto o volved a daros de alta."
+  },
+  "unsubscribe": {
+    "loading": "Procesando la baja…",
+    "okTitle": "Os habéis dado de baja",
+    "okBody": "<strong>{{email}}</strong> ya no recibirá más alertas. Gracias por el tiempo que habéis estado ayudando a encontrar mascotas perdidas.",
+    "okFooter": "Si ha sido un error o cambiáis de opinión, podéis volver a daros de alta cuando queráis.",
+    "resubscribe": "Volver a darse de alta",
+    "invalidTitle": "Enlace no válido",
+    "invalidBody": "Este enlace no es válido o la suscripción ya estaba dada de baja. No recibiréis más correos.",
+    "errorTitle": "Algo ha fallado",
+    "errorBody": "No hemos podido procesar la baja ahora mismo. Intentadlo dentro de un minuto. Si el problema persiste, escribidnos a hola@petpanic.es."
+  }
+}

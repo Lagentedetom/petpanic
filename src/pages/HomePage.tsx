@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { Dog, Cat, MapPin, Users, User as UserIcon, AlertCircle, ChevronRight, Settings } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import Onboarding from '../components/Onboarding';
 
 export default function HomePage() {
+  const { t } = useTranslation('home');
   const navigate = useNavigate();
   const { userProfile, pets, nearbyAlerts, walkingZones, friendships, primaryZonePresence, user } = useApp();
 
@@ -18,12 +20,12 @@ export default function HomePage() {
       {/* Header */}
       <header className="flex items-center justify-between">
         <div>
-          <p className="text-stone-400 text-xs font-bold uppercase tracking-widest">Bienvenido</p>
+          <p className="text-stone-400 text-xs font-bold uppercase tracking-widest">{t('greeting')}</p>
           <h1 className="text-2xl font-black tracking-tight text-stone-900">
             {userProfile?.first_name || userProfile?.display_name.split(' ')[0]}
           </h1>
         </div>
-        <button onClick={() => navigate('/profile')} className="w-10 h-10 rounded-xl bg-white border border-stone-200 overflow-hidden shadow-sm">
+        <button onClick={() => navigate('/profile')} aria-label={t('openProfile')} className="w-10 h-10 rounded-xl bg-white border border-stone-200 overflow-hidden shadow-sm">
           {userProfile?.photo_url
             ? <img src={userProfile.photo_url} alt={userProfile.display_name} className="w-full h-full object-cover" />
             : <UserIcon className="w-full h-full p-2 text-stone-300" />}
@@ -38,7 +40,7 @@ export default function HomePage() {
         <div className="bg-red-50 p-5 rounded-3xl border border-red-100 space-y-3">
           <div className="flex items-center gap-2 text-red-600">
             <AlertCircle className="w-4 h-4" />
-            <p className="font-bold text-xs uppercase tracking-widest">Alertas Cercanas</p>
+            <p className="font-bold text-xs uppercase tracking-widest">{t('nearby.title')}</p>
           </div>
           {nearbyAlerts.map(alert => (
             <button
@@ -52,8 +54,8 @@ export default function HomePage() {
                   : <Dog className="w-full h-full p-2.5 text-stone-300" />}
               </div>
               <div className="flex-1">
-                <p className="font-bold text-sm text-red-900">¡{alert.pet_name} se ha perdido!</p>
-                <p className="text-red-500 text-xs">Cerca de ti</p>
+                <p className="font-bold text-sm text-red-900">{t('nearby.lostTitle', { name: alert.pet_name })}</p>
+                <p className="text-red-500 text-xs">{t('nearby.nearYou')}</p>
               </div>
               <ChevronRight className="w-5 h-5 text-red-300" />
             </button>
@@ -67,11 +69,11 @@ export default function HomePage() {
           <Dog className="w-6 h-6 text-orange-600" />
         </div>
         <div className="flex-1">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400">Mis Mascotas</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400">{t('pets.title')}</p>
           {pets.length > 0 ? (
             <p className="font-bold text-stone-900 truncate">{pets.map(p => p.name).join(', ')}</p>
           ) : (
-            <p className="text-stone-400 text-sm">Registra tu primera mascota</p>
+            <p className="text-stone-400 text-sm">{t('pets.empty')}</p>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -90,14 +92,14 @@ export default function HomePage() {
             <MapPin className="w-5 h-5 text-emerald-600" />
           </div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">
-            {primaryZone ? primaryZone.name : 'Zonas de Paseo'}
+            {primaryZone ? primaryZone.name : t('zones.title')}
           </p>
           <div className="flex items-baseline gap-1">
             <span className="text-3xl font-black text-stone-900">
               {primaryZone ? primaryZonePresence.reduce((acc, p) => acc + p.pet_names.length, 0) : walkingZones.length}
             </span>
             <span className="text-xs text-stone-400 font-medium">
-              {primaryZone ? 'paseando' : 'zonas'}
+              {primaryZone ? t('zones.walking') : t('zones.unit', { count: walkingZones.length })}
             </span>
           </div>
         </button>
@@ -107,10 +109,10 @@ export default function HomePage() {
           <div className="w-10 h-10 rounded-xl bg-sky-50 flex items-center justify-center mb-3">
             <Users className="w-5 h-5 text-sky-600" />
           </div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">Amigos</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">{t('friends.title')}</p>
           <div className="flex items-baseline gap-1">
             <span className="text-3xl font-black text-stone-900">{acceptedFriends.length}</span>
-            <span className="text-xs text-stone-400 font-medium">conectados</span>
+            <span className="text-xs text-stone-400 font-medium">{t('friends.unit')}</span>
           </div>
         </button>
       </div>
@@ -121,7 +123,7 @@ export default function HomePage() {
           <Settings className="w-5 h-5 text-stone-500" />
         </div>
         <div className="flex-1">
-          <p className="font-medium text-stone-600 text-sm">Mi Perfil y Configuración</p>
+          <p className="font-medium text-stone-600 text-sm">{t('settings')}</p>
         </div>
         <ChevronRight className="w-5 h-5 text-stone-300" />
       </button>

@@ -1,0 +1,33 @@
+{
+  "skipToContent": "Skip to content",
+  "cookies": {
+    "text": "This app uses your device's local storage to keep you signed in. We don't use third-party cookies or ad tracking.",
+    "privacyLink": "Privacy Policy",
+    "accept": "OK"
+  },
+  "notificationPrompt": {
+    "title": "Turn on notifications",
+    "text": "Get alerts when a pet goes missing near you, even when the app is closed.",
+    "enable": "Turn on",
+    "enabling": "Turning on…",
+    "later": "Not now",
+    "close": "Close"
+  },
+  "trial": {
+    "daysLeft_one": "{{count}} day of free PetPanic Social left",
+    "daysLeft_other": "{{count}} days of free PetPanic Social left",
+    "daysLeftUrgent_one": "Only {{count}} day of Social left!",
+    "daysLeftUrgent_other": "Only {{count}} days of Social left!",
+    "ended": "Your free trial has ended — turn on Social",
+    "discover": "Discover PetPanic Social — 30 days free"
+  },
+  "lostPetToast": {
+    "label": "Alert near you!",
+    "message": "{{name}} has gone missing near you."
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "text": "An unexpected error occurred. Please try again.",
+    "retry": "Try again"
+  }
+}

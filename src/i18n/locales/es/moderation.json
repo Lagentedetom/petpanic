@@ -1,0 +1,42 @@
+{
+  "menu": {
+    "label": "Más opciones",
+    "report": {
+      "alert": "Denunciar esta alerta",
+      "message": "Denunciar este mensaje",
+      "user": "Denunciar a este usuario"
+    },
+    "block": "Bloquear a {{name}}"
+  },
+  "report": {
+    "title": {
+      "alert": "Denunciar alerta",
+      "message": "Denunciar mensaje",
+      "user": "Denunciar usuario"
+    },
+    "why": "¿Qué pasa con este contenido?",
+    "reasons": {
+      "spam": "Es spam o publicidad",
+      "offensive": "Es ofensivo o insultante",
+      "fake": "Es falso o un engaño",
+      "danger": "Pone en peligro a alguien o a un animal",
+      "other": "Otra cosa"
+    },
+    "details": "Cuéntanos más (opcional)",
+    "promise": "Revisamos todas las denuncias en menos de 24 horas. Quien la recibe no sabe quién la ha hecho.",
+    "send": "Enviar denuncia",
+    "sent": "Gracias. Lo revisaremos en menos de 24 horas.",
+    "already": "Ya lo habías denunciado. Lo estamos revisando.",
+    "error": "No se ha podido enviar la denuncia. Inténtalo de nuevo."
+  },
+  "block": {
+    "confirm": "¿Bloquear a {{name}}? Dejarás de ver sus mensajes. Puedes desbloquearlo desde tu perfil.",
+    "done": "Has bloqueado a {{name}}.",
+    "error": "No se ha podido bloquear. Inténtalo de nuevo.",
+    "thisUser": "este usuario"
+  },
+  "blocked": {
+    "title": "Usuarios bloqueados",
+    "unblock": "Desbloquear"
+  }
+}

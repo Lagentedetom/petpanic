@@ -1,0 +1,69 @@
+{
+  "signup": {
+    "eyebrow": "For animal shelters",
+    "title": "Get alerts about lost dogs in your area",
+    "intro": "No passwords. No app. No profile to maintain. Just an email whenever a pet goes missing or is found near your shelter. You can unsubscribe with one click whenever you like.",
+    "features": {
+      "alert": "An email when someone raises a lost dog alert in your area",
+      "zone": "You set the area with a postcode and a coverage radius",
+      "closed": "Another email when the alert is closed, so no cases are left hanging"
+    },
+    "fields": {
+      "name": "Shelter name",
+      "namePlaceholder": "Animal Protection Society of…",
+      "email": "Contact email",
+      "emailPlaceholder": "alerts@shelter.org",
+      "postcode": "Postcode",
+      "postcodeChecking": "Checking…",
+      "postcodeNotFound": "Postcode not found",
+      "radius": "Radius (km)",
+      "radiusHint": "5 to 100 km"
+    },
+    "optIns": {
+      "legend": "What would you like to receive?",
+      "lost": "Lost pet alerts",
+      "found": "Found pet alerts (case closed)",
+      "overflow": "Also include alerts up to 50 km away (extended area)",
+      "digest": "Daily digest (a single email a day with all cases)"
+    },
+    "submit": "Subscribe to alerts",
+    "submitting": "Sending…",
+    "consent": "By signing up you agree to receive emails about lost pet alerts in your area. You can unsubscribe with one click at any time. We comply with the GDPR: see our <privacyLink>privacy policy</privacyLink> for details.",
+    "sent": {
+      "title": "Check your inbox",
+      "body": "We've sent an email to <strong>{{email}}</strong> to confirm your subscription. Just open it and press the confirmation button.",
+      "spam": "Can't see it? Check your spam or promotions folder. The sender is <strong>{{sender}}</strong>."
+    },
+    "errors": {
+      "send": "We couldn't send your subscription. Please try again in a minute.",
+      "invalidName": "The shelter name isn't valid.",
+      "invalidEmail": "The email address isn't valid.",
+      "invalidPostcode": "That postcode isn't in our database.",
+      "invalidRadius": "The radius must be between 5 and 100 km.",
+      "noOptIn": "Please tick at least one of the two alert types.",
+      "generic": "We couldn't process your subscription."
+    }
+  },
+  "confirm": {
+    "loading": "Confirming your subscription…",
+    "okTitle": "Subscription active!",
+    "okBody": "<strong>{{name}}</strong> will receive an email at <strong>{{email}}</strong> whenever a pet goes missing or is found in your area.",
+    "okFooter": "You can unsubscribe with a single click from any of those emails. Thanks for joining the search network.",
+    "invalidTitle": "Invalid link",
+    "invalidBody": "This confirmation link isn't valid or has already been used. If you already had an active subscription, it's still on: you'll keep receiving emails as usual.",
+    "backToSignup": "Back to the sign-up form",
+    "errorTitle": "Something went wrong",
+    "errorBody": "We couldn't confirm your subscription right now. Please try again in a minute, or sign up again."
+  },
+  "unsubscribe": {
+    "loading": "Processing your request…",
+    "okTitle": "You've unsubscribed",
+    "okBody": "<strong>{{email}}</strong> will no longer receive alerts. Thank you for the time you spent helping to find lost pets.",
+    "okFooter": "If this was a mistake or you change your mind, you can sign up again whenever you like.",
+    "resubscribe": "Sign up again",
+    "invalidTitle": "Invalid link",
+    "invalidBody": "This link isn't valid or the subscription had already been cancelled. You won't receive any more emails.",
+    "errorTitle": "Something went wrong",
+    "errorBody": "We couldn't process your request right now. Please try again in a minute. If the problem persists, write to us at hola@petpanic.es."
+  }
+}

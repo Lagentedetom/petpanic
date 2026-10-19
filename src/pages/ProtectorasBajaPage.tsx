@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Check, AlertCircle, Loader2 } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 
 type State =
@@ -9,6 +10,7 @@ type State =
   | { kind: 'error' };
 
 export default function ProtectorasBajaPage() {
+  const { t } = useTranslation('shelters');
   const [state, setState] = useState<State>({ kind: 'loading' });
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function ProtectorasBajaPage() {
       {state.kind === 'loading' && (
         <div className="text-center space-y-4">
           <Loader2 className="w-12 h-12 text-orange-600 animate-spin mx-auto" />
-          <p className="text-stone-600">Procesando baja…</p>
+          <p className="text-stone-600">{t('unsubscribe.loading')}</p>
         </div>
       )}
 
@@ -49,18 +51,18 @@ export default function ProtectorasBajaPage() {
           <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
             <Check className="w-8 h-8 text-green-600" />
           </div>
-          <h1 className="text-2xl font-bold">Os habéis dado de baja</h1>
+          <h1 className="text-2xl font-bold">{t('unsubscribe.okTitle')}</h1>
           <p className="text-stone-600 leading-relaxed">
-            <strong>{state.email}</strong> ya no recibirá más alertas. Gracias por el tiempo que estuvisteis ayudando a encontrar mascotas perdidas.
+            <Trans t={t} i18nKey="unsubscribe.okBody" values={{ email: state.email }} components={{ strong: <strong /> }} />
           </p>
           <p className="text-sm text-stone-500 leading-relaxed pt-2">
-            Si fue un error o cambiáis de opinión, podéis volver a daros de alta cuando queráis.
+            {t('unsubscribe.okFooter')}
           </p>
           <a
             href="/protectoras"
             className="inline-block mt-4 text-orange-600 font-bold hover:underline"
           >
-            Volver a darse de alta
+            {t('unsubscribe.resubscribe')}
           </a>
         </div>
       )}
@@ -70,9 +72,9 @@ export default function ProtectorasBajaPage() {
           <div className="mx-auto w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center">
             <AlertCircle className="w-8 h-8 text-amber-600" />
           </div>
-          <h1 className="text-2xl font-bold">Enlace no válido</h1>
+          <h1 className="text-2xl font-bold">{t('unsubscribe.invalidTitle')}</h1>
           <p className="text-stone-600 leading-relaxed">
-            Este enlace no es válido o la suscripción ya estaba dada de baja. No recibiréis más emails.
+            {t('unsubscribe.invalidBody')}
           </p>
         </div>
       )}
@@ -82,9 +84,9 @@ export default function ProtectorasBajaPage() {
           <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
             <AlertCircle className="w-8 h-8 text-red-600" />
           </div>
-          <h1 className="text-2xl font-bold">Algo ha fallado</h1>
+          <h1 className="text-2xl font-bold">{t('unsubscribe.errorTitle')}</h1>
           <p className="text-stone-600 leading-relaxed">
-            No hemos podido procesar la baja ahora mismo. Inténtalo en un minuto. Si el problema persiste, escríbenos a hola@petpanic.es.
+            {t('unsubscribe.errorBody')}
           </p>
         </div>
       )}

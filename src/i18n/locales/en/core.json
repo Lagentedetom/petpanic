@@ -1,0 +1,34 @@
+{
+  "toast": {
+    "alertActivated": "Alert activated! We've notified people nearby.",
+    "petFound": "Pet found! Alert resolved.",
+    "zoneCreated": "Zone “{{name}}” created. You're its founder."
+  },
+  "errors": {
+    "alert": {
+      "locationRequired": "We need your location to activate the alert.",
+      "contactRequired": "Add contact details to your pet before activating the alert.",
+      "activate": "Couldn't activate the alert. Please try again.",
+      "resolve": "Couldn't resolve the alert. Please try again."
+    },
+    "zone": {
+      "overlap": "There's already a walking zone less than 200 m away. Join it instead of creating a new one.",
+      "limitReached": "You've reached the number of zones your plan lets you create.",
+      "createNeedsSocial": "You need PetPanic Social to create walking zones.",
+      "create": "Couldn't create the zone. Please try again.",
+      "joinNeedsSocial": "You need PetPanic Social to join a walking zone.",
+      "join": "Couldn't join the zone. Please try again."
+    },
+    "friends": {
+      "codeMissing": "Can't send the request: the friend code is missing.",
+      "codeInvalid": "That friend code isn't valid.",
+      "requestExists": "There's already a request between you two.",
+      "requestNeedsSocial": "You need PetPanic Social to send friend requests.",
+      "request": "Couldn't send the request. Please try again."
+    }
+  },
+  "distance": {
+    "meters": "{{value}} m",
+    "kilometers": "{{value}} km"
+  }
+}

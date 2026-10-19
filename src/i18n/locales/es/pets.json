@@ -1,0 +1,74 @@
+{
+  "species": {
+    "perro": "Perro",
+    "gato": "Gato",
+    "otro": "Otro"
+  },
+  "fields": {
+    "name": "Nombre",
+    "species": "Especie",
+    "breed": "Raza",
+    "color": "Color",
+    "traits": "Rasgos y carácter",
+    "empty": "-"
+  },
+  "dashboard": {
+    "nearbyTitle": "Alertas cercanas (a menos de 2 km)",
+    "lostTitle": "¡{{name}} se ha perdido!",
+    "distanceFromYou": "a {{distance}} de ti",
+    "myPets": "Mis mascotas",
+    "registerPet": "Registrar mascota",
+    "empty": "Aún no has registrado ninguna mascota.",
+    "registerNow": "Regístrala ahora",
+    "showQr": "Ver código QR",
+    "editPet": "Editar mascota",
+    "found": "¡Ya ha aparecido!",
+    "panicButton": "BOTÓN DEL PÁNICO"
+  },
+  "history": {
+    "title": "Historial",
+    "found": "{{name}} ha aparecido",
+    "after": "Tras {{duration}}",
+    "minutes": "{{count}} min",
+    "hoursMinutes": "{{hours}} h {{minutes}} min"
+  },
+  "panicConfirm": {
+    "title": "¿{{name}} se ha perdido?",
+    "description": "Se avisará a los usuarios cercanos. Una vez enviados, los avisos no se pueden retirar.",
+    "confirm": "Sí, activar la alerta"
+  },
+  "qr": {
+    "title": "QR de {{name}}",
+    "description": "Escanéalo para abrir el perfil público de tu mascota. Imprímelo y ponlo en su collar."
+  },
+  "register": {
+    "titleNew": "Registrar mascota",
+    "titleEdit": "Editar mascota",
+    "photo": {
+      "uploading": "Subiendo…",
+      "change": "Cambiar foto",
+      "add": "Subir foto",
+      "previewAlt": "Foto de la mascota",
+      "inputLabel": "Elegir una foto de la mascota",
+      "errorType": "Solo se admiten imágenes JPG, PNG o WebP.",
+      "errorSize": "La imagen no puede superar los 5 MB."
+    },
+    "namePlaceholder": "Ej.: Max",
+    "breedPlaceholder": "Ej.: Labrador",
+    "colorPlaceholder": "Ej.: Marrón y blanco",
+    "traitsPlaceholder": "Ej.: Se asusta con facilidad, es muy cariñoso…",
+    "contact": "Datos de contacto (privados)",
+    "contactPlaceholder": "Ej.: Teléfono 600 000 000",
+    "contactHelp": "Solo se muestran si activas el botón del pánico: entonces los verán los usuarios cercanos y cualquiera que escanee el QR de tu mascota.",
+    "submitNew": "Guardar mascota",
+    "submitEdit": "Guardar cambios"
+  },
+  "public": {
+    "notFound": "No hemos encontrado esta mascota.",
+    "registeredBy": "Registrado por {{name}}",
+    "lostTitle": "¡{{name}} se ha perdido!",
+    "lostHelp": "Si ves a esta mascota, avisa a su dueño cuanto antes.",
+    "callOwner": "Llamar al dueño",
+    "footer": "Perfil creado con PetPanic"
+  }
+}

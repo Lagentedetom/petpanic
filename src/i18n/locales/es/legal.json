@@ -1,0 +1,135 @@
+{
+  "updated": "Última actualización: {{date}}",
+  "terms": {
+    "title": "Términos de servicio",
+    "owner": {
+      "title": "1. Titular del servicio",
+      "body": "PetPanic es un servicio de <strong>La Gente de Tom S.L.U.</strong>, con NIF B65836116 y domicilio social en Sant Cugat del Vallès (Barcelona). Puedes escribirnos a <strong>hola@petpanic.es</strong>."
+    },
+    "acceptance": {
+      "title": "2. Aceptación de los términos",
+      "body": "Al acceder a PetPanic y utilizarlo, aceptas estos términos de servicio. Si no estás de acuerdo, no utilices la aplicación."
+    },
+    "service": {
+      "title": "3. Descripción del servicio",
+      "body": "PetPanic es una plataforma comunitaria que permite a los dueños de mascotas registrar sus animales, crear alertas cuando se pierden y conectar con otros usuarios cercanos para facilitar su búsqueda. También ofrece zonas de paseo comunitarias con presencia en tiempo real."
+    },
+    "account": {
+      "title": "4. Registro y cuenta",
+      "body": "Para usar PetPanic debes crear una cuenta con información veraz. Eres responsable de mantener la confidencialidad de tus credenciales. Debes ser mayor de 16 años para usar el servicio."
+    },
+    "acceptableUse": {
+      "title": "5. Uso aceptable",
+      "intro": "Te comprometes a:",
+      "items": {
+        "noFakeAlerts": "No crear alertas falsas de mascotas perdidas.",
+        "noHarassment": "No utilizar la plataforma para acosar, amenazar o molestar a otros usuarios.",
+        "noOffensiveContent": "No compartir contenido ofensivo, ilegal o inapropiado en los mensajes.",
+        "truthfulInfo": "Proporcionar información veraz sobre tus mascotas.",
+        "noUnauthorizedAccess": "No intentar acceder a datos de otros usuarios sin autorización."
+      }
+    },
+    "location": {
+      "title": "6. Geolocalización",
+      "body": "Mientras usas la app, PetPanic utiliza tu ubicación, redondeada a unos 100 metros, para enviarte las alertas de mascotas perdidas en un radio de 5 km y para detectar tu presencia en las zonas de paseo. No hacemos seguimiento en segundo plano. Puedes desactivar la geolocalización en los ajustes de tu dispositivo, aunque algunas funciones no estarán disponibles."
+    },
+    "content": {
+      "title": "7. Contenido de los usuarios",
+      "body": "Eres responsable del contenido que publicas (fotos, mensajes, datos de mascotas). Está prohibido publicar contenido ofensivo, falso, violento o ajeno a la búsqueda de mascotas perdidas. Cualquier usuario puede denunciar un contenido desde la app y bloquear a otro usuario. Revisamos las denuncias en menos de 24 horas y podemos retirar el contenido y cerrar la cuenta de quien incumpla estos términos."
+    },
+    "liability": {
+      "title": "8. Limitación de responsabilidad",
+      "body": "PetPanic es una herramienta de ayuda comunitaria. No garantizamos la recuperación de mascotas perdidas. No somos responsables de las interacciones entre usuarios fuera de la plataforma."
+    },
+    "changes": {
+      "title": "9. Modificaciones",
+      "body": "Nos reservamos el derecho de modificar estos términos. Te avisaremos de los cambios a través de la aplicación."
+    },
+    "law": {
+      "title": "10. Legislación aplicable",
+      "body": "Estos términos se rigen por la legislación española. Para cualquier controversia, serán competentes los juzgados y tribunales de España."
+    },
+    "contact": {
+      "title": "11. Contacto",
+      "body": "Para cualquier consulta sobre estos términos, escríbenos a <strong>hola@petpanic.es</strong>."
+    }
+  },
+  "privacy": {
+    "title": "Política de privacidad",
+    "controller": {
+      "title": "1. Responsable del tratamiento",
+      "body": "El responsable del tratamiento de tus datos personales es <strong>La Gente de Tom S.L.U.</strong>, titular de PetPanic, con NIF B65836116 y domicilio social en Sant Cugat del Vallès (Barcelona). Puedes escribirnos a <strong>hola@petpanic.es</strong>."
+    },
+    "data": {
+      "title": "2. Datos que recopilamos",
+      "intro": "Recopilamos los siguientes datos:",
+      "items": {
+        "account": "<strong>Datos de cuenta:</strong> correo electrónico, nombre, apellidos, nombre de usuario y foto de perfil (si usas Google).",
+        "pets": "<strong>Datos de mascotas:</strong> nombre, especie, raza, color, características, foto y datos de contacto.",
+        "location": "<strong>Datos de ubicación:</strong> tu posición aproximada, redondeada a unos 100 metros, mientras usas la app. No registramos tu ubicación en segundo plano.",
+        "usage": "<strong>Datos de uso:</strong> zonas de paseo a las que perteneces, alertas creadas y mensajes enviados."
+      }
+    },
+    "purpose": {
+      "title": "3. Finalidad del tratamiento",
+      "intro": "Utilizamos tus datos para:",
+      "items": {
+        "account": "Gestionar tu cuenta y tu perfil.",
+        "lostPets": "Facilitar la búsqueda de mascotas perdidas mediante alertas geolocalizadas.",
+        "zones": "Mostrar tu presencia en las zonas de paseo a las que perteneces; tu nombre solo lo ven tus amigos.",
+        "push": "Enviarte notificaciones push sobre alertas en un radio de 5 km de tu posición.",
+        "messages": "Permitir la comunicación entre usuarios a través de los mensajes de las alertas."
+      }
+    },
+    "legalBasis": {
+      "title": "4. Base legal",
+      "intro": "El tratamiento de tus datos se basa en:",
+      "items": {
+        "consent": "<strong>Consentimiento:</strong> al registrarte y aceptar estos términos.",
+        "contract": "<strong>Ejecución del contrato:</strong> para prestarte el servicio.",
+        "legitimateInterest": "<strong>Interés legítimo:</strong> para mejorar la seguridad y el funcionamiento de la plataforma."
+      }
+    },
+    "location": {
+      "title": "5. Ubicación y privacidad",
+      "body": "Mientras usas la app, guardamos tu posición redondeada a unos 100 metros; nunca guardamos tu ubicación exacta. La usamos para enviarte las alertas de mascotas perdidas a menos de 5 km de ti. No hacemos seguimiento en segundo plano: cuando no usas la app, no registramos tu ubicación. En las zonas de paseo, los demás miembros solo ven un recuento anónimo; tu nombre y el de tu mascota solo los ven tus amigos. Cuando creas una alerta, la única ubicación pública es el punto donde se perdió la mascota."
+    },
+    "sharing": {
+      "title": "6. Compartición de datos",
+      "body": "No vendemos ni cedemos tus datos a terceros. Utilizamos Supabase como proveedor de infraestructura (base de datos, autenticación y almacenamiento). Los datos se almacenan en servidores de Supabase en Londres (región eu-west-2, Reino Unido). El Reino Unido tiene una decisión de adecuación de la Comisión Europea, así que la transferencia está permitida por el RGPD."
+    },
+    "retention": {
+      "title": "7. Conservación de los datos",
+      "body": "Conservamos tus datos mientras mantengas tu cuenta activa. Las alertas resueltas se mantienen como histórico. Puedes solicitar la eliminación de tu cuenta y de todos tus datos en cualquier momento desde tu perfil."
+    },
+    "rights": {
+      "title": "8. Tus derechos (RGPD)",
+      "intro": "Tienes derecho a:",
+      "items": {
+        "access": "<strong>Acceso:</strong> solicitar una copia de tus datos personales.",
+        "rectification": "<strong>Rectificación:</strong> corregir datos inexactos desde tu perfil.",
+        "erasure": "<strong>Supresión:</strong> eliminar tu cuenta y todos tus datos desde el perfil.",
+        "portability": "<strong>Portabilidad:</strong> solicitar tus datos en un formato legible.",
+        "objection": "<strong>Oposición:</strong> oponerte al tratamiento de tus datos.",
+        "restriction": "<strong>Limitación:</strong> solicitar la limitación del tratamiento."
+      },
+      "outro": "Para ejercer estos derechos, escríbenos a <strong>hola@petpanic.es</strong>."
+    },
+    "security": {
+      "title": "9. Seguridad",
+      "body": "Aplicamos medidas de seguridad técnicas y organizativas, como el cifrado en tránsito (HTTPS), la autenticación segura y políticas de acceso en la propia base de datos (Row Level Security)."
+    },
+    "storage": {
+      "title": "10. Cookies y almacenamiento local",
+      "body": "PetPanic no utiliza cookies de terceros. Utilizamos el almacenamiento local del navegador (localStorage) exclusivamente para mantener tu sesión activa y recordar el idioma que has elegido. No se realiza seguimiento publicitario."
+    },
+    "minors": {
+      "title": "11. Menores",
+      "body": "PetPanic no está dirigido a menores de 16 años. No recopilamos intencionadamente datos de menores de esa edad."
+    },
+    "authority": {
+      "title": "12. Autoridad de control",
+      "body": "Puedes presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD) en <strong>www.aepd.es</strong>."
+    }
+  }
+}

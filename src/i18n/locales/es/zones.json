@@ -1,0 +1,70 @@
+{
+  "list": {
+    "title": "ZONAS DE PASEO",
+    "available": "Zonas disponibles",
+    "empty": "Todavía no hay ninguna zona. ¡Sé el primero!",
+    "radius": "{{radius}} m de radio",
+    "youAreHere": "¡Estás aquí!",
+    "primaryZone": "Zona principal",
+    "members_one": "{{count}} miembro",
+    "members_other": "{{count}} miembros",
+    "join": "Unirse",
+    "member": "Miembro"
+  },
+  "gate": {
+    "title": "Desbloquea las zonas de paseo",
+    "subtitle": "Con PetPanic Social puedes crear tu zona y unirte a otras",
+    "cta": "Activar"
+  },
+  "trial": {
+    "usage": "Mes gratis · usas {{used}}/{{max}} zonas propias",
+    "myPlan": "Mi plan"
+  },
+  "search": {
+    "placeholder": "Busca una ciudad o zona (p. ej.: Logroño)",
+    "submit": "Buscar",
+    "locateMe": "Mi ubicación"
+  },
+  "map": {
+    "viewDetails": "Ver detalles"
+  },
+  "create": {
+    "cta": "Crear zona aquí",
+    "title": "Crear una zona nueva",
+    "hint": "La zona se creará en tu ubicación actual.",
+    "namePlaceholder": "Nombre de la zona (p. ej.: Parque del Retiro)",
+    "radiusLabel": "Radio (metros): {{radius}} m",
+    "submit": "Crear zona aquí",
+    "cancel": "Cancelar"
+  },
+  "limit": {
+    "trial": "Durante el mes gratis solo puedes crear 1 zona",
+    "reached_one": "Límite alcanzado ({{count}} zona)",
+    "reached_other": "Límite alcanzado ({{count}} zonas)"
+  },
+  "toasts": {
+    "noGeolocation": "Tu navegador no admite la geolocalización.",
+    "locationFailed": "No se ha podido obtener tu ubicación.",
+    "needSocialCreate": "Necesitas PetPanic Social para crear zonas de paseo.",
+    "needSocialJoin": "Necesitas PetPanic Social para unirte a una zona.",
+    "trialLimit": "Durante el mes gratis solo puedes crear 1 zona. Activa Social para crear hasta 5.",
+    "limitReached_one": "Has alcanzado el límite de {{count}} zona.",
+    "limitReached_other": "Has alcanzado el límite de {{count}} zonas."
+  },
+  "details": {
+    "notFound": "No se ha encontrado la zona.",
+    "currentStatus": "Estado actual",
+    "walking_one": "{{count}} PERSONA PASEANDO",
+    "walking_other": "{{count}} PERSONAS PASEANDO",
+    "privacyNote": "Por privacidad, solo verás los nombres de tus amigos. El resto aparece como un recuento anónimo.",
+    "joinToSee": "Únete a la zona para ver quién está paseando.",
+    "presentNow": "Ahora en la zona",
+    "nobodyHere": "Ahora mismo no hay nadie en la zona.",
+    "you": "Tú",
+    "withPets": "Con: {{pets}}",
+    "noPet": "Sin mascota",
+    "othersHidden_one": "+ {{count}} paseante más en la zona. Solo verás su nombre si sois amigos.",
+    "othersHidden_other": "+ {{count}} paseantes más en la zona. Solo verás sus nombres si sois amigos.",
+    "membersOnly": "Tienes que ser miembro de esta zona para ver quién está paseando."
+  }
+}

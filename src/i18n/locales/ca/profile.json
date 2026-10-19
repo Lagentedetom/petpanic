@@ -1,0 +1,40 @@
+{
+  "header": {
+    "title": "El meu perfil",
+    "editTitle": "Edita el perfil",
+    "edit": "Edita el perfil"
+  },
+  "fields": {
+    "firstName": "Nom",
+    "lastName": "Cognoms",
+    "displayName": "Nom d'usuari (públic)",
+    "friendCode": "Codi d'amic"
+  },
+  "form": {
+    "firstNamePlaceholder": "El teu nom",
+    "lastNamePlaceholder": "Els teus cognoms",
+    "displayNamePlaceholder": "P. ex.: Marta Soler",
+    "displayNameHint": "És el nom que veuran els altres usuaris.",
+    "cancel": "CANCEL·LA",
+    "save": "DESA",
+    "saving": "S'ESTÀ DESANT…"
+  },
+  "plan": {
+    "title": "El meu pla",
+    "paid": "PetPanic Social · actiu",
+    "trial_one": "Mes gratuït · queda {{count}} dia",
+    "trial_other": "Mes gratuït · queden {{count}} dies",
+    "free": "PetPanic Gratuït · actiu"
+  },
+  "logout": "TANCA LA SESSIÓ",
+  "delete": {
+    "button": "Elimina el compte",
+    "title": "Vols eliminar el compte?",
+    "body": "Aquesta acció és permanent. S'eliminaran totes les teves dades: mascotes, alertes, amics i zones de passeig. No es pot desfer.",
+    "cancel": "Cancel·la",
+    "confirm": "Sí, elimina'l",
+    "deleting": "S'està eliminant…",
+    "noSession": "No hi ha cap sessió activa.",
+    "failed": "No s'ha pogut eliminar el compte."
+  }
+}

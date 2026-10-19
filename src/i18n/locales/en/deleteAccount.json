@@ -1,0 +1,23 @@
+{
+  "title": "Delete your account",
+  "intro": "You can delete your PetPanic account and all its data whenever you like, from the app or by emailing us.",
+  "inApp": {
+    "title": "From the app",
+    "step1": "Log in to PetPanic.",
+    "step2": "Open your profile.",
+    "step3": "Tap “Delete my account” and confirm."
+  },
+  "byEmail": {
+    "title": "If you no longer have the app",
+    "body": "Email us at <a>{{email}}</a> from the address you signed up with and ask us to delete your account. We'll do it within 30 days and let you know when it's done."
+  },
+  "what": {
+    "title": "What gets deleted",
+    "deleted": "Your account, profile, pets, alerts, messages, friendships and stored location are deleted.",
+    "kept": "If you had a PetPanic Social subscription, invoices are kept for as long as tax law requires, with no other data about you. If you paid through the App Store or Google Play, cancel the subscription there too: deleting your account doesn't cancel it."
+  },
+  "email": {
+    "subject": "Delete my PetPanic account",
+    "body": "Hi, please delete my PetPanic account and all its data. My sign-up email is this one."
+  }
+}

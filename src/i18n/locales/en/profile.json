@@ -1,0 +1,40 @@
+{
+  "header": {
+    "title": "My profile",
+    "editTitle": "Edit profile",
+    "edit": "Edit profile"
+  },
+  "fields": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "displayName": "Username (public)",
+    "friendCode": "Friend code"
+  },
+  "form": {
+    "firstNamePlaceholder": "Your first name",
+    "lastNamePlaceholder": "Your last name",
+    "displayNamePlaceholder": "e.g. Marta Soler",
+    "displayNameHint": "This is the name other users will see.",
+    "cancel": "CANCEL",
+    "save": "SAVE",
+    "saving": "SAVING…"
+  },
+  "plan": {
+    "title": "My plan",
+    "paid": "PetPanic Social · active",
+    "trial_one": "Free month · {{count}} day left",
+    "trial_other": "Free month · {{count}} days left",
+    "free": "PetPanic Free · active"
+  },
+  "logout": "LOG OUT",
+  "delete": {
+    "button": "Delete my account",
+    "title": "Delete your account?",
+    "body": "This can't be undone. All your data will be deleted: pets, alerts, friends and walking zones.",
+    "cancel": "Cancel",
+    "confirm": "Yes, delete it",
+    "deleting": "Deleting…",
+    "noSession": "There's no active session.",
+    "failed": "Couldn't delete your account."
+  }
+}

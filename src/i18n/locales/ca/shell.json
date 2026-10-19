@@ -1,0 +1,33 @@
+{
+  "skipToContent": "Salta al contingut",
+  "cookies": {
+    "text": "Aquesta app fa servir l'emmagatzematge local del dispositiu per mantenir la teva sessió. No fem servir galetes de tercers ni seguiment publicitari.",
+    "privacyLink": "Política de privadesa",
+    "accept": "D'acord"
+  },
+  "notificationPrompt": {
+    "title": "Activa les notificacions",
+    "text": "Rep avisos quan es perdi una mascota a prop teu, fins i tot amb l'app tancada.",
+    "enable": "Activa",
+    "enabling": "S'està activant…",
+    "later": "Ara no",
+    "close": "Tanca"
+  },
+  "trial": {
+    "daysLeft_one": "Et queda {{count}} dia de PetPanic Social de franc",
+    "daysLeft_other": "Et queden {{count}} dies de PetPanic Social de franc",
+    "daysLeftUrgent_one": "Només et queda {{count}} dia de Social!",
+    "daysLeftUrgent_other": "Només et queden {{count}} dies de Social!",
+    "ended": "La teva prova gratuïta s'ha acabat — activa Social",
+    "discover": "Descobreix PetPanic Social — 30 dies de franc"
+  },
+  "lostPetToast": {
+    "label": "Alerta a prop teu!",
+    "message": "{{name}} s'ha perdut a prop teu."
+  },
+  "errorBoundary": {
+    "title": "Alguna cosa ha fallat",
+    "text": "S'ha produït un error inesperat. Torna-ho a provar.",
+    "retry": "Torna-ho a provar"
+  }
+}

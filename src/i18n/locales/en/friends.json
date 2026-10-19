@@ -1,0 +1,33 @@
+{
+  "header": {
+    "title": "FRIENDS",
+    "yourCode": "Your code"
+  },
+  "search": {
+    "placeholder": "Enter your friend's code",
+    "submit": "Search"
+  },
+  "results": {
+    "title": "Results",
+    "sendRequest": "Send a friend request to {{name}}",
+    "pending": "Pending",
+    "friends": "Friends"
+  },
+  "card": {
+    "code": "Code: {{code}}"
+  },
+  "pending": {
+    "title": "Pending requests",
+    "newRequest": "New request",
+    "fallbackUser": "this user",
+    "accept": "Accept request from {{name}}",
+    "decline": "Decline request from {{name}}"
+  },
+  "list": {
+    "title": "Your friends",
+    "empty": "You haven't added any friends yet.",
+    "unknownUser": "Connected user",
+    "fallbackFriend": "this friend",
+    "remove": "Remove {{name}} from your friends"
+  }
+}

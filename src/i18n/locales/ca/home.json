@@ -1,0 +1,24 @@
+{
+  "greeting": "Hola",
+  "openProfile": "Obre el meu perfil",
+  "nearby": {
+    "title": "Alertes a prop",
+    "lostTitle": "{{name}} s'ha perdut!",
+    "nearYou": "A prop teu"
+  },
+  "pets": {
+    "title": "Les meves mascotes",
+    "empty": "Registra la teva primera mascota"
+  },
+  "zones": {
+    "title": "Zones de passeig",
+    "walking": "passejant",
+    "unit_one": "zona",
+    "unit_other": "zones"
+  },
+  "friends": {
+    "title": "Amics",
+    "unit": "a la teva xarxa"
+  },
+  "settings": "El meu perfil i configuració"
+}

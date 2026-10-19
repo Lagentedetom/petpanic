@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Check, AlertCircle, Loader2 } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 
 type State =
@@ -9,6 +10,7 @@ type State =
   | { kind: 'error' };
 
 export default function ProtectorasConfirmarPage() {
+  const { t } = useTranslation('shelters');
   const [state, setState] = useState<State>({ kind: 'loading' });
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function ProtectorasConfirmarPage() {
       {state.kind === 'loading' && (
         <div className="text-center space-y-4">
           <Loader2 className="w-12 h-12 text-orange-600 animate-spin mx-auto" />
-          <p className="text-stone-600">Confirmando tu suscripción…</p>
+          <p className="text-stone-600">{t('confirm.loading')}</p>
         </div>
       )}
 
@@ -49,12 +51,12 @@ export default function ProtectorasConfirmarPage() {
           <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
             <Check className="w-8 h-8 text-green-600" />
           </div>
-          <h1 className="text-2xl font-bold">¡Suscripción activada!</h1>
+          <h1 className="text-2xl font-bold">{t('confirm.okTitle')}</h1>
           <p className="text-stone-600 leading-relaxed">
-            <strong>{state.nombre}</strong> recibirá un email en <strong>{state.email}</strong> cada vez que se pierda o se encuentre una mascota en vuestra zona.
+            <Trans t={t} i18nKey="confirm.okBody" values={{ name: state.nombre, email: state.email }} components={{ strong: <strong /> }} />
           </p>
           <p className="text-sm text-stone-500 leading-relaxed pt-2">
-            Podéis darte de baja con un solo click desde cualquiera de esos emails. Gracias por sumaros a la red de búsqueda.
+            {t('confirm.okFooter')}
           </p>
         </div>
       )}
@@ -64,15 +66,15 @@ export default function ProtectorasConfirmarPage() {
           <div className="mx-auto w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center">
             <AlertCircle className="w-8 h-8 text-amber-600" />
           </div>
-          <h1 className="text-2xl font-bold">Enlace no válido</h1>
+          <h1 className="text-2xl font-bold">{t('confirm.invalidTitle')}</h1>
           <p className="text-stone-600 leading-relaxed">
-            Este enlace de confirmación no es válido o ya ha sido usado. Si tenías una suscripción activa, ya la tienes — recibirás los emails normalmente.
+            {t('confirm.invalidBody')}
           </p>
           <a
             href="/protectoras"
             className="inline-block mt-4 text-orange-600 font-bold hover:underline"
           >
-            Volver al formulario de alta
+            {t('confirm.backToSignup')}
           </a>
         </div>
       )}
@@ -82,9 +84,9 @@ export default function ProtectorasConfirmarPage() {
           <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
             <AlertCircle className="w-8 h-8 text-red-600" />
           </div>
-          <h1 className="text-2xl font-bold">Algo ha fallado</h1>
+          <h1 className="text-2xl font-bold">{t('confirm.errorTitle')}</h1>
           <p className="text-stone-600 leading-relaxed">
-            No hemos podido confirmar tu suscripción ahora mismo. Inténtalo en un minuto, o vuelve a darte de alta.
+            {t('confirm.errorBody')}
           </p>
         </div>
       )}

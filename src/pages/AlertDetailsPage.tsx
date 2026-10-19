@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 import { motion } from 'motion/react';
+import ReportMenu from '../components/ReportMenu';
 import { supabase } from '../lib/supabase';
 import { Dog, MapPin, MessageSquare, ChevronLeft, Send, ImagePlus, Share2 } from 'lucide-react';
 import { cn } from '../lib/cn';
@@ -8,7 +10,18 @@ import { useApp } from '../context/AppContext';
 import { safeUuid } from '../utils';
 import type { Message, Alert } from '../types';
 
+/** «hace 5 minutos» / «fa 2 hores» / «3 days ago», en el idioma activo. */
+function formatTimeAgo(iso: string, lang: string) {
+  const minutes = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'always' });
+  if (minutes < 60) return rtf.format(-minutes, 'minute');
+  const hours = Math.round(minutes / 60);
+  if (hours < 48) return rtf.format(-hours, 'hour');
+  return rtf.format(-Math.round(hours / 24), 'day');
+}
+
 export default function AlertDetailsPage() {
+  const { t, i18n } = useTranslation('alerts');
   const navigate = useNavigate();
   const { alertId } = useParams();
   const { activeAlerts, user, showToast } = useApp();
@@ -152,8 +165,8 @@ export default function AlertDetailsPage() {
   if (!selectedAlert) {
     return (
       <div className="text-center py-20 text-stone-400">
-        <p>Alerta no encontrada.</p>
-        <button onClick={() => navigate('/pets')} className="text-orange-600 font-bold mt-4">Volver</button>
+        <p>{t('details.notFound')}</p>
+        <button onClick={() => navigate('/pets')} className="text-orange-600 font-bold mt-4">{t('common:actions.back')}</button>
       </div>
     );
   }
@@ -169,23 +182,26 @@ export default function AlertDetailsPage() {
       className="space-y-6"
     >
       <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/pets')} aria-label="Volver" className="p-3 bg-white rounded-full shadow-sm border border-stone-200">
+        <button onClick={() => navigate('/pets')} aria-label={t('common:actions.back')} className="p-3 bg-white rounded-full shadow-sm border border-stone-200">
           <ChevronLeft className="w-6 h-6" />
         </button>
-        <h2 className="text-2xl font-bold flex-1">Detalles de Alerta</h2>
+        <h2 className="text-2xl font-bold flex-1">{t('details.title')}</h2>
+        {selectedAlert.owner_id !== user?.id && (
+          <ReportMenu target={{ type: 'alert', id: selectedAlert.id }} userId={selectedAlert.owner_id} />
+        )}
         <button
-          aria-label="Compartir alerta"
+          aria-label={t('share.button')}
           onClick={async () => {
             const shareData = {
-              title: `¡${selectedAlert.pet_name} se ha perdido!`,
-              text: `Ayuda a encontrar a ${selectedAlert.pet_name} (${selectedAlert.pet_breed || selectedAlert.pet_color || 'mascota'}). Contacto: ${selectedAlert.owner_contact}`,
+              title: t('share.title', { name: selectedAlert.pet_name }),
+              text: t('share.text', { name: selectedAlert.pet_name, description: selectedAlert.pet_breed || selectedAlert.pet_color || t('share.fallbackDescription'), contact: selectedAlert.owner_contact }),
               url: window.location.href,
             };
             if (navigator.share) {
               await navigator.share(shareData).catch(() => {});
             } else {
               await navigator.clipboard.writeText(`${shareData.title}\n${shareData.text}\n${shareData.url}`);
-              showToast('Enlace copiado al portapapeles', 'success');
+              showToast(t('share.copied'), 'success');
             }
           }}
           className="p-3 bg-orange-600 text-white rounded-full shadow-sm hover:bg-orange-700 transition-colors"
@@ -196,7 +212,7 @@ export default function AlertDetailsPage() {
 
       {isResolved && (
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-emerald-800 text-sm">
-          <strong className="font-bold">Alerta resuelta.</strong> Esta mascota ha sido encontrada. La página se mantiene como referencia, pero el chat ya no acepta nuevos mensajes.
+          <Trans t={t} i18nKey="details.resolvedBanner" components={{ strong: <strong className="font-bold" /> }} />
         </div>
       )}
 
@@ -213,51 +229,61 @@ export default function AlertDetailsPage() {
             <h3 className="text-2xl font-bold text-red-600">{selectedAlert.pet_name}</h3>
             <p className="text-stone-500 flex items-center gap-1">
               <MapPin className="w-4 h-4" />
-              Perdido hace {Math.round((Date.now() - new Date(selectedAlert.created_at).getTime()) / 60000)} min
+              {t('details.lostSince', { time: formatTimeAgo(selectedAlert.created_at, i18n.language) })}
             </p>
           </div>
         </div>
 
         <div className="h-64 w-full bg-stone-100 relative border-b border-stone-100">
           <iframe width="100%" height="100%" frameBorder="0" scrolling="no" marginHeight={0} marginWidth={0}
-            title="Ubicación de la mascota"
+            title={t('details.mapTitle')}
             src={`https://www.openstreetmap.org/export/embed.html?bbox=${selectedAlert.lng - 0.002}%2C${selectedAlert.lat - 0.002}%2C${selectedAlert.lng + 0.002}%2C${selectedAlert.lat + 0.002}&layer=mapnik&marker=${selectedAlert.lat}%2C${selectedAlert.lng}`} />
           <div className="absolute bottom-4 right-4">
             <a href={`https://www.google.com/maps?q=${selectedAlert.lat},${selectedAlert.lng}`} target="_blank" rel="noopener noreferrer"
               className="bg-white/90 backdrop-blur-sm text-stone-900 text-[10px] font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 hover:bg-white transition-all hover:scale-105">
-              <MapPin className="w-3 h-3 text-red-600" /> ABRIR EN GOOGLE MAPS
+              <MapPin className="w-3 h-3 text-red-600" /> {t('details.openInMaps')}
             </a>
           </div>
         </div>
 
         <div className="p-6 grid grid-cols-2 gap-4 border-b border-stone-100 bg-stone-50/50">
-          <div><h4 className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">Raza</h4><p className="text-sm font-medium">{selectedAlert.pet_breed || 'No especificada'}</p></div>
-          <div><h4 className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">Color</h4><p className="text-sm font-medium">{selectedAlert.pet_color || 'No especificado'}</p></div>
-          <div className="col-span-2"><h4 className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">Características</h4><p className="text-sm text-stone-600 italic">"{selectedAlert.pet_traits || 'Sin descripción adicional'}"</p></div>
+          <div><h4 className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">{t('details.breed')}</h4><p className="text-sm font-medium">{selectedAlert.pet_breed || t('details.notSpecified')}</p></div>
+          <div><h4 className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">{t('details.color')}</h4><p className="text-sm font-medium">{selectedAlert.pet_color || t('details.notSpecified')}</p></div>
+          <div className="col-span-2"><h4 className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-1">{t('details.traits')}</h4><p className="text-sm text-stone-600 italic">"{selectedAlert.pet_traits || t('details.noDescription')}"</p></div>
         </div>
 
         <div className="p-6 bg-orange-50 border-b border-orange-100">
-          <h4 className="text-xs font-bold uppercase tracking-widest text-orange-600 mb-2">Contacto del Dueño</h4>
+          <h4 className="text-xs font-bold uppercase tracking-widest text-orange-600 mb-2">{t('details.ownerContact')}</h4>
           <p className="text-lg font-bold text-stone-900">{selectedAlert.owner_contact}</p>
-          <p className="text-xs text-stone-500 mt-1 italic">Por favor, contacta solo si tienes información relevante.</p>
+          <p className="text-xs text-stone-500 mt-1 italic">{t('details.contactNote')}</p>
         </div>
 
         <div className="p-6 space-y-4">
           <div className="flex items-center gap-2 text-stone-500 mb-4">
             <MessageSquare className="w-5 h-5" />
-            <span className="text-sm font-bold uppercase tracking-wider">Mensajes de Ayuda</span>
+            <span className="text-sm font-bold uppercase tracking-wider">{t('chat.title')}</span>
           </div>
 
           <div className="h-[300px] overflow-y-auto space-y-4 pr-2 custom-scrollbar">
             {messages.length === 0 ? (
-              <p className="text-center text-stone-400 py-10 italic">No hay mensajes aún. ¡Ayuda a encontrarlo!</p>
+              <p className="text-center text-stone-400 py-10 italic">{t('chat.empty')}</p>
             ) : messages.map(msg => (
               <div key={msg.id}
                 className={cn("max-w-[80%] p-4 rounded-2xl break-words",
                   msg.sender_id === user?.id ? "bg-orange-600 text-white ml-auto rounded-tr-none" : "bg-stone-100 text-stone-800 rounded-tl-none")}>
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1 opacity-70">{msg.sender_name}</p>
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <p className="text-[11px] font-bold uppercase tracking-widest opacity-70">{msg.sender_name}</p>
+                  {msg.sender_id !== user?.id && (
+                    <ReportMenu
+                      target={{ type: 'message', id: msg.id }}
+                      userId={msg.sender_id}
+                      userName={msg.sender_name}
+                      onBlocked={(blocked) => setMessages((prev) => prev.filter((m) => m.sender_id !== blocked))}
+                    />
+                  )}
+                </div>
                 {msg.image_url && (
-                  <img src={msg.image_url} alt="Foto adjunta" className="rounded-xl mb-2 max-w-full cursor-pointer" onClick={() => window.open(msg.image_url, '_blank')} />
+                  <img src={msg.image_url} alt={t('chat.photoAlt')} className="rounded-xl mb-2 max-w-full cursor-pointer" onClick={() => window.open(msg.image_url, '_blank')} />
                 )}
                 <p className="text-sm leading-relaxed">{msg.text}</p>
               </div>
@@ -266,23 +292,23 @@ export default function AlertDetailsPage() {
 
           {!isResolved ? (
             <form onSubmit={sendMessage} className="flex gap-2 pt-4">
-              <label htmlFor="alert-message" className="sr-only">Mensaje</label>
+              <label htmlFor="alert-message" className="sr-only">{t('chat.messageLabel')}</label>
               <input id="alert-message" type="text" value={newMessage} onChange={e => setNewMessage(e.target.value.slice(0, 500))}
-                placeholder="Escribe algo..."
+                placeholder={t('chat.placeholder')}
                 maxLength={500}
                 className="flex-1 bg-stone-50 border border-stone-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-orange-500" />
               <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoMessage} className="hidden" />
               <button type="button" onClick={() => fileInputRef.current?.click()} disabled={isUploadingPhoto}
-                aria-label="Adjuntar foto" className="bg-stone-100 text-stone-500 p-4 rounded-2xl hover:bg-stone-200 transition-colors disabled:opacity-50">
+                aria-label={t('chat.attachPhoto')} className="bg-stone-100 text-stone-500 p-4 rounded-2xl hover:bg-stone-200 transition-colors disabled:opacity-50">
                 <ImagePlus className="w-5 h-5" />
               </button>
-              <button type="submit" disabled={isSending || !newMessage.trim()} aria-label="Enviar mensaje" className="bg-orange-600 text-white p-4 rounded-2xl hover:bg-orange-700 transition-colors disabled:opacity-50">
+              <button type="submit" disabled={isSending || !newMessage.trim()} aria-label={t('chat.send')} className="bg-orange-600 text-white p-4 rounded-2xl hover:bg-orange-700 transition-colors disabled:opacity-50">
                 <Send className="w-5 h-5" />
               </button>
             </form>
           ) : (
             <div className="pt-4 text-center text-xs text-stone-400 italic">
-              El chat se cerró cuando se resolvió la alerta.
+              {t('chat.closed')}
             </div>
           )}
         </div>

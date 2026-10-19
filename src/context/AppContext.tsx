@@ -1,9 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import i18n from '../i18n';
+import { endBilling } from '../lib/billing';
 import { calculateDistance, safeUuid, isUuid } from '../utils';
 import { getCurrentNativeLocation, hapticImpact, hapticSuccess, isNative, requestGeolocationPermission } from '../lib/native';
 import type { Pet, Alert, WalkingZone, ZonePresence, UserProfile, Friendship } from '../types';
+
+// Mismo radio en el que se envía el push (send-alert-push / nearby_alerts):
+// si te llega el aviso, la alerta tiene que salir también en «cerca de ti».
+const ALERT_RADIUS_KM = 5;
 
 export interface Toast {
   id: string;
@@ -491,7 +497,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (latestAlert.owner_id !== user.id) {
       const dist = calculateDistance(location.lat, location.lng, latestAlert.lat, latestAlert.lng);
       const isRecent = (Date.now() - new Date(latestAlert.created_at).getTime()) < 30000;
-      if (dist <= 2 && isRecent) {
+      if (dist <= ALERT_RADIUS_KM && isRecent) {
         setNotification(latestAlert);
         const timer = setTimeout(() => setNotification(null), 8000);
         return () => clearTimeout(timer);
@@ -502,7 +508,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // ── Nearby alerts (derived) ──
   const nearbyAlerts = activeAlerts.filter(alert => {
     if (!location) return false;
-    return calculateDistance(location.lat, location.lng, alert.lat, alert.lng) <= 2;
+    return calculateDistance(location.lat, location.lng, alert.lat, alert.lng) <= ALERT_RADIUS_KM;
   });
 
   // ── Actions ──
@@ -527,14 +533,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
           setLocation(currentLocation);
         } catch {
-          showToast("Necesitamos tu ubicación para activar la alerta.", "error");
+          showToast(i18n.t('core:errors.alert.locationRequired'), "error");
           return;
         }
       }
     }
 
     if (!pet.contact_info) {
-      showToast("Añade datos de contacto a tu mascota antes de activar la alerta.", "error");
+      showToast(i18n.t('core:errors.alert.contactRequired'), "error");
       return;
     }
 
@@ -566,10 +572,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       });
       if (error) throw error;
       await supabase.from('pets').update({ is_lost: true }).eq('id', pet.id);
-      showToast("¡Alerta activada! Los usuarios cercanos han sido notificados.", "success");
+      showToast(i18n.t('core:toast.alertActivated'), "success");
     } catch (err) {
       console.error("Panic error:", err);
-      showToast("Error al activar la alerta. Inténtalo de nuevo.", "error");
+      showToast(i18n.t('core:errors.alert.activate'), "error");
     }
   };
 
@@ -577,10 +583,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       await supabase.from('alerts').update({ status: 'resolved', resolved_at: new Date().toISOString() }).eq('id', a.id);
       await supabase.from('pets').update({ is_lost: false }).eq('id', a.pet_id);
-      showToast("¡Mascota encontrada! Alerta resuelta.", "success");
+      showToast(i18n.t('core:toast.petFound'), "success");
     } catch (err) {
       console.error("Resolve error:", err);
-      showToast("Error al resolver la alerta.", "error");
+      showToast(i18n.t('core:errors.alert.resolve'), "error");
     }
   };
 
@@ -598,13 +604,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (error) {
       const msg = error.message || '';
       if (msg.includes('zone_overlap')) {
-        showToast('Ya existe una zona de paseo a menos de 200 m. Únete a ella en lugar de crear una nueva.', 'error');
+        showToast(i18n.t('core:errors.zone.overlap'), 'error');
       } else if (msg.includes('zone_limit_reached')) {
-        showToast('Has alcanzado el límite de zonas que puedes crear con tu plan.', 'error');
+        showToast(i18n.t('core:errors.zone.limitReached'), 'error');
       } else if (error.code === '42501' || msg.toLowerCase().includes('row-level security')) {
-        showToast('Necesitas PetPanic Social para crear zonas de paseo.', 'error');
+        showToast(i18n.t('core:errors.zone.createNeedsSocial'), 'error');
       } else {
-        showToast('No se pudo crear la zona. Inténtalo de nuevo.', 'error');
+        showToast(i18n.t('core:errors.zone.create'), 'error');
         console.error('createWalkingZone error:', error);
       }
       return;
@@ -632,7 +638,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       // Force immediate local refresh so the new zone shows up without waiting
       // for the Realtime broadcast (which could be delayed or dropped).
       await fetchZones();
-      showToast(`Zona "${name}" creada. Ya eres fundador/a.`, 'success');
+      showToast(i18n.t('core:toast.zoneCreated', { name }), 'success');
     }
   };
 
@@ -642,9 +648,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (error) {
       const msg = error.message || '';
       if (error.code === '42501' || msg.toLowerCase().includes('row-level security')) {
-        showToast('Necesitas PetPanic Social para unirte a una zona de paseo.', 'error');
+        showToast(i18n.t('core:errors.zone.joinNeedsSocial'), 'error');
       } else {
-        showToast('No se pudo unirte a la zona. Inténtalo de nuevo.', 'error');
+        showToast(i18n.t('core:errors.zone.join'), 'error');
         console.error('joinZone error:', error);
       }
       return;
@@ -669,7 +675,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const sendFriendRequestFn = async (targetUser: UserProfile) => {
     if (!user) return;
     if (!targetUser.friend_code) {
-      showToast('No se puede enviar la solicitud: falta el código de amigo.', 'error');
+      showToast(i18n.t('core:errors.friends.codeMissing'), 'error');
       return;
     }
     // Direct INSERT on `friendships` is REVOKEd from authenticated.
@@ -682,13 +688,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (error) {
       const msg = error.message || '';
       if (msg.includes('invalid_friend_code')) {
-        showToast('Código de amigo no válido.', 'error');
+        showToast(i18n.t('core:errors.friends.codeInvalid'), 'error');
       } else if (msg.includes('friendship_exists')) {
-        showToast('Ya hay una solicitud entre vosotros.', 'error');
+        showToast(i18n.t('core:errors.friends.requestExists'), 'error');
       } else if (msg.includes('social_required')) {
-        showToast('Necesitas PetPanic Social para enviar solicitudes.', 'error');
+        showToast(i18n.t('core:errors.friends.requestNeedsSocial'), 'error');
       } else {
-        showToast('No se pudo enviar la solicitud. Inténtalo de nuevo.', 'error');
+        showToast(i18n.t('core:errors.friends.request'), 'error');
         console.error('sendFriendRequest error:', error);
       }
     }
@@ -739,7 +745,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logOutFn = async () => { await supabase.auth.signOut(); };
+  const logOutFn = async () => { await endBilling(); await supabase.auth.signOut(); };
 
   return (
     <AppContext.Provider value={{
