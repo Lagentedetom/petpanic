@@ -153,6 +153,8 @@ async function syncSubscription(
     stripe_subscription_id: sub.id,
     current_period_end: currentPeriodEnd,
     subscription_interval: interval ?? null,
+    billing_source: "stripe",
+    store_product_id: null,
   };
 
   // If our user is going from trialing to active for the first time, also
