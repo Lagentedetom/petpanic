@@ -4,8 +4,8 @@
   "description": "Alerta inmediata para mascotas perdidas y red social de zonas de paseo",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fafaf9",
-  "theme_color": "#ea580c",
+  "background_color": "#f8f4ee",
+  "theme_color": "#c2410c",
   "orientation": "portrait",
   "scope": "/",
   "icons": [

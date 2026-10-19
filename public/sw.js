@@ -1,4 +1,4 @@
-const CACHE_NAME = 'petpanic-v2';
+const CACHE_NAME = 'petpanic-v3';
 const SHELL_ASSETS = ['/', '/manifest.json', '/icons/icon.svg'];
 
 // Install

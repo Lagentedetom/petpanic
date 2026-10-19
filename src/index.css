@@ -1,7 +1,101 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+/* ───────── Sistema visual de petpanic.es (landing v2, oct-2026) ─────────
+ * Las clases de Tailwind de toda la app (stone, orange, emerald…) se quedan
+ * como están: aquí se redefinen sus escalas con la paleta de la web, así que
+ * la app entera cambia de piel sin tocar cada pantalla.
+ *   stone   → papel cálido y tinta navy
+ *   orange  → naranja PetPanic (600 = el oscuro, pasa 4,5:1 con texto blanco)
+ *   emerald / green / teal → verde de las zonas de paseo
+ */
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-grotesque-latin.woff2") format("woff2");
+  font-weight: 600 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist-latin.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/geist-mono-latin.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: "Geist", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", "Avenir Next", ui-sans-serif, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
+
+  --color-stone-50: oklch(97.6% 0.011 80);
+  --color-stone-100: oklch(94.4% 0.022 76);
+  --color-stone-200: oklch(88% 0.02 76);
+  --color-stone-300: oklch(80% 0.022 76);
+  --color-stone-400: oklch(62% 0.022 280);
+  --color-stone-500: oklch(50% 0.028 280);
+  --color-stone-600: oklch(42% 0.03 280);
+  --color-stone-700: oklch(34% 0.032 280);
+  --color-stone-800: oklch(28% 0.034 280);
+  --color-stone-900: oklch(23% 0.035 280);
+  --color-stone-950: oklch(17% 0.03 280);
+
+  --color-orange-50: oklch(97% 0.02 55);
+  --color-orange-100: oklch(93.5% 0.04 52);
+  --color-orange-200: oklch(88% 0.07 50);
+  --color-orange-300: oklch(80% 0.12 47);
+  --color-orange-400: oklch(72% 0.16 44);
+  --color-orange-500: oklch(66% 0.19 42);
+  --color-orange-600: oklch(55% 0.185 38);
+  --color-orange-700: oklch(50% 0.175 37);
+  --color-orange-800: oklch(43% 0.15 36);
+  --color-orange-900: oklch(37% 0.12 36);
+  --color-orange-950: oklch(26% 0.08 36);
+
+  --color-emerald-50: oklch(97.2% 0.02 178);
+  --color-emerald-100: oklch(93.5% 0.035 178);
+  --color-emerald-200: oklch(88% 0.06 178);
+  --color-emerald-300: oklch(81% 0.09 178);
+  --color-emerald-400: oklch(76% 0.11 178);
+  --color-emerald-500: oklch(72% 0.12 178);
+  --color-emerald-600: oklch(56% 0.1 180);
+  --color-emerald-700: oklch(44% 0.085 182);
+  --color-emerald-800: oklch(37% 0.07 182);
+  --color-emerald-900: oklch(31% 0.055 182);
+
+  --color-green-50: var(--color-emerald-50);
+  --color-green-100: var(--color-emerald-100);
+  --color-green-200: var(--color-emerald-200);
+  --color-green-300: var(--color-emerald-300);
+  --color-green-400: var(--color-emerald-400);
+  --color-green-500: var(--color-emerald-500);
+  --color-green-600: var(--color-emerald-600);
+  --color-green-700: var(--color-emerald-700);
+  --color-green-800: var(--color-emerald-800);
+  --color-green-900: var(--color-emerald-900);
+
+  --color-yellow-100: oklch(95% 0.06 88);
+  --color-yellow-400: oklch(86% 0.13 85);
+
+  --radius-2xl: 0.875rem;
+  --radius-3xl: 1.125rem;
+}
+
 @layer base {
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline-color: var(--color-orange-600);
+  }
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
@@ -9,16 +103,20 @@
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #e5e7eb;
+    background: var(--color-stone-200);
     border-radius: 10px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #d1d5db;
+    background: var(--color-stone-300);
   }
 }
 
-body {
-  @apply bg-stone-50 antialiased;
-  -webkit-tap-highlight-color: transparent;
+@utility font-display {
+  font-family: var(--font-display);
 }
 
+body {
+  @apply bg-stone-50 text-stone-900 antialiased;
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
