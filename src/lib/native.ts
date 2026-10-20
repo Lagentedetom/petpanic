@@ -125,9 +125,9 @@ export const hideSplash = async (): Promise<void> => {
 export const setStatusBarLight = async (): Promise<void> => {
   if (!isNative()) return;
   try {
-    await StatusBar.setStyle({ style: Style.Dark }); // Dark = dark icons on light background
+    await StatusBar.setStyle({ style: Style.Light }); // Light = iconos oscuros sobre fondo claro (Style.Dark es al revés)
     if (platform() === 'android') {
-      await StatusBar.setBackgroundColor({ color: '#ffffff' });
+      await StatusBar.setBackgroundColor({ color: '#f8f4ee' });
     }
   } catch {
     /* ignore */

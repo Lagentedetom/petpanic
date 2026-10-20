@@ -42,8 +42,8 @@ const config: CapacitorConfig = {
     StatusBar: {
       // Match the brand orange for branded launch + onboarding screens.
       // We adjust dynamically via StatusBar.setStyle() based on the active page.
-      style: 'DARK', // dark-content on light background (app is light-themed)
-      backgroundColor: '#ffffff',
+      style: 'LIGHT', // iconos oscuros: la app es clara (en Capacitor, DARK = iconos claros)
+      backgroundColor: '#f8f4ee',
       overlaysWebView: true, // matches the apple-mobile-web-app-status-bar-style: black-translucent
     },
 
